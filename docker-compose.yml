@@ -1,0 +1,7 @@
+services:
+  web:
+    image: ${IMAGE_NAME:-ghcr.io/YOUR_GITHUB_USERNAME/tyndfed}:${IMAGE_TAG:-latest}
+    container_name: tyndfed
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-8080}:80"
