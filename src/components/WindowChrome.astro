@@ -86,28 +86,28 @@
   }
 
   .window.matrix-mode {
-    border-color: rgba(0, 240, 255, 0.24);
+    border-color: rgba(57, 255, 20, 0.28);
     box-shadow:
       0 28px 52px -28px rgba(0, 0, 0, 0.72),
-      0 0 0 1px rgba(0, 240, 255, 0.12),
-      0 0 70px rgba(0, 240, 255, 0.10);
+      0 0 0 1px rgba(57, 255, 20, 0.10),
+      0 0 70px rgba(57, 255, 20, 0.10);
   }
 
-  .window.matrix-mode::after {
-    content: '';
-    position: absolute;
+  /* Full-page Matrix background (canvas is appended to <body>) */
+  :global(canvas.matrix-bg-canvas) {
+    position: fixed;
     inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
     pointer-events: none;
-    background:
-      repeating-linear-gradient(
-        0deg,
-        rgba(0, 240, 255, 0.00) 0px,
-        rgba(0, 240, 255, 0.00) 2px,
-        rgba(0, 240, 255, 0.08) 3px,
-        rgba(0, 240, 255, 0.00) 5px
-      );
-    opacity: 0.22;
+    opacity: 0.34;
     mix-blend-mode: screen;
+    filter: drop-shadow(0 0 12px rgba(57, 255, 20, 0.16));
+  }
+
+  .window.matrix-mode .title-bar {
+    background: linear-gradient(180deg, rgba(57, 255, 20, 0.06), rgba(0, 0, 0, 0));
   }
 
   @keyframes windowBoot {
@@ -544,6 +544,11 @@
 	    if (mainWindowEl.dataset.windowChromeInit === '1') return;
 	    mainWindowEl.dataset.windowChromeInit = '1';
 
+	    // Ensure effects stop when navigating away / hot-reloading in dev.
+	    window.addEventListener('beforeunload', () => {
+	      stopMatrix();
+	    });
+
 	  const closeMessages = [
 	    'Nice try! <span class="coral">This window is immortal.</span>',
 	    'Nope. <span class="accent">Not happening.</span>',
@@ -660,17 +665,121 @@
 		    );
 		  }
 
-		  let isMatrixMode = false;
-		  function setMatrixMode(next?: boolean) {
-		    isMatrixMode = typeof next === 'boolean' ? next : !isMatrixMode;
-		    mainWindowEl.classList.toggle('matrix-mode', isMatrixMode);
-		    showToast(
-		      isMatrixMode
-		        ? '<strong><span class="accent">Matrix mode</span></strong> enabled.'
-		        : '<strong><span class="coral">Matrix mode</span></strong> disabled.',
-		      { variant: isMatrixMode ? 'secret' : 'coral', duration: 2400 }
-		    );
-		  }
+			  let isMatrixMode = false;
+			  let matrixCanvas: HTMLCanvasElement | null = null;
+			  let matrixRaf = 0;
+			  let onMatrixResize: (() => void) | null = null;
+
+			  const MATRIX_COLOR = 'rgba(57, 255, 20, 0.9)'; // neon green
+			  const MATRIX_BG_FADE = 'rgba(12, 12, 15, 0.16)'; // fade-to-black per frame
+			  const MATRIX_CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ#$%&*+-=<>?';
+
+			  function stopMatrix() {
+			    if (matrixRaf) cancelAnimationFrame(matrixRaf);
+			    matrixRaf = 0;
+			    if (onMatrixResize) {
+			      window.removeEventListener('resize', onMatrixResize);
+			      window.visualViewport?.removeEventListener('resize', onMatrixResize);
+			      onMatrixResize = null;
+			    }
+			    matrixCanvas?.remove();
+			    matrixCanvas = null;
+			  }
+
+			  function startMatrix() {
+			    if (matrixCanvas) return;
+			    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+			    const canvas = document.createElement('canvas');
+			    canvas.className = 'matrix-bg-canvas';
+			    canvas.setAttribute('aria-hidden', 'true');
+			    document.body.prepend(canvas);
+			    matrixCanvas = canvas;
+
+			    const ctx = canvas.getContext('2d');
+			    if (!ctx) {
+			      stopMatrix();
+			      return;
+			    }
+
+			    let dpr = Math.max(1, Math.floor(window.devicePixelRatio || 1));
+			    let width = 0;
+			    let height = 0;
+			    let columns = 0;
+			    let drops: number[] = [];
+			    const fontSize = 14; // CSS px, scaled by DPR in backing store
+
+			    const resize = () => {
+			      if (!matrixCanvas) return;
+			      dpr = Math.max(1, Math.floor(window.devicePixelRatio || 1));
+			      width = Math.max(1, Math.floor(window.innerWidth));
+			      height = Math.max(1, Math.floor(window.innerHeight));
+			      matrixCanvas.width = width * dpr;
+			      matrixCanvas.height = height * dpr;
+			      matrixCanvas.style.width = `${width}px`;
+			      matrixCanvas.style.height = `${height}px`;
+			      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+			      columns = Math.max(1, Math.floor(width / fontSize));
+			      drops = Array.from({ length: columns }, () => Math.floor(Math.random() * (height / fontSize)));
+			      ctx.font = `${fontSize}px ${'JetBrains Mono'}, monospace`;
+			      ctx.textBaseline = 'top';
+			    };
+
+			    resize();
+
+			    onMatrixResize = () => resize();
+			    window.addEventListener('resize', onMatrixResize, { passive: true });
+			    window.visualViewport?.addEventListener('resize', onMatrixResize, { passive: true });
+
+			    let lastT = 0;
+			    const frameInterval = 1000 / 30; // ~30fps
+
+			    const draw = (t: number) => {
+			      if (!matrixCanvas) return;
+			      if (document.hidden) {
+			        matrixRaf = requestAnimationFrame(draw);
+			        return;
+			      }
+
+			      if (t - lastT >= frameInterval) {
+			        lastT = t;
+			        ctx.fillStyle = MATRIX_BG_FADE;
+			        ctx.fillRect(0, 0, width, height);
+
+			        ctx.fillStyle = MATRIX_COLOR;
+			        for (let i = 0; i < columns; i++) {
+			          const ch = MATRIX_CHARS[Math.floor(Math.random() * MATRIX_CHARS.length)];
+			          const x = i * fontSize;
+			          const y = drops[i] * fontSize;
+			          ctx.fillText(ch, x, y);
+
+			          if (y > height && Math.random() > 0.975) {
+			            drops[i] = 0;
+			          } else {
+			            drops[i] += 1;
+			          }
+			        }
+			      }
+
+			      matrixRaf = requestAnimationFrame(draw);
+			    };
+
+			    matrixRaf = requestAnimationFrame(draw);
+			  }
+
+			  function setMatrixMode(next?: boolean) {
+			    isMatrixMode = typeof next === 'boolean' ? next : !isMatrixMode;
+			    mainWindowEl.classList.toggle('matrix-mode', isMatrixMode);
+			    document.body.classList.toggle('matrix-mode', isMatrixMode);
+			    if (isMatrixMode) startMatrix();
+			    else stopMatrix();
+			    showToast(
+			      isMatrixMode
+			        ? '<strong><span class="accent">Matrix mode</span></strong> enabled.'
+			        : '<strong><span class="coral">Matrix mode</span></strong> disabled.',
+			      { variant: isMatrixMode ? 'secret' : 'coral', duration: 2400 }
+			    );
+			  }
 
  	  let closeClickCount = 0;
 	  let closeHoldTimer: ReturnType<typeof setTimeout> | null = null;
