@@ -5,11 +5,20 @@ services:
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.tyndfed.rule=Host(`${TRAEFIK_HOST:-tyndfed.dk}`)"
+      # Serve both apex + www. (Cloudflare will connect with SNI matching these hosts.)
+      # Note: some Traefik versions only accept one host per Host() matcher.
+      - "traefik.http.routers.tyndfed.rule=Host(`${TRAEFIK_HOST:-tyndfed.dk}`) || Host(`www.${TRAEFIK_HOST:-tyndfed.dk}`)"
       - "traefik.http.routers.tyndfed.entrypoints=${TRAEFIK_ENTRYPOINT:-websecure}"
       - "traefik.http.routers.tyndfed.tls=true"
-      - "traefik.http.routers.tyndfed.tls.certresolver=${TRAEFIK_CERTRESOLVER:-letsencrypt}"
+      - "traefik.http.routers.tyndfed.tls.certresolver=${TRAEFIK_CERTRESOLVER:-cfdns}"
       - "traefik.http.services.tyndfed.loadbalancer.server.port=80"
+      - "traefik.docker.network=saltbox"
+
+      # Optional: redirect http -> https
+      - "traefik.http.routers.tyndfed-http.rule=Host(`${TRAEFIK_HOST:-tyndfed.dk}`) || Host(`www.${TRAEFIK_HOST:-tyndfed.dk}`)"
+      - "traefik.http.routers.tyndfed-http.entrypoints=web"
+      - "traefik.http.routers.tyndfed-http.middlewares=tyndfed-https-redirect"
+      - "traefik.http.middlewares.tyndfed-https-redirect.redirectscheme.scheme=https"
     ports:
       - "${APP_PORT:-8080}:80"
     networks:

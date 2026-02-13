@@ -39,12 +39,14 @@
     animation: windowBoot var(--duration-slow) var(--ease-out-expo) both;
     box-shadow: 0 28px 52px -28px rgba(0, 0, 0, 0.72);
     user-select: none;
-    touch-action: none;
+    /* Allow normal page scrolling on touch devices. */
+    touch-action: pan-y;
   }
 
   .window.dragging {
     transition: none !important;
     cursor: grabbing;
+    touch-action: none;
   }
 
   .window.shake {
