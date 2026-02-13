@@ -25,17 +25,33 @@ const { project, priority = false } = Astro.props;
   </header>
   <p class="project-description">{project.description}</p>
   <div class="project-links">
-    {project.links.map((link) => (
-      <a
-        href={link.url}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label={`${project.name} - ${link.label} (opens in a new tab)`}
-        class="project-link"
-      >
-        → {link.label}
-      </a>
-    ))}
+    {project.links.map((link) => {
+      const isExsLogoPreview =
+        project.name === 'EXS Nordic' && (link.label === 'Logo (hvid)' || link.label === 'Logo (sort)');
+
+      return isExsLogoPreview ? (
+        <button
+          type="button"
+          class="project-link project-link-button"
+          data-image-window-trigger
+          data-image-window-title={`${project.name} - ${link.label}`}
+          data-image-window-src={link.url}
+          aria-label={`${project.name} - ${link.label} (opens logo preview window)`}
+        >
+          → {link.label}
+        </button>
+      ) : (
+        <a
+          href={link.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={`${project.name} - ${link.label} (opens in a new tab)`}
+          class="project-link"
+        >
+          → {link.label}
+        </a>
+      );
+    })}
   </div>
 </article>
 
@@ -130,6 +146,12 @@ const { project, priority = false } = Astro.props;
   .project-link:focus-visible {
     border-color: var(--interactive-border-active);
     box-shadow: var(--interactive-shadow-strong);
+  }
+
+  .project-link-button {
+    font-family: inherit;
+    line-height: 1.2;
+    cursor: pointer;
   }
 
   @media (max-width: 480px) {
