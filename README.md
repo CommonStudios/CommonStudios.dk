@@ -37,6 +37,15 @@ The published image name is:
 
 `ghcr.io/<github-owner>/<repo>`
 
+The workflow also deploys to your server over SSH after a successful image push.
+
+Required GitHub repository secrets:
+
+- `SSH_HOST`
+- `SSH_USER`
+- `SSH_PRIVATE_KEY`
+- `SSH_PATH` (for example `/opt/tyndfed`)
+
 ## Run on your server with Docker Compose
 
 1. Copy `docker-compose.yml` and `.env.example` to your server.

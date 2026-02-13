@@ -13,7 +13,7 @@ permissions:
   packages: write
 
 jobs:
-  docker:
+  build:
     runs-on: ubuntu-latest
 
     steps:
@@ -54,3 +54,39 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    if: success() && github.ref == 'refs/heads/main'
+    environment: production
+
+    steps:
+      - name: Deploy to server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 7795
+          script: |
+            cd ${{ secrets.SSH_PATH }}
+            echo "=== Checking saltbox network ==="
+            if docker network inspect saltbox >/dev/null 2>&1; then
+              echo "saltbox network found"
+            else
+              echo "ERROR: saltbox network not found"
+              exit 1
+            fi
+
+            docker compose pull
+            docker compose up -d
+            docker image prune -f
+
+            echo "=== Verifying container ==="
+            if [ "$(docker inspect -f '{{.State.Running}}' tyndfed)" = "true" ]; then
+              echo "tyndfed container is running"
+            else
+              echo "ERROR: tyndfed container is not running"
+              exit 1
+            fi
