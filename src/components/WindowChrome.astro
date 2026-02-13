@@ -1,25 +1,26 @@
 ---
 ---
 
-<main class="window">
-  <header class="title-bar">
+<main class="window" id="main-window">
+  <header class="title-bar" id="title-bar">
     <div class="controls" aria-hidden="true">
-      <span class="control-btn close">
+      <button class="control-btn close" id="btn-close" aria-label="Close window">
         <svg viewBox="0 0 10 10" class="control-icon">
           <path d="M1 1L9 9M9 1L1 9" stroke-width="1.5" stroke-linecap="round" />
         </svg>
-      </span>
-      <span class="control-btn minimize">
+      </button>
+      <button class="control-btn minimize" id="btn-minimize" aria-label="Minimize window">
         <svg viewBox="0 0 10 10" class="control-icon">
           <path d="M1 5H9" stroke-width="1.5" stroke-linecap="round" />
         </svg>
-      </span>
-      <span class="control-btn maximize">
+      </button>
+      <button class="control-btn maximize" id="btn-maximize" aria-label="Maximize window">
         <svg viewBox="0 0 10 10" class="control-icon">
           <path d="M1 1h8v8H1z" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
-      </span>
+      </button>
     </div>
+    <div class="title-area"></div>
   </header>
   <slot />
 </main>
@@ -37,6 +38,74 @@
     z-index: 10;
     animation: windowBoot var(--duration-slow) var(--ease-out-expo) both;
     box-shadow: 0 28px 52px -28px rgba(0, 0, 0, 0.72);
+    user-select: none;
+    touch-action: none;
+  }
+
+  .window.dragging {
+    transition: none !important;
+    cursor: grabbing;
+  }
+
+  .window.shake {
+    animation: shake 0.5s ease-in-out;
+  }
+
+  .window.collapsed {
+    animation: collapse 0.4s var(--ease-out-expo) forwards;
+  }
+
+  .window.expanded {
+    animation: expand 0.4s var(--ease-out-expo) forwards;
+  }
+
+  .window.pulse {
+    animation: pulse 0.6s ease-out;
+  }
+
+  .window.rainbow {
+    animation: rainbowBorder 2s linear infinite;
+  }
+
+  .window.matrix {
+    animation: matrixGlitch 0.3s ease-in-out;
+  }
+
+  .window.terminal {
+    border-color: rgba(0, 240, 255, 0.28);
+    box-shadow:
+      0 28px 52px -28px rgba(0, 0, 0, 0.72),
+      0 0 0 1px rgba(0, 240, 255, 0.10),
+      0 0 60px rgba(0, 240, 255, 0.12);
+  }
+
+  .window.terminal .title-bar {
+    background: linear-gradient(180deg, rgba(0, 240, 255, 0.08), rgba(0, 0, 0, 0));
+  }
+
+  .window.matrix-mode {
+    border-color: rgba(0, 240, 255, 0.24);
+    box-shadow:
+      0 28px 52px -28px rgba(0, 0, 0, 0.72),
+      0 0 0 1px rgba(0, 240, 255, 0.12),
+      0 0 70px rgba(0, 240, 255, 0.10);
+  }
+
+  .window.matrix-mode::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+      repeating-linear-gradient(
+        0deg,
+        rgba(0, 240, 255, 0.00) 0px,
+        rgba(0, 240, 255, 0.00) 2px,
+        rgba(0, 240, 255, 0.08) 3px,
+        rgba(0, 240, 255, 0.00) 5px
+      );
+    opacity: 0.22;
+    mix-blend-mode: screen;
   }
 
   @keyframes windowBoot {
@@ -52,6 +121,72 @@
     }
   }
 
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+    20%, 40%, 60%, 80% { transform: translateX(4px); }
+  }
+
+  @keyframes collapse {
+    0% {
+      transform: scale(1);
+      opacity: 1;
+    }
+    50% {
+      transform: scale(0.95) translateY(10px);
+      opacity: 0.8;
+    }
+    100% {
+      transform: scale(0.9) translateY(20px);
+      opacity: 0;
+    }
+  }
+
+  @keyframes expand {
+    0% {
+      transform: scale(0.9) translateY(20px);
+      opacity: 0;
+    }
+    50% {
+      transform: scale(1.02);
+    }
+    100% {
+      transform: scale(1) translateY(0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes pulse {
+    0% {
+      box-shadow: 0 28px 52px -28px rgba(0, 0, 0, 0.72);
+    }
+    50% {
+      box-shadow: 0 28px 52px -28px rgba(0, 0, 0, 0.72),
+                  0 0 40px rgba(0, 240, 255, 0.4),
+                  inset 0 0 20px rgba(0, 240, 255, 0.1);
+    }
+    100% {
+      box-shadow: 0 28px 52px -28px rgba(0, 0, 0, 0.72);
+    }
+  }
+
+  @keyframes rainbowBorder {
+    0% { border-color: #ff5f57; }
+    17% { border-color: #febc2e; }
+    33% { border-color: #28c840; }
+    50% { border-color: #00f0ff; }
+    67% { border-color: #a78bfa; }
+    83% { border-color: #ff6b4a; }
+    100% { border-color: #ff5f57; }
+  }
+
+  @keyframes matrixGlitch {
+    0%, 100% { filter: none; }
+    25% { filter: hue-rotate(90deg) brightness(1.2); }
+    50% { filter: hue-rotate(180deg) brightness(0.8); }
+    75% { filter: hue-rotate(270deg) brightness(1.1); }
+  }
+
   .title-bar {
     padding: 12px 18px;
     display: flex;
@@ -59,6 +194,15 @@
     gap: var(--space-md);
     background: var(--bg-elevated);
     border-bottom: 1px solid var(--chrome-border);
+    cursor: grab;
+  }
+
+  .title-bar:active {
+    cursor: grabbing;
+  }
+
+  .title-area {
+    flex: 1;
   }
 
   .controls {
@@ -74,11 +218,21 @@
     border: none;
     padding: 0;
     margin: 0;
-    cursor: default;
+    cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: opacity var(--duration-fast) ease;
+    transition: transform var(--duration-fast) ease,
+                opacity var(--duration-fast) ease;
+    background: var(--traffic-close);
+  }
+
+  .control-btn:hover {
+    transform: scale(1.15);
+  }
+
+  .control-btn:active {
+    transform: scale(0.95);
   }
 
   .control-icon {
@@ -89,33 +243,199 @@
     fill: none;
     opacity: 0;
     transition: opacity var(--duration-fast) ease;
+    color: rgba(0, 0, 0, 0.7);
   }
 
   .close {
     background: var(--traffic-close);
-    color: rgba(0, 0, 0, 0.7);
   }
 
   .minimize {
     background: var(--traffic-minimize);
-    color: rgba(0, 0, 0, 0.7);
   }
 
   .maximize {
     background: var(--traffic-maximize);
-    color: rgba(0, 0, 0, 0.7);
   }
 
   .window:hover .control-icon {
     opacity: 1;
   }
 
-  .control-btn:hover {
+  /* Toasts (toastify-js)
+   * These are created dynamically and appended to <body>, so they must be global.
+   */
+  :global(.toastify.tyndfed-toastify) {
+    background: transparent !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+    color: inherit !important;
+    font-family: var(--font-mono) !important;
+    width: min(480px, calc(100vw - 48px)) !important;
+    max-width: calc(100vw - 48px) !important;
+  }
+
+  :global(.tyndfed-toast) {
+    position: relative;
+    background: var(--bg-void);
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: 10px;
+    box-shadow:
+      0 18px 48px -28px rgba(0, 0, 0, 0.85),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+    overflow: hidden;
+  }
+
+  :global(.tyndfed-toast)::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: rgba(255, 255, 255, 0.22);
+    opacity: 1;
+  }
+
+  :global(.tyndfed-toast)::after {
+    content: none;
+  }
+
+  :global(.tyndfed-toast.tyndfed-toast--secret)::before {
+    background: rgba(255, 255, 255, 0.22);
+  }
+
+  :global(.tyndfed-toast.tyndfed-toast--coral)::before {
+    background: rgba(255, 255, 255, 0.22);
+  }
+
+  :global(.tyndfed-toast.tyndfed-toast--muted)::before {
+    background: rgba(255, 255, 255, 0.22);
+  }
+
+  :global(.tyndfed-toast__inner) {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+    padding-left: 14px;
+  }
+
+  :global(.tyndfed-toast__msg) {
+    flex: 1;
+    min-width: 0;
+    color: var(--text-secondary);
+    line-height: 1.4;
+    word-break: break-word;
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+
+  :global(.tyndfed-toast__msg strong) {
+    font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: -0.02em;
+  }
+
+  :global(.tyndfed-toast__close) {
+    flex-shrink: 0;
+    appearance: none;
+    border: 1px solid var(--interactive-border);
+    background: var(--interactive-bg);
+    color: var(--text-ghost);
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    margin: -4px -6px 0 0;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition:
+      transform var(--duration-fast) var(--ease-smooth),
+      background var(--duration-fast) ease,
+      border-color var(--duration-fast) ease,
+      color var(--duration-fast) ease,
+      opacity var(--duration-fast) ease;
+    opacity: 0.85;
+  }
+
+  :global(.tyndfed-toast__close:hover) {
+    background: var(--interactive-bg-hover);
+    border-color: var(--interactive-border-hover);
+    color: var(--text-primary);
+    opacity: 1;
+  }
+
+  :global(.tyndfed-toast__close:active) {
+    transform: scale(0.96);
+    border-color: var(--interactive-border-active);
+  }
+
+  :global(.tyndfed-toast__close svg) {
+    width: 12px;
+    height: 12px;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    fill: none;
+    stroke-linecap: round;
+  }
+
+  :global(.tyndfed-toast__progress) {
+    position: absolute;
+    left: 2px;
+    right: 0;
+    bottom: 0;
+    height: 1px;
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0));
+    transform-origin: left;
+    animation: tyndfedToastProgress linear forwards;
+    animation-duration: var(--toast-duration, 2500ms);
+    opacity: 0.9;
+  }
+
+  :global(.tyndfed-toast.tyndfed-toast--coral .tyndfed-toast__progress) {
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0));
+  }
+
+  :global(.tyndfed-toast.tyndfed-toast--muted .tyndfed-toast__progress) {
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0));
     opacity: 0.8;
   }
 
-  .control-btn:hover .control-icon {
-    opacity: 1;
+  @keyframes tyndfedToastProgress {
+    from { transform: scaleX(1); }
+    to { transform: scaleX(0); }
+  }
+
+  :global(.tyndfed-toast .accent) {
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  :global(.tyndfed-toast .coral) {
+    color: var(--accent-secondary);
+    font-weight: 500;
+  }
+
+  :global(.tyndfed-toast .kbd) {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px 8px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(255, 255, 255, 0.04);
+    color: var(--text-primary);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    line-height: 1.3;
+    margin: 0 2px;
+    vertical-align: middle;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
   }
 
   @media (max-width: 768px) {
@@ -134,6 +454,7 @@
 
     .title-bar {
       padding: 10px 12px;
+      cursor: default;
     }
 
     .control-btn {
@@ -149,5 +470,516 @@
     .controls {
       gap: 6px;
     }
+
+    :global(.toastify.tyndfed-toastify) {
+      width: calc(100vw - 32px) !important;
+      max-width: calc(100vw - 32px) !important;
+    }
+
+    :global(.tyndfed-toast) {
+      border-radius: 10px;
+    }
+
+    :global(.tyndfed-toast__inner) {
+      gap: 10px;
+      padding: 12px 14px;
+    }
+
+    :global(.tyndfed-toast__close) {
+      width: 26px;
+      height: 26px;
+    }
+
+    :global(.tyndfed-toast .kbd) {
+      font-size: 10px;
+      padding: 1px 6px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .window,
+    .window.shake,
+    .window.collapsed,
+    .window.expanded,
+    .window.pulse,
+    .window.rainbow,
+    .window.matrix {
+      animation: none !important;
+    }
   }
 </style>
+
+<script>
+  import Toastify from 'toastify-js';
+  import 'toastify-js/src/toastify.css';
+
+  (() => {
+    const mainWindow = document.getElementById('main-window');
+    const titleBar = document.getElementById('title-bar');
+    const btnClose = document.getElementById('btn-close');
+    const btnMinimize = document.getElementById('btn-minimize');
+    const btnMaximize = document.getElementById('btn-maximize');
+
+    if (
+      !(mainWindow instanceof HTMLElement) ||
+      !(titleBar instanceof HTMLElement) ||
+      !(btnClose instanceof HTMLButtonElement) ||
+      !(btnMinimize instanceof HTMLButtonElement) ||
+      !(btnMaximize instanceof HTMLButtonElement)
+		    ) {
+		      return;
+		    }
+
+		    // Astro's script type-checking can be conservative about narrowing in .astro files.
+		    // These casts are safe because of the instanceof guards above.
+		    const mainWindowEl = mainWindow as HTMLElement;
+		    const titleBarEl = titleBar as HTMLElement;
+		    const btnCloseEl = btnClose as HTMLButtonElement;
+		    const btnMinimizeEl = btnMinimize as HTMLButtonElement;
+		    const btnMaximizeEl = btnMaximize as HTMLButtonElement;
+
+	    // Prevent duplicated event listeners (e.g. during dev HMR / script re-execution).
+	    if (mainWindowEl.dataset.windowChromeInit === '1') return;
+	    mainWindowEl.dataset.windowChromeInit = '1';
+
+	  const closeMessages = [
+	    'Nice try! <span class="coral">This window is immortal.</span>',
+	    'Nope. <span class="accent">Not happening.</span>',
+	    'Error 404: <span class="coral">Exit not found.</span>',
+	    'Why would you want to leave? <span class="accent">~</span>',
+	    'Access denied. <span class="coral">Nice attempt though.</span>',
+	    'I\'m afraid I can\'t do that, <span class="accent">Dave.</span>',
+	  ];
+
+	  const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+	  let konamiIndex = 0;
+	  let isRainbowMode = false;
+	  let isTerminalMode = false;
+
+		  const TOAST_MAX = 3;
+		  const TOAST_DEDUPE_WINDOW_MS = 1200;
+		  const lastToastAtByKey = new Map<string, number>();
+
+		  function normalizeToastKey(message: string) {
+	    // Key on the raw HTML message we control.
+	    return message.replace(/\s+/g, ' ').trim();
+	  }
+
+			  type ToastVariant = 'secret' | 'coral' | 'muted';
+			  type ToastOptions = { duration?: number; variant?: ToastVariant; key?: string };
+
+			  function clearToasts() {
+          for (const el of document.querySelectorAll('.toastify.tyndfed-toastify')) {
+            el.remove();
+          }
+          lastToastAtByKey.clear();
+			  }
+
+			  function showToast(message: string, durationOrOptions: number | ToastOptions = 2500) {
+			    const options: ToastOptions =
+			      typeof durationOrOptions === 'number' ? { duration: durationOrOptions } : durationOrOptions;
+			    const duration = options.duration ?? 2500;
+			    const variant = options.variant ?? 'secret';
+
+			    const key = options.key ?? normalizeToastKey(message);
+			    const now = Date.now();
+			    const lastAt = lastToastAtByKey.get(key) ?? 0;
+			    if (now - lastAt < TOAST_DEDUPE_WINDOW_MS) return;
+			    lastToastAtByKey.set(key, now);
+
+			    const node = document.createElement('div');
+			    node.className = `tyndfed-toast tyndfed-toast--${variant}`;
+			    node.style.setProperty('--toast-duration', `${duration}ms`);
+			    node.setAttribute('role', 'status');
+			    node.setAttribute('aria-live', 'polite');
+
+				    node.innerHTML = `
+				      <div class="tyndfed-toast__inner">
+				        <div class="tyndfed-toast__msg">${message}</div>
+				        <button type="button" class="tyndfed-toast__close" aria-label="Dismiss">
+                  <svg viewBox="0 0 10 10" aria-hidden="true" focusable="false">
+                    <path d="M1 1L9 9M9 1L1 9" />
+                  </svg>
+                </button>
+				      </div>
+				      <div class="tyndfed-toast__progress" aria-hidden="true"></div>
+				    `;
+
+			    const toast = Toastify({
+			      node,
+			      duration,
+			      gravity: 'bottom',
+			      position: 'center',
+			      stopOnFocus: true,
+			      close: false,
+			      className: 'tyndfed-toastify',
+			    });
+
+			    const dismiss = () => toast.hideToast();
+
+			    node.addEventListener('click', (e) => {
+			      e.stopPropagation();
+			      dismiss();
+			    });
+
+			    (node.querySelector('.tyndfed-toast__close') as HTMLButtonElement | null)?.addEventListener('click', (e) => {
+			      e.stopPropagation();
+			      dismiss();
+			    });
+
+			    toast.showToast();
+
+			    const active = Array.from(document.querySelectorAll('.toastify.tyndfed-toastify'));
+			    while (active.length > TOAST_MAX) {
+			      const oldest = active.shift();
+			      oldest?.remove();
+			    }
+			  }
+
+		  function toggleTerminalMode(next?: boolean) {
+		    isTerminalMode = typeof next === 'boolean' ? next : !isTerminalMode;
+		    mainWindowEl.classList.toggle('terminal', isTerminalMode);
+		    showToast(
+		      isTerminalMode
+		        ? '<strong><span class="accent">Terminal mode</span></strong> enabled. (<span class="kbd">Right click</span> title bar to toggle)'
+		        : '<strong><span class="coral">Terminal mode</span></strong> disabled.',
+		      { variant: isTerminalMode ? 'secret' : 'coral', duration: 2600 }
+		    );
+		  }
+
+		  function setRainbowMode(next?: boolean) {
+		    isRainbowMode = typeof next === 'boolean' ? next : !isRainbowMode;
+		    mainWindowEl.classList.toggle('rainbow', isRainbowMode);
+		    showToast(
+		      isRainbowMode
+		        ? '<strong><span class="accent">Rainbow mode</span></strong> enabled.'
+		        : '<strong><span class="coral">Rainbow mode</span></strong> disabled.',
+		      { variant: isRainbowMode ? 'secret' : 'coral', duration: 2400 }
+		    );
+		  }
+
+		  let isMatrixMode = false;
+		  function setMatrixMode(next?: boolean) {
+		    isMatrixMode = typeof next === 'boolean' ? next : !isMatrixMode;
+		    mainWindowEl.classList.toggle('matrix-mode', isMatrixMode);
+		    showToast(
+		      isMatrixMode
+		        ? '<strong><span class="accent">Matrix mode</span></strong> enabled.'
+		        : '<strong><span class="coral">Matrix mode</span></strong> disabled.',
+		      { variant: isMatrixMode ? 'secret' : 'coral', duration: 2400 }
+		    );
+		  }
+
+ 	  let closeClickCount = 0;
+	  let closeHoldTimer: ReturnType<typeof setTimeout> | null = null;
+
+		  // Long-press the close button for a tiny "panic" easter egg.
+		  btnCloseEl.addEventListener('pointerdown', (e) => {
+		    e.stopPropagation();
+		    if (closeHoldTimer) clearTimeout(closeHoldTimer);
+		    closeHoldTimer = setTimeout(() => {
+		      showToast('<strong><span class="accent">Panic button</span></strong>: still no exit.', { variant: 'coral', duration: 2400 });
+		      mainWindowEl.classList.add('matrix');
+		      setTimeout(() => mainWindowEl.classList.remove('matrix'), 300);
+		    }, 800);
+		  });
+
+	  btnCloseEl.addEventListener('pointerup', () => {
+	    if (!closeHoldTimer) return;
+	    clearTimeout(closeHoldTimer);
+	    closeHoldTimer = null;
+	  });
+
+	  btnCloseEl.addEventListener('pointercancel', () => {
+	    if (!closeHoldTimer) return;
+	    clearTimeout(closeHoldTimer);
+	    closeHoldTimer = null;
+	  });
+
+		  btnCloseEl.addEventListener('click', (e) => {
+		    e.stopPropagation();
+		    closeClickCount++;
+	    
+	    mainWindowEl.classList.remove('shake');
+	    void mainWindowEl.offsetWidth;
+	    mainWindowEl.classList.add('shake');
+    
+    const msgIndex = (closeClickCount - 1) % closeMessages.length;
+	    showToast(closeMessages[msgIndex], { variant: 'coral', duration: 2300 });
+
+	    if (closeClickCount >= 10) {
+	      showToast('<strong><span class="accent">Achievement</span></strong>: Persistent clicker!', { variant: 'secret', duration: 2600 });
+	      closeClickCount = 0;
+	    }
+	  });
+
+	  let isMinimized = false;
+		  btnMinimizeEl.addEventListener('click', (e) => {
+	    e.stopPropagation();
+	    if (isMinimized) return;
+	    
+	    isMinimized = true;
+	    mainWindowEl.classList.add('collapsed');
+		    showToast('Minimizing... <strong><span class="accent">just kidding!</span></strong>', { variant: 'muted', duration: 2200 });
+	    
+	    setTimeout(() => {
+	      mainWindowEl.classList.remove('collapsed');
+	      mainWindowEl.classList.add('expanded');
+	      setTimeout(() => {
+	        mainWindowEl.classList.remove('expanded');
+	        isMinimized = false;
+	      }, 400);
+	    }, 800);
+	  });
+
+	  let maximizeClickCount = 0;
+		  btnMaximizeEl.addEventListener('click', (e) => {
+	    e.stopPropagation();
+	    maximizeClickCount++;
+	    
+	    mainWindowEl.classList.remove('pulse');
+	    void mainWindowEl.offsetWidth;
+	    mainWindowEl.classList.add('pulse');
+    
+	    if (maximizeClickCount === 1) {
+	      showToast('Maximizing... <strong><span class="accent">psyche!</span></strong>', { variant: 'muted', duration: 2200 });
+	    } else if (maximizeClickCount === 3) {
+	      showToast('Okay okay, <strong><span class="coral">I heard you!</span></strong>', { variant: 'coral', duration: 2400 });
+	    } else if (maximizeClickCount >= 5) {
+	      showToast('<strong><span class="accent">Fullscreen mode</span></strong>: coming never.', { variant: 'secret', duration: 2600 });
+	      maximizeClickCount = 0;
+	    }
+	  });
+
+	  let titleClickCount = 0;
+	  let titleClickTimer: ReturnType<typeof setTimeout> | null = null;
+	  
+		  titleBarEl.addEventListener('click', (e) => {
+	    if ((e.target as HTMLElement).closest('.control-btn')) return;
+    
+    titleClickCount++;
+    
+    if (titleClickTimer) clearTimeout(titleClickTimer);
+    titleClickTimer = setTimeout(() => {
+      titleClickCount = 0;
+    }, 500);
+    
+		    if (titleClickCount >= 3) {
+		      setRainbowMode(true);
+	      
+	      titleClickCount = 0;
+	      
+		      const stopRainbow = () => {
+		        setRainbowMode(false);
+		        titleBarEl.removeEventListener('click', stopRainbowOnNext);
+		      };
+      
+	      const stopRainbowOnNext = (ev: MouseEvent) => {
+	        if (!(ev.target as HTMLElement).closest('.control-btn')) {
+	          stopRainbow();
+	          showToast('<strong><span class="coral">Rainbow</span></strong> deactivated.', { variant: 'coral', duration: 1800 });
+	        }
+	      };
+      
+	      setTimeout(() => titleBarEl.addEventListener('click', stopRainbowOnNext, { once: true }), 100);
+	    }
+	  });
+
+		  // Right-click title bar toggles terminal mode.
+		  titleBarEl.addEventListener('contextmenu', (e) => {
+	    if ((e.target as HTMLElement).closest('.control-btn')) return;
+	    e.preventDefault();
+	    toggleTerminalMode();
+	  });
+
+		  document.addEventListener('keydown', (e) => {
+		    // Quick help.
+		    if (e.key === '?') {
+		      showToast(
+		        'Secrets: type <span class="kbd">tyndfed</span>, <span class="kbd">matrix</span>, <span class="kbd">rainbow</span>, <span class="kbd">ascii</span>. Clear: <span class="kbd">Esc</span>. Or use the <span class="accent">Konami code</span>.',
+		        { variant: 'secret', duration: 4200 }
+		      );
+		      return;
+		    }
+
+		    if (e.key === 'Escape') {
+		      clearToasts();
+		      mainWindowEl.dataset.keybuf = '';
+		      showToast('<strong><span class="coral">Cleared</span></strong>.', { variant: 'muted', duration: 1200 });
+		      return;
+		    }
+
+	    if (e.key === konamiCode[konamiIndex]) {
+	      konamiIndex++;
+	      if (konamiIndex === konamiCode.length) {
+	        konamiIndex = 0;
+        
+	        if (isRainbowMode) {
+	          setRainbowMode(false);
+	          showToast('<strong><span class="coral">Secret</span></strong> deactivated.', { variant: 'coral', duration: 1900 });
+	        } else {
+	          setRainbowMode(true);
+	          mainWindowEl.classList.add('matrix');
+	          setTimeout(() => mainWindowEl.classList.remove('matrix'), 300);
+	          showToast('<strong><span class="accent">Konami code</span></strong>: secret mode activated!', { variant: 'secret', duration: 2600 });
+	        }
+	      }
+	    } else {
+	      konamiIndex = 0;
+	    }
+
+	    // Typed word codes (ignore modifier combos).
+	    if (e.ctrlKey || e.metaKey || e.altKey) return;
+	    if (e.key.length !== 1) return;
+
+	    const key = e.key.toLowerCase();
+	    if (!/^[a-z0-9]$/.test(key)) return;
+
+	    // Keep a small rolling buffer.
+	    const existing = mainWindowEl.dataset.keybuf ?? '';
+	    const nextBuf = (existing + key).slice(-24);
+	    mainWindowEl.dataset.keybuf = nextBuf;
+
+	    if (nextBuf.endsWith('tyndfed')) {
+	      toggleTerminalMode(true);
+	      mainWindowEl.dataset.keybuf = '';
+	    } else if (nextBuf.endsWith('ascii')) {
+	      showToast('<strong><span class="accent">ASCII forever</span></strong>. Click the logo to glitch it.', { variant: 'secret', duration: 2800 });
+	      mainWindowEl.dataset.keybuf = '';
+	    } else if (nextBuf.endsWith('matrix')) {
+	      setMatrixMode();
+	      mainWindowEl.dataset.keybuf = '';
+	    } else if (nextBuf.endsWith('rainbow')) {
+	      setRainbowMode();
+	      mainWindowEl.dataset.keybuf = '';
+	    } else if (nextBuf.endsWith('reset')) {
+	      setMatrixMode(false);
+	      setRainbowMode(false);
+	      toggleTerminalMode(false);
+	      mainWindowEl.style.position = '';
+	      mainWindowEl.style.left = '';
+	      mainWindowEl.style.top = '';
+	      mainWindowEl.style.margin = '';
+	      clearToasts();
+	      showToast('<strong><span class="accent">Reset</span></strong> complete.', { variant: 'muted', duration: 1800 });
+	      mainWindowEl.dataset.keybuf = '';
+	    }
+	  });
+
+	  // Physical interactions: track drag distance, snap to edges, and tiny achievements.
+	  let dragDistance = 0;
+	  let lastDragX = 0;
+	  let lastDragY = 0;
+	  let dragAchievementLevel = 0;
+
+	  function maybeDragAchievement() {
+	    if (dragAchievementLevel === 0 && dragDistance > 220) {
+	      dragAchievementLevel = 1;
+	      showToast('<strong><span class="accent">Achievement</span></strong>: Window whisperer.', { variant: 'secret', duration: 2200 });
+	    } else if (dragAchievementLevel === 1 && dragDistance > 800) {
+	      dragAchievementLevel = 2;
+	      showToast('<strong><span class="accent">Achievement</span></strong>: Drag enjoyer.', { variant: 'secret', duration: 2200 });
+	    } else if (dragAchievementLevel === 2 && dragDistance > 1800) {
+	      dragAchievementLevel = 3;
+	      showToast('<strong><span class="accent">Achievement</span></strong>: Desktop rearranger.', { variant: 'secret', duration: 2400 });
+	    }
+	  }
+
+  let isDragging = false;
+  let dragStartX = 0;
+  let dragStartY = 0;
+  let windowStartX = 0;
+  let windowStartY = 0;
+  let hasMoved = false;
+
+  function getWindowPosition() {
+	    const rect = mainWindowEl.getBoundingClientRect();
+	    return { x: rect.left, y: rect.top };
+	  }
+
+  titleBarEl.addEventListener('mousedown', (e) => {
+    if ((e.target as HTMLElement).closest('.control-btn')) return;
+    if (window.innerWidth <= 480) return;
+    
+    isDragging = true;
+    hasMoved = false;
+    lastDragX = e.clientX;
+    lastDragY = e.clientY;
+    const pos = getWindowPosition();
+    dragStartX = e.clientX;
+    dragStartY = e.clientY;
+    windowStartX = pos.x;
+    windowStartY = pos.y;
+    
+	    mainWindowEl.classList.add('dragging');
+	  });
+
+  document.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    
+    const dx = e.clientX - dragStartX;
+    const dy = e.clientY - dragStartY;
+
+    // Accumulate distance for achievements.
+    const stepDx = e.clientX - lastDragX;
+    const stepDy = e.clientY - lastDragY;
+    dragDistance += Math.hypot(stepDx, stepDy);
+    lastDragX = e.clientX;
+    lastDragY = e.clientY;
+    maybeDragAchievement();
+    
+    if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
+      hasMoved = true;
+    }
+    
+	    mainWindowEl.style.position = 'fixed';
+	    mainWindowEl.style.left = `${windowStartX + dx}px`;
+	    mainWindowEl.style.top = `${windowStartY + dy}px`;
+	    mainWindowEl.style.margin = '0';
+	  });
+
+	  document.addEventListener('mouseup', (e) => {
+	    if (!isDragging) return;
+    
+    isDragging = false;
+    mainWindowEl.classList.remove('dragging');
+    
+	    if (hasMoved) {
+	      showToast(
+	        'Dragged. <span class="kbd">Double click</span> title bar to reset. Hold <span class="kbd">Shift</span> and release near an edge to snap.',
+	        { variant: 'muted', duration: 3600, key: 'drag-help' }
+	      );
+	    }
+
+	    // Snap to screen edges when holding Shift during the drag release.
+	    // This is intentionally simple: only applies once the window is in fixed positioning.
+	    if (e.shiftKey && mainWindowEl.style.position === 'fixed') {
+	      const rect = mainWindowEl.getBoundingClientRect();
+	      const pad = 16;
+	      const nearLeft = rect.left < pad * 1.5;
+	      const nearTop = rect.top < pad * 1.5;
+      const nearRight = window.innerWidth - rect.right < pad * 1.5;
+      const nearBottom = window.innerHeight - rect.bottom < pad * 1.5;
+
+      // If any edge is "near", snap to it.
+      if (nearLeft || nearTop || nearRight || nearBottom) {
+        if (nearLeft) mainWindowEl.style.left = `${pad}px`;
+        if (nearTop) mainWindowEl.style.top = `${pad}px`;
+        if (nearRight) mainWindowEl.style.left = `${Math.max(pad, window.innerWidth - rect.width - pad)}px`;
+        if (nearBottom) mainWindowEl.style.top = `${Math.max(pad, window.innerHeight - rect.height - pad)}px`;
+        showToast('<strong><span class="accent">Snap</span></strong>.', { variant: 'secret', duration: 1400 });
+      }
+    }
+  });
+
+	  titleBarEl.addEventListener('dblclick', (e) => {
+	    if ((e.target as HTMLElement).closest('.control-btn')) return;
+	    
+	    mainWindowEl.style.position = '';
+	    mainWindowEl.style.left = '';
+	    mainWindowEl.style.top = '';
+	    mainWindowEl.style.margin = '';
+	    showToast('<span class="accent">Position reset!</span>');
+	  });
+  })();
+</script>

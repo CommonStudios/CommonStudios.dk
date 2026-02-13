@@ -169,7 +169,7 @@ import { projects } from '~/data/projects';
     const windowImage = imageWindow.querySelector('[data-image-window-image]');
     const closeButton = imageWindow.querySelector('[data-image-window-close]');
 
-    const openImageWindow = (trigger) => {
+    const openImageWindow = (trigger: Element) => {
       if (!(windowImage instanceof HTMLImageElement)) {
         return;
       }
