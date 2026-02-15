@@ -167,13 +167,18 @@ export function AsciiLogo() {
     }
   }, [triggerGlitch])
 
+  useEffect(() => {
+    const onGlitch = () => triggerGlitchManual()
+    window.addEventListener('tyndfed:glitch', onGlitch as EventListener)
+    return () => window.removeEventListener('tyndfed:glitch', onGlitch as EventListener)
+  }, [triggerGlitchManual])
+
   const isGlitching = glitchType !== 'none'
 
   return (
     <section 
       className={styles.container} 
       aria-label="Tyndfed logo"
-      onClick={triggerGlitchManual}
       role="img"
     >
       <span className={styles.visuallyHidden}>Tyndfed</span>

@@ -2,23 +2,23 @@
 ---
 
 <main class="window" id="main-window">
-  <header class="title-bar" id="title-bar">
+  <header class="title-bar">
     <div class="controls" aria-hidden="true">
-      <button class="control-btn close" id="btn-close" aria-label="Close window">
-        <svg viewBox="0 0 10 10" class="control-icon">
+      <span class="control-btn close" aria-hidden="true">
+        <svg viewBox="0 0 10 10" class="control-icon" aria-hidden="true" focusable="false">
           <path d="M1 1L9 9M9 1L1 9" stroke-width="1.5" stroke-linecap="round" />
         </svg>
-      </button>
-      <button class="control-btn minimize" id="btn-minimize" aria-label="Minimize window">
-        <svg viewBox="0 0 10 10" class="control-icon">
+      </span>
+      <span class="control-btn minimize" aria-hidden="true">
+        <svg viewBox="0 0 10 10" class="control-icon" aria-hidden="true" focusable="false">
           <path d="M1 5H9" stroke-width="1.5" stroke-linecap="round" />
         </svg>
-      </button>
-      <button class="control-btn maximize" id="btn-maximize" aria-label="Maximize window">
-        <svg viewBox="0 0 10 10" class="control-icon">
+      </span>
+      <span class="control-btn maximize" aria-hidden="true">
+        <svg viewBox="0 0 10 10" class="control-icon" aria-hidden="true" focusable="false">
           <path d="M1 1h8v8H1z" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
-      </button>
+      </span>
     </div>
     <div class="title-area"></div>
   </header>
@@ -38,31 +38,8 @@
     z-index: 10;
     animation: windowBoot var(--duration-slow) var(--ease-out-expo) both;
     box-shadow: 0 28px 52px -28px rgba(0, 0, 0, 0.72);
-    user-select: none;
     /* Allow normal page scrolling on touch devices. */
     touch-action: pan-y;
-  }
-
-  .window.dragging {
-    transition: none !important;
-    cursor: grabbing;
-    touch-action: none;
-  }
-
-  .window.shake {
-    animation: shake 0.5s ease-in-out;
-  }
-
-  .window.collapsed {
-    animation: collapse 0.4s var(--ease-out-expo) forwards;
-  }
-
-  .window.expanded {
-    animation: expand 0.4s var(--ease-out-expo) forwards;
-  }
-
-  .window.pulse {
-    animation: pulse 0.6s ease-out;
   }
 
   .window.rainbow {
@@ -123,55 +100,6 @@
     }
   }
 
-  @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
-    20%, 40%, 60%, 80% { transform: translateX(4px); }
-  }
-
-  @keyframes collapse {
-    0% {
-      transform: scale(1);
-      opacity: 1;
-    }
-    50% {
-      transform: scale(0.95) translateY(10px);
-      opacity: 0.8;
-    }
-    100% {
-      transform: scale(0.9) translateY(20px);
-      opacity: 0;
-    }
-  }
-
-  @keyframes expand {
-    0% {
-      transform: scale(0.9) translateY(20px);
-      opacity: 0;
-    }
-    50% {
-      transform: scale(1.02);
-    }
-    100% {
-      transform: scale(1) translateY(0);
-      opacity: 1;
-    }
-  }
-
-  @keyframes pulse {
-    0% {
-      box-shadow: 0 28px 52px -28px rgba(0, 0, 0, 0.72);
-    }
-    50% {
-      box-shadow: 0 28px 52px -28px rgba(0, 0, 0, 0.72),
-                  0 0 40px rgba(0, 240, 255, 0.4),
-                  inset 0 0 20px rgba(0, 240, 255, 0.1);
-    }
-    100% {
-      box-shadow: 0 28px 52px -28px rgba(0, 0, 0, 0.72);
-    }
-  }
-
   @keyframes rainbowBorder {
     0% { border-color: #ff5f57; }
     17% { border-color: #febc2e; }
@@ -196,11 +124,6 @@
     gap: var(--space-md);
     background: var(--bg-elevated);
     border-bottom: 1px solid var(--chrome-border);
-    cursor: grab;
-  }
-
-  .title-bar:active {
-    cursor: grabbing;
   }
 
   .title-area {
@@ -217,10 +140,7 @@
     width: 12px;
     height: 12px;
     border-radius: 50%;
-    border: none;
-    padding: 0;
-    margin: 0;
-    cursor: pointer;
+    cursor: default;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -500,10 +420,6 @@
 
   @media (prefers-reduced-motion: reduce) {
     .window,
-    .window.shake,
-    .window.collapsed,
-    .window.expanded,
-    .window.pulse,
     .window.rainbow,
     .window.matrix {
       animation: none !important;
@@ -517,17 +433,9 @@
 
   (() => {
     const mainWindow = document.getElementById('main-window');
-    const titleBar = document.getElementById('title-bar');
-    const btnClose = document.getElementById('btn-close');
-    const btnMinimize = document.getElementById('btn-minimize');
-    const btnMaximize = document.getElementById('btn-maximize');
 
     if (
-      !(mainWindow instanceof HTMLElement) ||
-      !(titleBar instanceof HTMLElement) ||
-      !(btnClose instanceof HTMLButtonElement) ||
-      !(btnMinimize instanceof HTMLButtonElement) ||
-      !(btnMaximize instanceof HTMLButtonElement)
+      !(mainWindow instanceof HTMLElement)
 		    ) {
 		      return;
 		    }
@@ -535,33 +443,20 @@
 		    // Astro's script type-checking can be conservative about narrowing in .astro files.
 		    // These casts are safe because of the instanceof guards above.
 		    const mainWindowEl = mainWindow as HTMLElement;
-		    const titleBarEl = titleBar as HTMLElement;
-		    const btnCloseEl = btnClose as HTMLButtonElement;
-		    const btnMinimizeEl = btnMinimize as HTMLButtonElement;
-		    const btnMaximizeEl = btnMaximize as HTMLButtonElement;
 
 	    // Prevent duplicated event listeners (e.g. during dev HMR / script re-execution).
 	    if (mainWindowEl.dataset.windowChromeInit === '1') return;
 	    mainWindowEl.dataset.windowChromeInit = '1';
 
 	    // Ensure effects stop when navigating away / hot-reloading in dev.
-	    window.addEventListener('beforeunload', () => {
-	      stopMatrix();
-	    });
+		    window.addEventListener('beforeunload', () => {
+		      stopMatrix();
+		    });
 
-	  const closeMessages = [
-	    'Nice try! <span class="coral">This window is immortal.</span>',
-	    'Nope. <span class="accent">Not happening.</span>',
-	    'Error 404: <span class="coral">Exit not found.</span>',
-	    'Why would you want to leave? <span class="accent">~</span>',
-	    'Access denied. <span class="coral">Nice attempt though.</span>',
-	    'I\'m afraid I can\'t do that, <span class="accent">Dave.</span>',
-	  ];
-
-	  const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
-	  let konamiIndex = 0;
-	  let isRainbowMode = false;
-	  let isTerminalMode = false;
+		  const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
+		  let konamiIndex = 0;
+		  let isRainbowMode = false;
+		  let isTerminalMode = false;
 
 		  const TOAST_MAX = 3;
 		  const TOAST_DEDUPE_WINDOW_MS = 1200;
@@ -643,12 +538,12 @@
 			    }
 			  }
 
-		  function toggleTerminalMode(next?: boolean) {
+			  function toggleTerminalMode(next?: boolean) {
 		    isTerminalMode = typeof next === 'boolean' ? next : !isTerminalMode;
 		    mainWindowEl.classList.toggle('terminal', isTerminalMode);
 		    showToast(
 		      isTerminalMode
-		        ? '<strong><span class="accent">Terminal mode</span></strong> enabled. (<span class="kbd">Right click</span> title bar to toggle)'
+		        ? '<strong><span class="accent">Terminal mode</span></strong> enabled.'
 		        : '<strong><span class="coral">Terminal mode</span></strong> disabled.',
 		      { variant: isTerminalMode ? 'secret' : 'coral', duration: 2600 }
 		    );
@@ -781,133 +676,11 @@
 			    );
 			  }
 
- 	  let closeClickCount = 0;
-	  let closeHoldTimer: ReturnType<typeof setTimeout> | null = null;
-
-		  // Long-press the close button for a tiny "panic" easter egg.
-		  btnCloseEl.addEventListener('pointerdown', (e) => {
-		    e.stopPropagation();
-		    if (closeHoldTimer) clearTimeout(closeHoldTimer);
-		    closeHoldTimer = setTimeout(() => {
-		      showToast('<strong><span class="accent">Panic button</span></strong>: still no exit.', { variant: 'coral', duration: 2400 });
-		      mainWindowEl.classList.add('matrix');
-		      setTimeout(() => mainWindowEl.classList.remove('matrix'), 300);
-		    }, 800);
-		  });
-
-	  btnCloseEl.addEventListener('pointerup', () => {
-	    if (!closeHoldTimer) return;
-	    clearTimeout(closeHoldTimer);
-	    closeHoldTimer = null;
-	  });
-
-	  btnCloseEl.addEventListener('pointercancel', () => {
-	    if (!closeHoldTimer) return;
-	    clearTimeout(closeHoldTimer);
-	    closeHoldTimer = null;
-	  });
-
-		  btnCloseEl.addEventListener('click', (e) => {
-		    e.stopPropagation();
-		    closeClickCount++;
-	    
-	    mainWindowEl.classList.remove('shake');
-	    void mainWindowEl.offsetWidth;
-	    mainWindowEl.classList.add('shake');
-    
-    const msgIndex = (closeClickCount - 1) % closeMessages.length;
-	    showToast(closeMessages[msgIndex], { variant: 'coral', duration: 2300 });
-
-	    if (closeClickCount >= 10) {
-	      showToast('<strong><span class="accent">Achievement</span></strong>: Persistent clicker!', { variant: 'secret', duration: 2600 });
-	      closeClickCount = 0;
-	    }
-	  });
-
-	  let isMinimized = false;
-		  btnMinimizeEl.addEventListener('click', (e) => {
-	    e.stopPropagation();
-	    if (isMinimized) return;
-	    
-	    isMinimized = true;
-	    mainWindowEl.classList.add('collapsed');
-		    showToast('Minimizing... <strong><span class="accent">just kidding!</span></strong>', { variant: 'muted', duration: 2200 });
-	    
-	    setTimeout(() => {
-	      mainWindowEl.classList.remove('collapsed');
-	      mainWindowEl.classList.add('expanded');
-	      setTimeout(() => {
-	        mainWindowEl.classList.remove('expanded');
-	        isMinimized = false;
-	      }, 400);
-	    }, 800);
-	  });
-
-	  let maximizeClickCount = 0;
-		  btnMaximizeEl.addEventListener('click', (e) => {
-	    e.stopPropagation();
-	    maximizeClickCount++;
-	    
-	    mainWindowEl.classList.remove('pulse');
-	    void mainWindowEl.offsetWidth;
-	    mainWindowEl.classList.add('pulse');
-    
-	    if (maximizeClickCount === 1) {
-	      showToast('Maximizing... <strong><span class="accent">psyche!</span></strong>', { variant: 'muted', duration: 2200 });
-	    } else if (maximizeClickCount === 3) {
-	      showToast('Okay okay, <strong><span class="coral">I heard you!</span></strong>', { variant: 'coral', duration: 2400 });
-	    } else if (maximizeClickCount >= 5) {
-	      showToast('<strong><span class="accent">Fullscreen mode</span></strong>: coming never.', { variant: 'secret', duration: 2600 });
-	      maximizeClickCount = 0;
-	    }
-	  });
-
-	  let titleClickCount = 0;
-	  let titleClickTimer: ReturnType<typeof setTimeout> | null = null;
-	  
-		  titleBarEl.addEventListener('click', (e) => {
-	    if ((e.target as HTMLElement).closest('.control-btn')) return;
-    
-    titleClickCount++;
-    
-    if (titleClickTimer) clearTimeout(titleClickTimer);
-    titleClickTimer = setTimeout(() => {
-      titleClickCount = 0;
-    }, 500);
-    
-		    if (titleClickCount >= 3) {
-		      setRainbowMode(true);
-	      
-	      titleClickCount = 0;
-	      
-		      const stopRainbow = () => {
-		        setRainbowMode(false);
-		        titleBarEl.removeEventListener('click', stopRainbowOnNext);
-		      };
-      
-	      const stopRainbowOnNext = (ev: MouseEvent) => {
-	        if (!(ev.target as HTMLElement).closest('.control-btn')) {
-	          stopRainbow();
-	          showToast('<strong><span class="coral">Rainbow</span></strong> deactivated.', { variant: 'coral', duration: 1800 });
-	        }
-	      };
-      
-	      setTimeout(() => titleBarEl.addEventListener('click', stopRainbowOnNext, { once: true }), 100);
-	    }
-	  });
-
-		  // Right-click title bar toggles terminal mode.
-		  titleBarEl.addEventListener('contextmenu', (e) => {
-	    if ((e.target as HTMLElement).closest('.control-btn')) return;
-	    e.preventDefault();
-	    toggleTerminalMode();
-	  });
-
 		  document.addEventListener('keydown', (e) => {
 		    // Quick help.
 		    if (e.key === '?') {
 		      showToast(
-		        'Secrets: type <span class="kbd">tyndfed</span>, <span class="kbd">matrix</span>, <span class="kbd">rainbow</span>, <span class="kbd">ascii</span>. Clear: <span class="kbd">Esc</span>. Or use the <span class="accent">Konami code</span>.',
+		        'Secrets: type <span class="kbd">tyndfed</span>, <span class="kbd">matrix</span>, <span class="kbd">rainbow</span>, <span class="kbd">ascii</span>, <span class="kbd">reset</span>. Clear: <span class="kbd">Esc</span>. Or use the <span class="accent">Konami code</span>.',
 		        { variant: 'secret', duration: 4200 }
 		      );
 		      return;
@@ -952,10 +725,11 @@
 	    mainWindowEl.dataset.keybuf = nextBuf;
 
 	    if (nextBuf.endsWith('tyndfed')) {
-	      toggleTerminalMode(true);
+	      toggleTerminalMode();
 	      mainWindowEl.dataset.keybuf = '';
 	    } else if (nextBuf.endsWith('ascii')) {
-	      showToast('<strong><span class="accent">ASCII forever</span></strong>. Click the logo to glitch it.', { variant: 'secret', duration: 2800 });
+	      showToast('<strong><span class="accent">ASCII forever</span></strong>.', { variant: 'secret', duration: 2400 });
+	      window.dispatchEvent(new CustomEvent('tyndfed:glitch'));
 	      mainWindowEl.dataset.keybuf = '';
 	    } else if (nextBuf.endsWith('matrix')) {
 	      setMatrixMode();
@@ -967,130 +741,10 @@
 	      setMatrixMode(false);
 	      setRainbowMode(false);
 	      toggleTerminalMode(false);
-	      mainWindowEl.style.position = '';
-	      mainWindowEl.style.left = '';
-	      mainWindowEl.style.top = '';
-	      mainWindowEl.style.margin = '';
 	      clearToasts();
 	      showToast('<strong><span class="accent">Reset</span></strong> complete.', { variant: 'muted', duration: 1800 });
 	      mainWindowEl.dataset.keybuf = '';
 	    }
-	  });
-
-	  // Physical interactions: track drag distance, snap to edges, and tiny achievements.
-	  let dragDistance = 0;
-	  let lastDragX = 0;
-	  let lastDragY = 0;
-	  let dragAchievementLevel = 0;
-
-	  function maybeDragAchievement() {
-	    if (dragAchievementLevel === 0 && dragDistance > 220) {
-	      dragAchievementLevel = 1;
-	      showToast('<strong><span class="accent">Achievement</span></strong>: Window whisperer.', { variant: 'secret', duration: 2200 });
-	    } else if (dragAchievementLevel === 1 && dragDistance > 800) {
-	      dragAchievementLevel = 2;
-	      showToast('<strong><span class="accent">Achievement</span></strong>: Drag enjoyer.', { variant: 'secret', duration: 2200 });
-	    } else if (dragAchievementLevel === 2 && dragDistance > 1800) {
-	      dragAchievementLevel = 3;
-	      showToast('<strong><span class="accent">Achievement</span></strong>: Desktop rearranger.', { variant: 'secret', duration: 2400 });
-	    }
-	  }
-
-  let isDragging = false;
-  let dragStartX = 0;
-  let dragStartY = 0;
-  let windowStartX = 0;
-  let windowStartY = 0;
-  let hasMoved = false;
-
-  function getWindowPosition() {
-	    const rect = mainWindowEl.getBoundingClientRect();
-	    return { x: rect.left, y: rect.top };
-	  }
-
-  titleBarEl.addEventListener('mousedown', (e) => {
-    if ((e.target as HTMLElement).closest('.control-btn')) return;
-    if (window.innerWidth <= 480) return;
-    
-    isDragging = true;
-    hasMoved = false;
-    lastDragX = e.clientX;
-    lastDragY = e.clientY;
-    const pos = getWindowPosition();
-    dragStartX = e.clientX;
-    dragStartY = e.clientY;
-    windowStartX = pos.x;
-    windowStartY = pos.y;
-    
-	    mainWindowEl.classList.add('dragging');
-	  });
-
-  document.addEventListener('mousemove', (e) => {
-    if (!isDragging) return;
-    
-    const dx = e.clientX - dragStartX;
-    const dy = e.clientY - dragStartY;
-
-    // Accumulate distance for achievements.
-    const stepDx = e.clientX - lastDragX;
-    const stepDy = e.clientY - lastDragY;
-    dragDistance += Math.hypot(stepDx, stepDy);
-    lastDragX = e.clientX;
-    lastDragY = e.clientY;
-    maybeDragAchievement();
-    
-    if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
-      hasMoved = true;
-    }
-    
-	    mainWindowEl.style.position = 'fixed';
-	    mainWindowEl.style.left = `${windowStartX + dx}px`;
-	    mainWindowEl.style.top = `${windowStartY + dy}px`;
-	    mainWindowEl.style.margin = '0';
-	  });
-
-	  document.addEventListener('mouseup', (e) => {
-	    if (!isDragging) return;
-    
-    isDragging = false;
-    mainWindowEl.classList.remove('dragging');
-    
-	    if (hasMoved) {
-	      showToast(
-	        'Dragged. <span class="kbd">Double click</span> title bar to reset. Hold <span class="kbd">Shift</span> and release near an edge to snap.',
-	        { variant: 'muted', duration: 3600, key: 'drag-help' }
-	      );
-	    }
-
-	    // Snap to screen edges when holding Shift during the drag release.
-	    // This is intentionally simple: only applies once the window is in fixed positioning.
-	    if (e.shiftKey && mainWindowEl.style.position === 'fixed') {
-	      const rect = mainWindowEl.getBoundingClientRect();
-	      const pad = 16;
-	      const nearLeft = rect.left < pad * 1.5;
-	      const nearTop = rect.top < pad * 1.5;
-      const nearRight = window.innerWidth - rect.right < pad * 1.5;
-      const nearBottom = window.innerHeight - rect.bottom < pad * 1.5;
-
-      // If any edge is "near", snap to it.
-      if (nearLeft || nearTop || nearRight || nearBottom) {
-        if (nearLeft) mainWindowEl.style.left = `${pad}px`;
-        if (nearTop) mainWindowEl.style.top = `${pad}px`;
-        if (nearRight) mainWindowEl.style.left = `${Math.max(pad, window.innerWidth - rect.width - pad)}px`;
-        if (nearBottom) mainWindowEl.style.top = `${Math.max(pad, window.innerHeight - rect.height - pad)}px`;
-        showToast('<strong><span class="accent">Snap</span></strong>.', { variant: 'secret', duration: 1400 });
-      }
-    }
-  });
-
-	  titleBarEl.addEventListener('dblclick', (e) => {
-	    if ((e.target as HTMLElement).closest('.control-btn')) return;
-	    
-	    mainWindowEl.style.position = '';
-	    mainWindowEl.style.left = '';
-	    mainWindowEl.style.top = '';
-	    mainWindowEl.style.margin = '';
-	    showToast('<span class="accent">Position reset!</span>');
 	  });
   })();
 </script>
