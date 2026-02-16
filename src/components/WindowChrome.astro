@@ -676,6 +676,19 @@
 			    );
 			  }
 
+			  function hardReset(message: string) {
+			    isMatrixMode = false;
+			    isRainbowMode = false;
+			    isTerminalMode = false;
+			    konamiIndex = 0;
+			    mainWindowEl.dataset.keybuf = '';
+			    mainWindowEl.classList.remove('matrix-mode', 'rainbow', 'terminal', 'matrix');
+			    document.body.classList.remove('matrix-mode');
+			    stopMatrix();
+			    clearToasts();
+			    showToast(message, { variant: 'muted', duration: 1600 });
+			  }
+
 		  document.addEventListener('keydown', (e) => {
 		    // Quick help.
 		    if (e.key === '?') {
@@ -686,10 +699,8 @@
 		      return;
 		    }
 
-		    if (e.key === 'Escape') {
-		      clearToasts();
-		      mainWindowEl.dataset.keybuf = '';
-		      showToast('<strong><span class="coral">Cleared</span></strong>.', { variant: 'muted', duration: 1200 });
+		    if (e.key === 'Escape' || e.key === 'Esc') {
+		      hardReset('<strong><span class="coral">Cleared</span></strong>.');
 		      return;
 		    }
 
@@ -738,12 +749,7 @@
 	      setRainbowMode();
 	      mainWindowEl.dataset.keybuf = '';
 	    } else if (nextBuf.endsWith('reset')) {
-	      setMatrixMode(false);
-	      setRainbowMode(false);
-	      toggleTerminalMode(false);
-	      clearToasts();
-	      showToast('<strong><span class="accent">Reset</span></strong> complete.', { variant: 'muted', duration: 1800 });
-	      mainWindowEl.dataset.keybuf = '';
+	      hardReset('<strong><span class="accent">Reset</span></strong> complete.');
 	    }
 	  });
   })();
