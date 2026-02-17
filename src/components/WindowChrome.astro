@@ -168,10 +168,6 @@
     color: rgba(0, 0, 0, 0.7);
   }
 
-  .close {
-    background: var(--traffic-close);
-  }
-
   .minimize {
     background: var(--traffic-minimize);
   }
@@ -221,18 +217,6 @@
 
   :global(.tyndfed-toast)::after {
     content: none;
-  }
-
-  :global(.tyndfed-toast.tyndfed-toast--secret)::before {
-    background: rgba(255, 255, 255, 0.22);
-  }
-
-  :global(.tyndfed-toast.tyndfed-toast--coral)::before {
-    background: rgba(255, 255, 255, 0.22);
-  }
-
-  :global(.tyndfed-toast.tyndfed-toast--muted)::before {
-    background: rgba(255, 255, 255, 0.22);
   }
 
   :global(.tyndfed-toast__inner) {
@@ -317,10 +301,6 @@
     opacity: 0.9;
   }
 
-  :global(.tyndfed-toast.tyndfed-toast--coral .tyndfed-toast__progress) {
-    background: linear-gradient(90deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0));
-  }
-
   :global(.tyndfed-toast.tyndfed-toast--muted .tyndfed-toast__progress) {
     background: linear-gradient(90deg, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0));
     opacity: 0.8;
@@ -368,7 +348,6 @@
 
   @media (max-width: 480px) {
     .window {
-      border-radius: 6px;
       max-width: 100%;
       max-height: none;
       overflow: hidden;
@@ -396,10 +375,6 @@
     :global(.toastify.tyndfed-toastify) {
       width: calc(100vw - 32px) !important;
       max-width: calc(100vw - 32px) !important;
-    }
-
-    :global(.tyndfed-toast) {
-      border-radius: 10px;
     }
 
     :global(.tyndfed-toast__inner) {
@@ -433,324 +408,381 @@
 
   (() => {
     const mainWindow = document.getElementById('main-window');
+    if (!(mainWindow instanceof HTMLElement)) {
+      return;
+    }
 
-    if (
-      !(mainWindow instanceof HTMLElement)
-		    ) {
-		      return;
-		    }
+    // Astro's script type-checking can be conservative about narrowing in .astro files.
+    const mainWindowEl = mainWindow;
 
-		    // Astro's script type-checking can be conservative about narrowing in .astro files.
-		    // These casts are safe because of the instanceof guards above.
-		    const mainWindowEl = mainWindow as HTMLElement;
+    // Prevent duplicated listeners when this script re-runs during HMR.
+    if (mainWindowEl.dataset.windowChromeInit === '1') {
+      return;
+    }
+    mainWindowEl.dataset.windowChromeInit = '1';
 
-	    // Prevent duplicated event listeners (e.g. during dev HMR / script re-execution).
-	    if (mainWindowEl.dataset.windowChromeInit === '1') return;
-	    mainWindowEl.dataset.windowChromeInit = '1';
+    const KONAMI_CODE = [
+      'ArrowUp',
+      'ArrowUp',
+      'ArrowDown',
+      'ArrowDown',
+      'ArrowLeft',
+      'ArrowRight',
+      'ArrowLeft',
+      'ArrowRight',
+      'b',
+      'a'
+    ];
+    const KEY_BUFFER_SIZE = 24;
+    const TOAST_MAX = 3;
+    const TOAST_DEDUPE_WINDOW_MS = 1200;
+    const HELP_MESSAGE =
+      'Secrets: type <span class="kbd">tyndfed</span>, <span class="kbd">matrix</span>, <span class="kbd">rainbow</span>, <span class="kbd">ascii</span>, <span class="kbd">reset</span>. Clear: <span class="kbd">Esc</span>. Or use the <span class="accent">Konami code</span>.';
 
-	    // Ensure effects stop when navigating away / hot-reloading in dev.
-		    window.addEventListener('beforeunload', () => {
-		      stopMatrix();
-		    });
+    type ToastVariant = 'secret' | 'coral' | 'muted';
+    type ToastOptions = { duration?: number; variant?: ToastVariant; key?: string };
 
-		  const konamiCode = ['ArrowUp', 'ArrowUp', 'ArrowDown', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'ArrowLeft', 'ArrowRight', 'b', 'a'];
-		  let konamiIndex = 0;
-		  let isRainbowMode = false;
-		  let isTerminalMode = false;
+    let konamiIndex = 0;
+    let isRainbowMode = false;
+    let isTerminalMode = false;
+    let isMatrixMode = false;
+    let matrixCanvas: HTMLCanvasElement | null = null;
+    let matrixRaf = 0;
+    let onMatrixResize: (() => void) | null = null;
 
-		  const TOAST_MAX = 3;
-		  const TOAST_DEDUPE_WINDOW_MS = 1200;
-		  const lastToastAtByKey = new Map<string, number>();
+    const lastToastAtByKey = new Map<string, number>();
+    const MATRIX_COLOR = 'rgba(57, 255, 20, 0.9)'; // neon green
+    const MATRIX_BG_FADE = 'rgba(12, 12, 15, 0.16)'; // fade-to-black per frame
+    const MATRIX_CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ#$%&*+-=<>?';
 
-		  function normalizeToastKey(message: string) {
-	    // Key on the raw HTML message we control.
-	    return message.replace(/\s+/g, ' ').trim();
-	  }
+    window.addEventListener('beforeunload', stopMatrix);
 
-			  type ToastVariant = 'secret' | 'coral' | 'muted';
-			  type ToastOptions = { duration?: number; variant?: ToastVariant; key?: string };
+    function resolveToggleState(current: boolean, next?: boolean) {
+      return typeof next === 'boolean' ? next : !current;
+    }
 
-			  function clearToasts() {
-          for (const el of document.querySelectorAll('.toastify.tyndfed-toastify')) {
-            el.remove();
+    function resetKeyBuffer() {
+      mainWindowEl.dataset.keybuf = '';
+    }
+
+    function normalizeToastKey(message: string) {
+      // Key on the raw HTML message we control.
+      return message.replace(/\s+/g, ' ').trim();
+    }
+
+    function clearToasts() {
+      for (const el of document.querySelectorAll('.toastify.tyndfed-toastify')) {
+        el.remove();
+      }
+      lastToastAtByKey.clear();
+    }
+
+    function showToast(message: string, durationOrOptions: number | ToastOptions = 2500) {
+      const options: ToastOptions =
+        typeof durationOrOptions === 'number' ? { duration: durationOrOptions } : durationOrOptions;
+      const duration = options.duration ?? 2500;
+      const variant = options.variant ?? 'secret';
+
+      const key = options.key ?? normalizeToastKey(message);
+      const now = Date.now();
+      const lastAt = lastToastAtByKey.get(key) ?? 0;
+      if (now - lastAt < TOAST_DEDUPE_WINDOW_MS) {
+        return;
+      }
+      lastToastAtByKey.set(key, now);
+
+      const node = document.createElement('div');
+      node.className = `tyndfed-toast tyndfed-toast--${variant}`;
+      node.style.setProperty('--toast-duration', `${duration}ms`);
+      node.setAttribute('role', 'status');
+      node.setAttribute('aria-live', 'polite');
+      node.innerHTML = `
+        <div class="tyndfed-toast__inner">
+          <div class="tyndfed-toast__msg">${message}</div>
+          <button type="button" class="tyndfed-toast__close" aria-label="Dismiss">
+            <svg viewBox="0 0 10 10" aria-hidden="true" focusable="false">
+              <path d="M1 1L9 9M9 1L1 9" />
+            </svg>
+          </button>
+        </div>
+        <div class="tyndfed-toast__progress" aria-hidden="true"></div>
+      `;
+
+      const toast = Toastify({
+        node,
+        duration,
+        gravity: 'bottom',
+        position: 'center',
+        stopOnFocus: true,
+        close: false,
+        className: 'tyndfed-toastify',
+      });
+      const dismiss = () => toast.hideToast();
+
+      node.addEventListener('click', (event) => {
+        event.stopPropagation();
+        dismiss();
+      });
+      (node.querySelector('.tyndfed-toast__close') as HTMLButtonElement | null)?.addEventListener(
+        'click',
+        (event) => {
+          event.stopPropagation();
+          dismiss();
+        }
+      );
+
+      toast.showToast();
+
+      const activeToasts = Array.from(document.querySelectorAll('.toastify.tyndfed-toastify'));
+      while (activeToasts.length > TOAST_MAX) {
+        activeToasts.shift()?.remove();
+      }
+    }
+
+    function toggleTerminalMode(next?: boolean) {
+      isTerminalMode = resolveToggleState(isTerminalMode, next);
+      mainWindowEl.classList.toggle('terminal', isTerminalMode);
+      showToast(
+        isTerminalMode
+          ? '<strong><span class="accent">Terminal mode</span></strong> enabled.'
+          : '<strong><span class="coral">Terminal mode</span></strong> disabled.',
+        { variant: isTerminalMode ? 'secret' : 'coral', duration: 2600 }
+      );
+    }
+
+    function setRainbowMode(next?: boolean) {
+      isRainbowMode = resolveToggleState(isRainbowMode, next);
+      mainWindowEl.classList.toggle('rainbow', isRainbowMode);
+      showToast(
+        isRainbowMode
+          ? '<strong><span class="accent">Rainbow mode</span></strong> enabled.'
+          : '<strong><span class="coral">Rainbow mode</span></strong> disabled.',
+        { variant: isRainbowMode ? 'secret' : 'coral', duration: 2400 }
+      );
+    }
+
+    function stopMatrix() {
+      if (matrixRaf) {
+        cancelAnimationFrame(matrixRaf);
+      }
+      matrixRaf = 0;
+
+      if (onMatrixResize) {
+        window.removeEventListener('resize', onMatrixResize);
+        window.visualViewport?.removeEventListener('resize', onMatrixResize);
+        onMatrixResize = null;
+      }
+
+      matrixCanvas?.remove();
+      matrixCanvas = null;
+    }
+
+    function startMatrix() {
+      if (matrixCanvas || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        return;
+      }
+
+      const canvas = document.createElement('canvas');
+      canvas.className = 'matrix-bg-canvas';
+      canvas.setAttribute('aria-hidden', 'true');
+      document.body.prepend(canvas);
+      matrixCanvas = canvas;
+
+      const ctx = canvas.getContext('2d');
+      if (!ctx) {
+        stopMatrix();
+        return;
+      }
+
+      const fontSize = 14; // CSS px, scaled by DPR in backing store
+      let dpr = Math.max(1, Math.floor(window.devicePixelRatio || 1));
+      let width = 0;
+      let height = 0;
+      let columns = 0;
+      let drops: number[] = [];
+
+      const resize = () => {
+        if (!matrixCanvas) {
+          return;
+        }
+
+        dpr = Math.max(1, Math.floor(window.devicePixelRatio || 1));
+        width = Math.max(1, Math.floor(window.innerWidth));
+        height = Math.max(1, Math.floor(window.innerHeight));
+        matrixCanvas.width = width * dpr;
+        matrixCanvas.height = height * dpr;
+        matrixCanvas.style.width = `${width}px`;
+        matrixCanvas.style.height = `${height}px`;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        columns = Math.max(1, Math.floor(width / fontSize));
+        drops = Array.from({ length: columns }, () => Math.floor(Math.random() * (height / fontSize)));
+        ctx.font = `${fontSize}px JetBrains Mono, monospace`;
+        ctx.textBaseline = 'top';
+      };
+
+      resize();
+
+      onMatrixResize = () => resize();
+      window.addEventListener('resize', onMatrixResize, { passive: true });
+      window.visualViewport?.addEventListener('resize', onMatrixResize, { passive: true });
+
+      let lastFrameTime = 0;
+      const frameInterval = 1000 / 30; // ~30fps
+
+      const draw = (time: number) => {
+        if (!matrixCanvas) {
+          return;
+        }
+        if (document.hidden) {
+          matrixRaf = requestAnimationFrame(draw);
+          return;
+        }
+
+        if (time - lastFrameTime >= frameInterval) {
+          lastFrameTime = time;
+          ctx.fillStyle = MATRIX_BG_FADE;
+          ctx.fillRect(0, 0, width, height);
+
+          ctx.fillStyle = MATRIX_COLOR;
+          for (let i = 0; i < columns; i++) {
+            const ch = MATRIX_CHARS[Math.floor(Math.random() * MATRIX_CHARS.length)];
+            const x = i * fontSize;
+            const y = drops[i] * fontSize;
+            ctx.fillText(ch, x, y);
+
+            if (y > height && Math.random() > 0.975) {
+              drops[i] = 0;
+            } else {
+              drops[i] += 1;
+            }
           }
-          lastToastAtByKey.clear();
-			  }
+        }
 
-			  function showToast(message: string, durationOrOptions: number | ToastOptions = 2500) {
-			    const options: ToastOptions =
-			      typeof durationOrOptions === 'number' ? { duration: durationOrOptions } : durationOrOptions;
-			    const duration = options.duration ?? 2500;
-			    const variant = options.variant ?? 'secret';
+        matrixRaf = requestAnimationFrame(draw);
+      };
 
-			    const key = options.key ?? normalizeToastKey(message);
-			    const now = Date.now();
-			    const lastAt = lastToastAtByKey.get(key) ?? 0;
-			    if (now - lastAt < TOAST_DEDUPE_WINDOW_MS) return;
-			    lastToastAtByKey.set(key, now);
+      matrixRaf = requestAnimationFrame(draw);
+    }
 
-			    const node = document.createElement('div');
-			    node.className = `tyndfed-toast tyndfed-toast--${variant}`;
-			    node.style.setProperty('--toast-duration', `${duration}ms`);
-			    node.setAttribute('role', 'status');
-			    node.setAttribute('aria-live', 'polite');
+    function setMatrixMode(next?: boolean) {
+      isMatrixMode = resolveToggleState(isMatrixMode, next);
+      mainWindowEl.classList.toggle('matrix-mode', isMatrixMode);
+      document.body.classList.toggle('matrix-mode', isMatrixMode);
+      if (isMatrixMode) {
+        startMatrix();
+      } else {
+        stopMatrix();
+      }
 
-				    node.innerHTML = `
-				      <div class="tyndfed-toast__inner">
-				        <div class="tyndfed-toast__msg">${message}</div>
-				        <button type="button" class="tyndfed-toast__close" aria-label="Dismiss">
-                  <svg viewBox="0 0 10 10" aria-hidden="true" focusable="false">
-                    <path d="M1 1L9 9M9 1L1 9" />
-                  </svg>
-                </button>
-				      </div>
-				      <div class="tyndfed-toast__progress" aria-hidden="true"></div>
-				    `;
+      showToast(
+        isMatrixMode
+          ? '<strong><span class="accent">Matrix mode</span></strong> enabled.'
+          : '<strong><span class="coral">Matrix mode</span></strong> disabled.',
+        { variant: isMatrixMode ? 'secret' : 'coral', duration: 2400 }
+      );
+    }
 
-			    const toast = Toastify({
-			      node,
-			      duration,
-			      gravity: 'bottom',
-			      position: 'center',
-			      stopOnFocus: true,
-			      close: false,
-			      className: 'tyndfed-toastify',
-			    });
+    function hardReset(message: string) {
+      isMatrixMode = false;
+      isRainbowMode = false;
+      isTerminalMode = false;
+      konamiIndex = 0;
+      resetKeyBuffer();
 
-			    const dismiss = () => toast.hideToast();
+      mainWindowEl.classList.remove('matrix-mode', 'rainbow', 'terminal', 'matrix');
+      document.body.classList.remove('matrix-mode');
+      stopMatrix();
+      clearToasts();
+      showToast(message, { variant: 'muted', duration: 1600 });
+    }
 
-			    node.addEventListener('click', (e) => {
-			      e.stopPropagation();
-			      dismiss();
-			    });
+    function maybeHandleTypedCode(nextBuffer: string) {
+      if (nextBuffer.endsWith('tyndfed')) {
+        toggleTerminalMode();
+        resetKeyBuffer();
+        return;
+      }
+      if (nextBuffer.endsWith('ascii')) {
+        showToast('<strong><span class="accent">ASCII forever</span></strong>.', {
+          variant: 'secret',
+          duration: 2400,
+        });
+        window.dispatchEvent(new CustomEvent('tyndfed:glitch'));
+        resetKeyBuffer();
+        return;
+      }
+      if (nextBuffer.endsWith('matrix')) {
+        setMatrixMode();
+        resetKeyBuffer();
+        return;
+      }
+      if (nextBuffer.endsWith('rainbow')) {
+        setRainbowMode();
+        resetKeyBuffer();
+        return;
+      }
+      if (nextBuffer.endsWith('reset')) {
+        hardReset('<strong><span class="accent">Reset</span></strong> complete.');
+      }
+    }
 
-			    (node.querySelector('.tyndfed-toast__close') as HTMLButtonElement | null)?.addEventListener('click', (e) => {
-			      e.stopPropagation();
-			      dismiss();
-			    });
+    function handleKonamiKey(key: string) {
+      if (key === KONAMI_CODE[konamiIndex]) {
+        konamiIndex += 1;
+        if (konamiIndex !== KONAMI_CODE.length) {
+          return;
+        }
 
-			    toast.showToast();
+        konamiIndex = 0;
+        if (isRainbowMode) {
+          setRainbowMode(false);
+          showToast('<strong><span class="coral">Secret</span></strong> deactivated.', {
+            variant: 'coral',
+            duration: 1900,
+          });
+          return;
+        }
 
-			    const active = Array.from(document.querySelectorAll('.toastify.tyndfed-toastify'));
-			    while (active.length > TOAST_MAX) {
-			      const oldest = active.shift();
-			      oldest?.remove();
-			    }
-			  }
+        setRainbowMode(true);
+        mainWindowEl.classList.add('matrix');
+        setTimeout(() => mainWindowEl.classList.remove('matrix'), 300);
+        showToast('<strong><span class="accent">Konami code</span></strong>: secret mode activated!', {
+          variant: 'secret',
+          duration: 2600,
+        });
+        return;
+      }
 
-			  function toggleTerminalMode(next?: boolean) {
-		    isTerminalMode = typeof next === 'boolean' ? next : !isTerminalMode;
-		    mainWindowEl.classList.toggle('terminal', isTerminalMode);
-		    showToast(
-		      isTerminalMode
-		        ? '<strong><span class="accent">Terminal mode</span></strong> enabled.'
-		        : '<strong><span class="coral">Terminal mode</span></strong> disabled.',
-		      { variant: isTerminalMode ? 'secret' : 'coral', duration: 2600 }
-		    );
-		  }
+      konamiIndex = 0;
+    }
 
-		  function setRainbowMode(next?: boolean) {
-		    isRainbowMode = typeof next === 'boolean' ? next : !isRainbowMode;
-		    mainWindowEl.classList.toggle('rainbow', isRainbowMode);
-		    showToast(
-		      isRainbowMode
-		        ? '<strong><span class="accent">Rainbow mode</span></strong> enabled.'
-		        : '<strong><span class="coral">Rainbow mode</span></strong> disabled.',
-		      { variant: isRainbowMode ? 'secret' : 'coral', duration: 2400 }
-		    );
-		  }
+    document.addEventListener('keydown', (event) => {
+      if (event.key === '?') {
+        showToast(HELP_MESSAGE, { variant: 'secret', duration: 4200 });
+        return;
+      }
 
-			  let isMatrixMode = false;
-			  let matrixCanvas: HTMLCanvasElement | null = null;
-			  let matrixRaf = 0;
-			  let onMatrixResize: (() => void) | null = null;
+      if (event.key === 'Escape' || event.key === 'Esc') {
+        hardReset('<strong><span class="coral">Cleared</span></strong>.');
+        return;
+      }
 
-			  const MATRIX_COLOR = 'rgba(57, 255, 20, 0.9)'; // neon green
-			  const MATRIX_BG_FADE = 'rgba(12, 12, 15, 0.16)'; // fade-to-black per frame
-			  const MATRIX_CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ#$%&*+-=<>?';
+      handleKonamiKey(event.key);
 
-			  function stopMatrix() {
-			    if (matrixRaf) cancelAnimationFrame(matrixRaf);
-			    matrixRaf = 0;
-			    if (onMatrixResize) {
-			      window.removeEventListener('resize', onMatrixResize);
-			      window.visualViewport?.removeEventListener('resize', onMatrixResize);
-			      onMatrixResize = null;
-			    }
-			    matrixCanvas?.remove();
-			    matrixCanvas = null;
-			  }
+      // Typed word codes (ignore modifier combos).
+      if (event.ctrlKey || event.metaKey || event.altKey || event.key.length !== 1) {
+        return;
+      }
 
-			  function startMatrix() {
-			    if (matrixCanvas) return;
-			    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      const key = event.key.toLowerCase();
+      if (!/^[a-z0-9]$/.test(key)) {
+        return;
+      }
 
-			    const canvas = document.createElement('canvas');
-			    canvas.className = 'matrix-bg-canvas';
-			    canvas.setAttribute('aria-hidden', 'true');
-			    document.body.prepend(canvas);
-			    matrixCanvas = canvas;
-
-			    const ctx = canvas.getContext('2d');
-			    if (!ctx) {
-			      stopMatrix();
-			      return;
-			    }
-
-			    let dpr = Math.max(1, Math.floor(window.devicePixelRatio || 1));
-			    let width = 0;
-			    let height = 0;
-			    let columns = 0;
-			    let drops: number[] = [];
-			    const fontSize = 14; // CSS px, scaled by DPR in backing store
-
-			    const resize = () => {
-			      if (!matrixCanvas) return;
-			      dpr = Math.max(1, Math.floor(window.devicePixelRatio || 1));
-			      width = Math.max(1, Math.floor(window.innerWidth));
-			      height = Math.max(1, Math.floor(window.innerHeight));
-			      matrixCanvas.width = width * dpr;
-			      matrixCanvas.height = height * dpr;
-			      matrixCanvas.style.width = `${width}px`;
-			      matrixCanvas.style.height = `${height}px`;
-			      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-			      columns = Math.max(1, Math.floor(width / fontSize));
-			      drops = Array.from({ length: columns }, () => Math.floor(Math.random() * (height / fontSize)));
-			      ctx.font = `${fontSize}px ${'JetBrains Mono'}, monospace`;
-			      ctx.textBaseline = 'top';
-			    };
-
-			    resize();
-
-			    onMatrixResize = () => resize();
-			    window.addEventListener('resize', onMatrixResize, { passive: true });
-			    window.visualViewport?.addEventListener('resize', onMatrixResize, { passive: true });
-
-			    let lastT = 0;
-			    const frameInterval = 1000 / 30; // ~30fps
-
-			    const draw = (t: number) => {
-			      if (!matrixCanvas) return;
-			      if (document.hidden) {
-			        matrixRaf = requestAnimationFrame(draw);
-			        return;
-			      }
-
-			      if (t - lastT >= frameInterval) {
-			        lastT = t;
-			        ctx.fillStyle = MATRIX_BG_FADE;
-			        ctx.fillRect(0, 0, width, height);
-
-			        ctx.fillStyle = MATRIX_COLOR;
-			        for (let i = 0; i < columns; i++) {
-			          const ch = MATRIX_CHARS[Math.floor(Math.random() * MATRIX_CHARS.length)];
-			          const x = i * fontSize;
-			          const y = drops[i] * fontSize;
-			          ctx.fillText(ch, x, y);
-
-			          if (y > height && Math.random() > 0.975) {
-			            drops[i] = 0;
-			          } else {
-			            drops[i] += 1;
-			          }
-			        }
-			      }
-
-			      matrixRaf = requestAnimationFrame(draw);
-			    };
-
-			    matrixRaf = requestAnimationFrame(draw);
-			  }
-
-			  function setMatrixMode(next?: boolean) {
-			    isMatrixMode = typeof next === 'boolean' ? next : !isMatrixMode;
-			    mainWindowEl.classList.toggle('matrix-mode', isMatrixMode);
-			    document.body.classList.toggle('matrix-mode', isMatrixMode);
-			    if (isMatrixMode) startMatrix();
-			    else stopMatrix();
-			    showToast(
-			      isMatrixMode
-			        ? '<strong><span class="accent">Matrix mode</span></strong> enabled.'
-			        : '<strong><span class="coral">Matrix mode</span></strong> disabled.',
-			      { variant: isMatrixMode ? 'secret' : 'coral', duration: 2400 }
-			    );
-			  }
-
-			  function hardReset(message: string) {
-			    isMatrixMode = false;
-			    isRainbowMode = false;
-			    isTerminalMode = false;
-			    konamiIndex = 0;
-			    mainWindowEl.dataset.keybuf = '';
-			    mainWindowEl.classList.remove('matrix-mode', 'rainbow', 'terminal', 'matrix');
-			    document.body.classList.remove('matrix-mode');
-			    stopMatrix();
-			    clearToasts();
-			    showToast(message, { variant: 'muted', duration: 1600 });
-			  }
-
-		  document.addEventListener('keydown', (e) => {
-		    // Quick help.
-		    if (e.key === '?') {
-		      showToast(
-		        'Secrets: type <span class="kbd">tyndfed</span>, <span class="kbd">matrix</span>, <span class="kbd">rainbow</span>, <span class="kbd">ascii</span>, <span class="kbd">reset</span>. Clear: <span class="kbd">Esc</span>. Or use the <span class="accent">Konami code</span>.',
-		        { variant: 'secret', duration: 4200 }
-		      );
-		      return;
-		    }
-
-		    if (e.key === 'Escape' || e.key === 'Esc') {
-		      hardReset('<strong><span class="coral">Cleared</span></strong>.');
-		      return;
-		    }
-
-	    if (e.key === konamiCode[konamiIndex]) {
-	      konamiIndex++;
-	      if (konamiIndex === konamiCode.length) {
-	        konamiIndex = 0;
-        
-	        if (isRainbowMode) {
-	          setRainbowMode(false);
-	          showToast('<strong><span class="coral">Secret</span></strong> deactivated.', { variant: 'coral', duration: 1900 });
-	        } else {
-	          setRainbowMode(true);
-	          mainWindowEl.classList.add('matrix');
-	          setTimeout(() => mainWindowEl.classList.remove('matrix'), 300);
-	          showToast('<strong><span class="accent">Konami code</span></strong>: secret mode activated!', { variant: 'secret', duration: 2600 });
-	        }
-	      }
-	    } else {
-	      konamiIndex = 0;
-	    }
-
-	    // Typed word codes (ignore modifier combos).
-	    if (e.ctrlKey || e.metaKey || e.altKey) return;
-	    if (e.key.length !== 1) return;
-
-	    const key = e.key.toLowerCase();
-	    if (!/^[a-z0-9]$/.test(key)) return;
-
-	    // Keep a small rolling buffer.
-	    const existing = mainWindowEl.dataset.keybuf ?? '';
-	    const nextBuf = (existing + key).slice(-24);
-	    mainWindowEl.dataset.keybuf = nextBuf;
-
-	    if (nextBuf.endsWith('tyndfed')) {
-	      toggleTerminalMode();
-	      mainWindowEl.dataset.keybuf = '';
-	    } else if (nextBuf.endsWith('ascii')) {
-	      showToast('<strong><span class="accent">ASCII forever</span></strong>.', { variant: 'secret', duration: 2400 });
-	      window.dispatchEvent(new CustomEvent('tyndfed:glitch'));
-	      mainWindowEl.dataset.keybuf = '';
-	    } else if (nextBuf.endsWith('matrix')) {
-	      setMatrixMode();
-	      mainWindowEl.dataset.keybuf = '';
-	    } else if (nextBuf.endsWith('rainbow')) {
-	      setRainbowMode();
-	      mainWindowEl.dataset.keybuf = '';
-	    } else if (nextBuf.endsWith('reset')) {
-	      hardReset('<strong><span class="accent">Reset</span></strong> complete.');
-	    }
-	  });
+      const existing = mainWindowEl.dataset.keybuf ?? '';
+      const nextBuffer = (existing + key).slice(-KEY_BUFFER_SIZE);
+      mainWindowEl.dataset.keybuf = nextBuffer;
+      maybeHandleTypedCode(nextBuffer);
+    });
   })();
 </script>
