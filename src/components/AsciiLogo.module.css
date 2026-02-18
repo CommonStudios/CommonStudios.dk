@@ -3,7 +3,8 @@
   justify-content: center;
   align-items: center;
   padding: 56px 24px 48px;
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: visible;
   position: relative;
 }
 
@@ -21,49 +22,37 @@
 
 .wrapper {
   position: relative;
-  display: inline-block;
+  display: block;
+  width: fit-content;
   max-width: 100%;
+  margin-inline: auto;
   isolation: isolate;
-}
-
-/* Scanlines overlay */
-.scanlines {
-  position: absolute;
-  inset: -20px;
-  background: repeating-linear-gradient(
-    0deg,
-    transparent,
-    transparent 2px,
-    rgba(0, 0, 0, 0.1) 2px,
-    rgba(0, 0, 0, 0.1) 4px
-  );
-  pointer-events: none;
-  z-index: 10;
-  opacity: 0.3;
 }
 
 .art {
   display: block;
   margin: 0;
-  font-family: 'JetBrains Mono', 'Noto Sans Mono', 'SF Mono', 'Fira Code', ui-monospace, monospace;
-  font-size: clamp(5px, 1.35vw, 11px);
-  line-height: 0.88;
+  font-family: 'Noto Sans Mono', 'JetBrains Mono', 'SF Mono', 'Fira Code', ui-monospace, monospace;
+  font-size: clamp(6px, 0.95vw, 10px);
+  line-height: 1;
   text-align: left;
   white-space: pre;
-  color: var(--text-secondary);
+  color: var(--text-primary);
   position: relative;
-  letter-spacing: -0.03em;
+  letter-spacing: 0;
   font-weight: 500;
   font-kerning: none;
   font-variant-ligatures: none;
   font-feature-settings: 'liga' 0, 'calt' 0;
-  text-rendering: geometricPrecision;
+  text-rendering: optimizeSpeed;
   -webkit-font-smoothing: antialiased;
+  text-size-adjust: none;
+  -webkit-text-size-adjust: none;
   transition:
     color 0.3s ease,
     text-shadow 0.3s ease,
     filter 0.3s ease;
-  z-index: 1;
+  z-index: 2;
 }
 
 .art.glitching {
@@ -146,21 +135,19 @@
 @media (max-width: 768px) {
   .container {
     padding: 40px 16px 32px;
+    overflow: hidden;
   }
 
   .art {
-    font-size: clamp(4px, 1.5vw, 9px);
-    line-height: 0.9;
-    letter-spacing: -0.025em;
+    font-size: 6px;
+    line-height: 1.06;
+    color: var(--text-secondary);
   }
 
   .glow {
     inset: -20px;
   }
 
-  .scanlines {
-    display: none;
-  }
 }
 
 @media (max-width: 480px) {
@@ -170,9 +157,8 @@
   }
 
   .art {
-    font-size: clamp(3.8px, 2vw, 8px);
-    line-height: 0.92;
-    letter-spacing: -0.02em;
+    font-size: 5px;
+    line-height: 1.04;
   }
 
   .art.glitching {
@@ -182,6 +168,12 @@
   .chromaR,
   .chromaB {
     display: none;
+  }
+}
+
+@media (max-width: 360px) {
+  .art {
+    font-size: 4.4px;
   }
 }
 
@@ -205,7 +197,4 @@
     opacity: 0.4;
   }
 
-  .scanlines {
-    display: none;
-  }
 }

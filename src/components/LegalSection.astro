@@ -21,32 +21,24 @@ const { document } = Astro.props;
 
 <style>
   .legal-section {
+    padding: 18px 18px 16px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--interactive-border);
+    border-radius: 8px;
     color: var(--text-secondary);
-    line-height: 1.8;
-    font-size: var(--font-size-base);
-    animation: fadeIn 0.4s var(--ease-out-expo);
-  }
-
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-      transform: translateY(10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
+    line-height: 1.7;
+    font-size: var(--font-size-sm);
   }
 
   .legal-section h2 {
     color: var(--text-primary);
     font-family: var(--font-display);
-    font-size: var(--font-size-xl);
+    font-size: var(--font-size-lg);
     font-weight: 600;
-    letter-spacing: -0.01em;
+    letter-spacing: 0.01em;
     border-bottom: 1px solid var(--chrome-border);
-    padding-bottom: 12px;
-    margin-bottom: 20px;
+    padding-bottom: 10px;
+    margin-bottom: 14px;
     position: relative;
   }
 
@@ -64,23 +56,23 @@ const { document } = Astro.props;
   .legal-section h3 {
     color: var(--text-primary);
     font-family: var(--font-display);
-    font-size: var(--font-size-lg);
+    font-size: var(--font-size-base);
     font-weight: 500;
-    margin-top: 24px;
-    margin-bottom: 10px;
+    margin-top: 16px;
+    margin-bottom: 6px;
   }
 
   .legal-section p {
-    margin-bottom: 14px;
+    margin-bottom: 10px;
   }
 
   .updated {
     color: var(--text-muted);
-    font-size: var(--font-size-sm);
-    margin-bottom: 20px;
+    font-size: var(--font-size-xs);
+    margin-bottom: 14px;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
   }
 
   .updated::before {
@@ -94,15 +86,22 @@ const { document } = Astro.props;
 
   @media (max-width: 480px) {
     .legal-section {
-      font-size: var(--font-size-sm);
+      padding: 12px 12px 10px;
+      font-size: var(--font-size-xs);
     }
 
     .legal-section h2 {
-      font-size: var(--font-size-xl);
+      font-size: var(--font-size-base);
+      margin-bottom: 12px;
     }
 
     .legal-section h3 {
-      font-size: var(--font-size-base);
+      font-size: var(--font-size-sm);
+      margin-top: 14px;
+    }
+
+    .legal-section p {
+      margin-bottom: 8px;
     }
   }
 </style>

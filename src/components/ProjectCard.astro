@@ -80,6 +80,13 @@ const { project, priority = false } = Astro.props;
       background var(--duration-fast) ease;
   }
 
+  @supports (content-visibility: auto) {
+    .project {
+      content-visibility: auto;
+      contain-intrinsic-size: 260px;
+    }
+  }
+
   .project::after {
     content: '';
     position: absolute;
@@ -159,6 +166,9 @@ const { project, priority = false } = Astro.props;
   }
 
   .project-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     color: var(--text-secondary);
     font-size: var(--font-size-sm);
     font-weight: 500;
@@ -198,27 +208,79 @@ const { project, priority = false } = Astro.props;
     cursor: pointer;
   }
 
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     .project {
-      padding: 16px;
+      padding: 14px;
+      gap: 11px;
+    }
+
+    .project-header {
+      gap: 10px;
     }
 
     .project-icon {
-      width: 52px;
-      height: 52px;
+      width: 48px;
+      height: 48px;
+    }
+
+    .project-title {
+      font-size: var(--font-size-base);
+    }
+
+    .project-description {
+      font-size: var(--font-size-xs);
+      line-height: 1.55;
     }
 
     .project-links {
-      flex-direction: column;
-      gap: 8px;
+      gap: 7px;
+      margin-top: 2px;
     }
 
     .project-link {
-      width: 100%;
-      text-align: center;
-      justify-content: center;
-      font-size: var(--font-size-xs);
-      min-height: 40px;
+      font-size: 11px;
+      padding: 5px 8px;
+      min-height: 30px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .project {
+      padding: 12px;
+      gap: 10px;
+    }
+
+    .project-header {
+      gap: 9px;
+    }
+
+    .project-icon {
+      width: 42px;
+      height: 42px;
+    }
+
+    .project-title {
+      font-size: var(--font-size-sm);
+    }
+
+    .project-description {
+      line-height: 1.45;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .project-links {
+      gap: 6px;
+      margin-top: 0;
+    }
+
+    .project-link {
+      width: auto;
+      text-align: left;
+      min-height: 28px;
+      padding: 4px 7px;
     }
   }
 

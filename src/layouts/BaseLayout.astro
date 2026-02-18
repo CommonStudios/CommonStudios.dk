@@ -25,6 +25,7 @@ const pageUrl = canonical
   : new URL(Astro.url.pathname, siteBase).toString();
 const socialImageUrl = new URL(ogImage, siteBase).toString();
 const robotsContent = noindex ? 'noindex, follow' : 'index, follow';
+const isProd = import.meta.env.PROD;
 
 const schema = {
   "@context": "https://schema.org",
@@ -110,6 +111,6 @@ const schema = {
   </head>
   <body>
     <slot />
-    <SpeedInsights client:only="react" />
+    {isProd && <SpeedInsights client:only="react" />}
   </body>
 </html>

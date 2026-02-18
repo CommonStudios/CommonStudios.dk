@@ -183,7 +183,6 @@ export function AsciiLogo() {
     >
       <span className={styles.visuallyHidden}>Tyndfed</span>
       <div className={styles.wrapper}>
-        <div className={styles.scanlines} aria-hidden="true" />
         <pre
           className={`${styles.art} ${isGlitching ? styles.glitching : ''} ${glitchType === 'shift' ? styles.shifting : ''}`}
           style={{

@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '~/layouts/BaseLayout.astro';
 import WindowChrome from '~/components/WindowChrome.astro';
+import BackLink from '~/components/BackLink.astro';
 import LegalSection from '~/components/LegalSection.astro';
 import { legalContent } from '~/data/legal';
 ---
@@ -11,27 +12,31 @@ import { legalContent } from '~/data/legal';
   canonical="https://tyndfed.dk/privacy"
 >
   <WindowChrome>
-    <div class="content-area">
-      <nav class="lang-switch" aria-label="Select language">
-        <button
-          type="button"
-          class="lang-btn active"
-          data-lang="da"
-          aria-controls="content-da"
-          aria-pressed="true"
-        >
-          Dansk
-        </button>
-        <button
-          type="button"
-          class="lang-btn"
-          data-lang="en"
-          aria-controls="content-en"
-          aria-pressed="false"
-        >
-          English
-        </button>
-      </nav>
+    <BackLink />
+    <div class="content-area window-scroll-region">
+      <header class="legal-header">
+        <h1 class="page-title">Privacy & Terms</h1>
+        <nav class="lang-switch" aria-label="Select language">
+          <button
+            type="button"
+            class="lang-btn active"
+            data-lang="da"
+            aria-controls="content-da"
+            aria-pressed="true"
+          >
+            Dansk
+          </button>
+          <button
+            type="button"
+            class="lang-btn"
+            data-lang="en"
+            aria-controls="content-en"
+            aria-pressed="false"
+          >
+            English
+          </button>
+        </nav>
+      </header>
 
       <div id="content-da" class="lang-content" data-lang="da" lang="da">
         <LegalSection document={legalContent.da.privacy} />
@@ -44,10 +49,6 @@ import { legalContent } from '~/data/legal';
         <hr class="divider" />
         <LegalSection document={legalContent.en.terms} />
       </div>
-
-      <nav class="back-nav-bottom">
-        <a href="/" class="back-link">← Back to main</a>
-      </nav>
     </div>
   </WindowChrome>
 </BaseLayout>
@@ -116,45 +117,47 @@ import { legalContent } from '~/data/legal';
 
 <style>
   .content-area {
-    padding: 28px;
-    max-height: calc(100vh - 120px);
-    overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: var(--text-ghost) transparent;
+    padding: 24px 28px 34px;
+    display: grid;
+    gap: 16px;
   }
 
-  .content-area::-webkit-scrollbar {
-    width: 6px;
+  .legal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--chrome-border);
   }
 
-  .content-area::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  .content-area::-webkit-scrollbar-thumb {
-    background: var(--text-ghost);
-    border-radius: 3px;
-  }
-
-  .content-area::-webkit-scrollbar-thumb:hover {
-    background: var(--text-muted);
+  .page-title {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: var(--font-size-lg);
+    font-weight: 600;
+    color: var(--text-primary);
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
   }
 
   .lang-switch {
-    display: flex;
-    justify-content: center;
+    display: inline-flex;
     gap: 10px;
-    margin-bottom: 28px;
   }
 
   .lang-btn {
     font-family: var(--font-display);
     font-size: var(--font-size-sm);
     font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     background: var(--interactive-bg);
     color: var(--text-secondary);
     border: 1px solid var(--interactive-border);
-    padding: 10px 18px;
+    padding: 8px 14px;
+    min-height: 38px;
     border-radius: 8px;
     cursor: pointer;
     transition:
@@ -174,10 +177,15 @@ import { legalContent } from '~/data/legal';
   }
 
   .lang-btn.active {
-    background: var(--accent-dim);
-    color: var(--accent);
+    background: var(--interactive-bg-hover);
+    color: var(--text-primary);
     border-color: var(--interactive-border-active);
     box-shadow: var(--interactive-shadow);
+  }
+
+  .lang-btn:active {
+    transform: translateY(0);
+    border-color: var(--interactive-border-active);
   }
 
   .lang-btn:focus-visible {
@@ -185,10 +193,19 @@ import { legalContent } from '~/data/legal';
     box-shadow: var(--interactive-shadow-strong);
   }
 
+  .lang-content {
+    display: grid;
+    gap: 0;
+  }
+
+  .lang-content[hidden] {
+    display: none;
+  }
+
   .divider {
     border: none;
     border-top: 1px solid var(--chrome-border);
-    margin: 36px 0;
+    margin: 16px 0;
     position: relative;
   }
 
@@ -203,77 +220,54 @@ import { legalContent } from '~/data/legal';
     background: linear-gradient(90deg, transparent, var(--chrome-border-strong), transparent);
   }
 
-  .back-nav-bottom {
-    margin-top: 28px;
-    padding-top: 24px;
-    border-top: 1px solid var(--chrome-border);
-    text-align: center;
-  }
+  @media (max-width: 768px) {
+    .content-area {
+      padding: 16px 14px 20px;
+      gap: 12px;
+    }
 
-  .back-nav-bottom .back-link {
-    color: var(--text-secondary);
-    font-family: var(--font-display);
-    font-size: var(--font-size-sm);
-    font-weight: 500;
-    padding: 10px 20px;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    border-radius: 8px;
-    border: 1px solid var(--interactive-border);
-    background: var(--interactive-bg);
-    transition:
-      color var(--duration-fast) ease,
-      background var(--duration-fast) ease,
-      border-color var(--duration-fast) ease,
-      transform var(--duration-fast) var(--ease-smooth),
-      box-shadow var(--duration-normal) var(--ease-smooth);
-  }
+    .legal-header {
+      padding-bottom: 10px;
+      gap: 10px;
+    }
 
-  .back-nav-bottom .back-link:hover {
-    color: var(--text-primary);
-    background: var(--interactive-bg-hover);
-    border-color: var(--interactive-border-hover);
-    box-shadow: var(--interactive-shadow);
-    transform: translateY(-1px);
-  }
-
-  .back-nav-bottom .back-link:focus-visible {
-    border-color: var(--interactive-border-active);
-    box-shadow: var(--interactive-shadow-strong);
+    .page-title {
+      font-size: var(--font-size-base);
+    }
   }
 
   @media (max-width: 480px) {
     .content-area {
-      padding: 16px 14px 20px;
-      max-height: none;
-      overflow: visible;
+      padding: 10px 10px 14px;
+      gap: 10px;
+    }
+
+    .legal-header {
+      display: grid;
+      grid-template-columns: 1fr;
+      justify-items: start;
+      padding-bottom: 8px;
+    }
+
+    .page-title {
+      font-size: var(--font-size-sm);
     }
 
     .lang-switch {
+      width: 100%;
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 8px;
-      margin-bottom: 20px;
+      grid-template-columns: repeat(2, 1fr);
     }
 
     .lang-btn {
-      padding: 10px 12px;
+      min-height: 38px;
+      padding: 8px 10px;
       font-size: var(--font-size-xs);
       width: 100%;
-      min-height: 44px;
     }
 
-    .back-nav-bottom {
-      margin-top: 20px;
-      padding-top: 18px;
-    }
-
-    .back-nav-bottom .back-link {
-      width: 100%;
-      justify-content: center;
-      min-height: 44px;
-      padding: 10px 12px;
+    .divider {
+      margin: 12px 0;
     }
   }
 </style>

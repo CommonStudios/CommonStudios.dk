@@ -59,18 +59,31 @@ const { href = '/', label = 'Back to main' } = Astro.props;
     box-shadow: var(--interactive-shadow-strong);
   }
 
-  @media (max-width: 480px) {
+  @media (max-width: 768px) {
     .back-nav {
-      padding: 12px 14px;
+      padding: 10px 14px;
     }
 
     .back-link {
-      width: 100%;
-      justify-content: center;
+      min-height: 34px;
+      padding: 6px 11px;
       margin: 0;
-      min-height: 42px;
-      padding: 10px 12px;
-      font-size: var(--font-size-xs);
+      font-size: 12px;
+      border-radius: 7px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .back-nav {
+      padding: 8px 10px;
+    }
+
+    .back-link {
+      width: auto;
+      justify-content: flex-start;
+      min-height: 32px;
+      padding: 5px 10px;
+      font-size: 11px;
     }
   }
 </style>

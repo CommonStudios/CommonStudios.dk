@@ -12,12 +12,14 @@ import { projects } from '~/data/projects';
   canonical="https://tyndfed.dk/projects"
 >
   <WindowChrome>
-    <BackLink />
-    <section class="projects">
-      {projects.map((project, index) => (
-        <ProjectCard project={project} priority={index < 2} />
-      ))}
-    </section>
+    <div class="projects-content window-scroll-region">
+      <BackLink />
+      <section class="projects">
+        {projects.map((project, index) => (
+          <ProjectCard project={project} priority={index < 2} />
+        ))}
+      </section>
+    </div>
 
     <dialog class="logo-window" data-image-window aria-labelledby="logo-window-title">
       <article class="logo-window-frame">
@@ -41,21 +43,29 @@ import { projects } from '~/data/projects';
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 18px;
+    align-content: start;
+  }
+
+  @supports (content-visibility: auto) {
+    .projects {
+      content-visibility: auto;
+      contain-intrinsic-size: 980px;
+    }
   }
 
   @media (max-width: 768px) {
     .projects {
-      padding: 24px 24px 34px;
+      padding: 16px 14px 18px;
       grid-template-columns: 1fr;
-      gap: 14px;
+      gap: 10px;
     }
 
   }
 
   @media (max-width: 480px) {
     .projects {
-      padding: 18px 14px 24px;
-      gap: 12px;
+      padding: 10px 10px 14px;
+      gap: 8px;
     }
 
   }

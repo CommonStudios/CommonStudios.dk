@@ -1,3 +1,21 @@
+@property --pointer-x {
+  syntax: '<percentage>';
+  inherits: true;
+  initial-value: 50%;
+}
+
+@property --pointer-y {
+  syntax: '<percentage>';
+  inherits: true;
+  initial-value: 30%;
+}
+
+@property --lift {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
 :root {
   /* Softer, warmer dark palette */
   --bg-void: #0c0c0f;
@@ -81,6 +99,21 @@
   --duration-slower: 520ms;
 }
 
+@supports (color: oklch(0.5 0.1 200)) {
+  :root {
+    --accent: oklch(0.87 0.17 214);
+    --accent-dim: oklch(0.87 0.17 214 / 0.1);
+    --accent-glow: oklch(0.87 0.17 214 / 0.32);
+    --accent-secondary: oklch(0.73 0.18 38);
+    --accent-secondary-dim: oklch(0.73 0.18 38 / 0.1);
+    --accent-tertiary: oklch(0.72 0.12 304);
+    --chrome-border-accent: oklch(0.87 0.17 214 / 0.2);
+    --interactive-border-active: oklch(0.87 0.17 214 / 0.34);
+    --interactive-shadow: 0 10px 24px -16px oklch(0.87 0.17 214 / 0.26);
+    --interactive-shadow-strong: 0 16px 36px -18px oklch(0.87 0.17 214 / 0.34);
+  }
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -91,6 +124,7 @@ html {
   height: 100%;
   background: var(--bg-void);
   scroll-behavior: smooth;
+  scrollbar-gutter: stable both-edges;
 }
 
 body {
@@ -135,6 +169,40 @@ body::before {
   z-index: 1000;
   mix-blend-mode: overlay;
   filter: contrast(132%) brightness(106%);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  text-wrap: balance;
+}
+
+.window-scroll-region {
+  max-height: calc(100dvh - 128px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--text-ghost) transparent;
+  scrollbar-gutter: stable;
+}
+
+.window-scroll-region::-webkit-scrollbar {
+  width: 6px;
+}
+
+.window-scroll-region::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.window-scroll-region::-webkit-scrollbar-thumb {
+  background: var(--text-ghost);
+  border-radius: 999px;
+}
+
+.window-scroll-region::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
 }
 
 a {
@@ -191,6 +259,11 @@ button:focus-visible {
   body {
     padding: var(--space-md);
   }
+
+  .window-scroll-region {
+    max-height: none;
+    overflow: visible;
+  }
 }
 
 @media (max-width: 480px) {
@@ -199,7 +272,7 @@ button:focus-visible {
   }
 
   body {
-    padding: 10px;
+    padding: 6px;
     align-items: flex-start;
   }
 }
@@ -231,10 +304,6 @@ button:focus-visible {
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
-  }
-
-  body::before {
-    animation: none;
   }
 
 }

@@ -12,15 +12,17 @@ import { AsciiLogo } from '~/components/AsciiLogo';
   canonical="https://tyndfed.dk/"
 >
   <WindowChrome>
-    <AsciiLogo client:load />
-    <p class="tagline">Software development & creative services</p>
-    <footer class="footer">
-      <nav>
-        <PrimaryButton href="/projects">view-projects</PrimaryButton>
-      </nav>
-      <SocialLinks />
-      <ContactInfo />
-    </footer>
+    <div class="home-content window-scroll-region">
+      <AsciiLogo client:load />
+      <p class="tagline">Software development & creative services</p>
+      <footer class="footer">
+        <nav>
+          <PrimaryButton href="/projects">view-projects</PrimaryButton>
+        </nav>
+        <SocialLinks />
+        <ContactInfo />
+      </footer>
+    </div>
   </WindowChrome>
 </BaseLayout>
 
