@@ -9,12 +9,13 @@ interface Props {
 const { project, priority = false } = Astro.props;
 ---
 
-<article class="project">
+<article class="project" data-card-glow>
   <header class="project-header">
     <img
       src={project.icon}
       alt={`${project.name} logo`}
       class="project-icon"
+      data-card-icon
       loading={priority ? 'eager' : 'lazy'}
       fetchpriority={priority ? 'high' : 'auto'}
       decoding="async"
@@ -57,25 +58,68 @@ const { project, priority = false } = Astro.props;
 
 <style>
   .project {
+    --pointer-x: 50%;
+    --pointer-y: 30%;
+    --lift: 0px;
+    --glow-rgb: 0, 240, 255;
+    --glow-soft-rgb: 167, 139, 250;
     padding: 22px;
     background: var(--bg-elevated);
-    border: 1px solid var(--interactive-border);
+    border: 1px solid rgba(var(--glow-rgb), 0.16);
     border-radius: 8px;
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
     display: flex;
     flex-direction: column;
     gap: 14px;
+    transform: translateY(var(--lift));
     transition:
       transform var(--duration-fast) var(--ease-smooth),
-      box-shadow var(--duration-normal) var(--ease-smooth),
       border-color var(--duration-fast) ease,
       background var(--duration-fast) ease;
   }
 
+  .project::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: radial-gradient(
+      240px circle at var(--pointer-x) var(--pointer-y),
+      rgba(var(--glow-rgb), 0.94) 0%,
+      rgba(var(--glow-soft-rgb), 0.64) 30%,
+      rgba(var(--glow-rgb), 0.26) 54%,
+      transparent 78%
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    opacity: 0.52;
+    pointer-events: none;
+    z-index: 0;
+    transition: opacity var(--duration-fast) ease;
+  }
+
+  .project > * {
+    position: relative;
+    z-index: 1;
+  }
+
   .project:hover {
-    border-color: var(--interactive-border-hover);
-    background: var(--bg-hover);
-    transform: translateY(-2px);
-    box-shadow: var(--interactive-shadow);
+    --lift: -2px;
+    border-color: rgba(var(--glow-rgb), 0.44);
+    background: var(--bg-elevated);
+  }
+
+  .project:hover::after {
+    opacity: 1;
   }
 
   .project-header {
@@ -175,6 +219,16 @@ const { project, priority = false } = Astro.props;
       justify-content: center;
       font-size: var(--font-size-xs);
       min-height: 40px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .project {
+      transform: translateY(var(--lift));
+    }
+
+    .project::after {
+      transition: none;
     }
   }
 </style>

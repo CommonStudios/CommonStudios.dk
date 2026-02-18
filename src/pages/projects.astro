@@ -49,6 +49,7 @@ import { projects } from '~/data/projects';
       grid-template-columns: 1fr;
       gap: 14px;
     }
+
   }
 
   @media (max-width: 480px) {
@@ -56,6 +57,7 @@ import { projects } from '~/data/projects';
       padding: 18px 14px 24px;
       gap: 12px;
     }
+
   }
 
   .logo-window {
@@ -218,4 +220,174 @@ import { projects } from '~/data/projects';
       }
     });
   }
+
+  const glowCards = document.querySelectorAll('[data-card-glow]');
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const usesCoarsePointer = window.matchMedia('(pointer: coarse)').matches;
+
+  const clampChannel = (value: number) => {
+    return Math.max(0, Math.min(255, Math.round(value)));
+  };
+
+  const relativeLuminance = (r: number, g: number, b: number) => {
+    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  };
+
+  const saturationScore = (r: number, g: number, b: number) => {
+    const rn = r / 255;
+    const gn = g / 255;
+    const bn = b / 255;
+    const max = Math.max(rn, gn, bn);
+    const min = Math.min(rn, gn, bn);
+
+    if (max === min) {
+      return 0;
+    }
+
+    const lightness = (max + min) / 2;
+    const delta = max - min;
+    return lightness > 0.5 ? delta / (2 - max - min) : delta / (max + min);
+  };
+
+  const brightenIfTooDark = (rgb: [number, number, number], minimumLuma = 74): [number, number, number] => {
+    const luma = relativeLuminance(rgb[0], rgb[1], rgb[2]);
+    if (luma >= minimumLuma) {
+      return rgb;
+    }
+
+    const lift = minimumLuma - luma;
+    return [clampChannel(rgb[0] + lift), clampChannel(rgb[1] + lift), clampChannel(rgb[2] + lift)];
+  };
+
+  const extractGlowColorsFromIcon = (icon: Element) => {
+    if (!(icon instanceof HTMLImageElement) || !icon.complete || icon.naturalWidth === 0 || icon.naturalHeight === 0) {
+      return null;
+    }
+
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    if (!ctx) {
+      return null;
+    }
+
+    const sampleSize = 30;
+    canvas.width = sampleSize;
+    canvas.height = sampleSize;
+
+    try {
+      ctx.drawImage(icon, 0, 0, sampleSize, sampleSize);
+    } catch {
+      return null;
+    }
+
+    const { data } = ctx.getImageData(0, 0, sampleSize, sampleSize);
+    let rSum = 0;
+    let gSum = 0;
+    let bSum = 0;
+    let count = 0;
+    let best: [number, number, number] = [0, 240, 255];
+    let bestScore = -1;
+
+    for (let index = 0; index < data.length; index += 4) {
+      const r = data[index];
+      const g = data[index + 1];
+      const b = data[index + 2];
+      const alpha = data[index + 3];
+
+      if (alpha < 42) {
+        continue;
+      }
+
+      rSum += r;
+      gSum += g;
+      bSum += b;
+      count += 1;
+
+      const sat = saturationScore(r, g, b);
+      const luma = relativeLuminance(r, g, b);
+      const score = sat * 1.3 + (alpha / 255) * 0.25 + (luma > 35 && luma < 220 ? 0.2 : 0);
+
+      if (score > bestScore) {
+        bestScore = score;
+        best = [r, g, b];
+      }
+    }
+
+    if (count === 0) {
+      return null;
+    }
+
+    const average: [number, number, number] = [rSum / count, gSum / count, bSum / count];
+    const dominant = bestScore > 0.2 ? best : average;
+    const glow = brightenIfTooDark(dominant, 86);
+    const soft = brightenIfTooDark([
+      average[0] * 0.65 + glow[0] * 0.35,
+      average[1] * 0.65 + glow[1] * 0.35,
+      average[2] * 0.65 + glow[2] * 0.35,
+    ]);
+
+    return {
+      glow: `${clampChannel(glow[0])}, ${clampChannel(glow[1])}, ${clampChannel(glow[2])}`,
+      soft: `${clampChannel(soft[0])}, ${clampChannel(soft[1])}, ${clampChannel(soft[2])}`,
+    };
+  };
+
+  const applyLogoGlowColors = (card: Element) => {
+    if (!(card instanceof HTMLElement)) {
+      return;
+    }
+
+    const icon = card.querySelector('[data-card-icon]');
+    if (!(icon instanceof HTMLImageElement)) {
+      return;
+    }
+
+    const apply = () => {
+      const colors = extractGlowColorsFromIcon(icon);
+      if (!colors) {
+        return;
+      }
+
+      card.style.setProperty('--glow-rgb', colors.glow);
+      card.style.setProperty('--glow-soft-rgb', colors.soft);
+    };
+
+    if (icon.complete && icon.naturalWidth > 0) {
+      apply();
+      return;
+    }
+
+    icon.addEventListener('load', apply, { once: true });
+  };
+
+  const resetCardGlow = (card: Element) => {
+    if (!(card instanceof HTMLElement)) {
+      return;
+    }
+
+    card.style.setProperty('--pointer-x', '50%');
+    card.style.setProperty('--pointer-y', '30%');
+  };
+
+  glowCards.forEach((card) => {
+    resetCardGlow(card);
+    applyLogoGlowColors(card);
+
+    if (!(card instanceof HTMLElement) || prefersReducedMotion || usesCoarsePointer) {
+      return;
+    }
+
+    card.addEventListener('pointermove', (event) => {
+      const rect = card.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+
+      card.style.setProperty('--pointer-x', `${(x / rect.width) * 100}%`);
+      card.style.setProperty('--pointer-y', `${(y / rect.height) * 100}%`);
+    });
+
+    card.addEventListener('pointerleave', () => {
+      resetCardGlow(card);
+    });
+  });
 </script>
