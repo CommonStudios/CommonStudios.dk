@@ -14,7 +14,7 @@ import { projects } from '~/data/projects';
   <WindowChrome>
     <div class="projects-content window-scroll-region">
       <BackLink />
-      <section class="projects">
+      <section class="projects" data-projects-grid>
         {projects.map((project, index) => (
           <ProjectCard project={project} priority={index < 2} />
         ))}
@@ -44,6 +44,39 @@ import { projects } from '~/data/projects';
     grid-template-columns: repeat(2, 1fr);
     gap: 18px;
     align-content: start;
+    position: relative;
+  }
+
+  :global(.projects-spotlight) {
+    position: fixed;
+    width: 800px;
+    height: 800px;
+    border-radius: 50%;
+    pointer-events: none;
+    background:
+      radial-gradient(
+        circle,
+        rgba(132, 0, 255, 0.15) 0%,
+        rgba(132, 0, 255, 0.08) 15%,
+        rgba(132, 0, 255, 0.04) 25%,
+        rgba(132, 0, 255, 0.02) 40%,
+        rgba(132, 0, 255, 0.01) 65%,
+        transparent 70%
+      );
+    mix-blend-mode: screen;
+    opacity: 0;
+    transform: translate(-50%, -50%);
+    z-index: 200;
+    will-change: transform, opacity;
+  }
+
+  :global(.project-particle::before) {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    background: rgba(132, 0, 255, 0.2);
+    border-radius: 50%;
+    z-index: -1;
   }
 
   @supports (content-visibility: auto) {
@@ -174,7 +207,18 @@ import { projects } from '~/data/projects';
 </style>
 
 <script>
+  import { gsap } from 'gsap';
+
   const imageWindow = document.querySelector('[data-image-window]');
+  const projectsGrid = document.querySelector('[data-projects-grid]');
+  const lifecycle = new AbortController();
+  const { signal } = lifecycle;
+  const MAGIC_GLOW_COLOR = '132, 0, 255';
+  const PARTICLE_COUNT = 12;
+
+  document.addEventListener('astro:before-swap', () => lifecycle.abort(), {
+    once: true,
+  });
 
   if (imageWindow instanceof HTMLDialogElement) {
     const windowTitle = imageWindow.querySelector('[data-image-window-title]');
@@ -218,186 +262,399 @@ import { projects } from '~/data/projects';
 
       event.preventDefault();
       openImageWindow(trigger);
-    });
+    }, { signal });
 
     closeButton?.addEventListener('click', () => {
       imageWindow.close();
-    });
+    }, { signal });
 
     imageWindow.addEventListener('click', (event) => {
       if (event.target === imageWindow) {
         imageWindow.close();
       }
-    });
+    }, { signal });
   }
 
-  const glowCards = document.querySelectorAll('[data-card-glow]');
+  const glowCards = projectsGrid?.querySelectorAll('[data-magic-card]') ?? [];
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const usesCoarsePointer = window.matchMedia('(pointer: coarse)').matches;
-
-  const clampChannel = (value: number) => {
-    return Math.max(0, Math.min(255, Math.round(value)));
-  };
-
-  const relativeLuminance = (r: number, g: number, b: number) => {
-    return 0.2126 * r + 0.7152 * g + 0.0722 * b;
-  };
-
-  const saturationScore = (r: number, g: number, b: number) => {
-    const rn = r / 255;
-    const gn = g / 255;
-    const bn = b / 255;
-    const max = Math.max(rn, gn, bn);
-    const min = Math.min(rn, gn, bn);
-
-    if (max === min) {
-      return 0;
-    }
-
-    const lightness = (max + min) / 2;
-    const delta = max - min;
-    return lightness > 0.5 ? delta / (2 - max - min) : delta / (max + min);
-  };
-
-  const brightenIfTooDark = (rgb: [number, number, number], minimumLuma = 74): [number, number, number] => {
-    const luma = relativeLuminance(rgb[0], rgb[1], rgb[2]);
-    if (luma >= minimumLuma) {
-      return rgb;
-    }
-
-    const lift = minimumLuma - luma;
-    return [clampChannel(rgb[0] + lift), clampChannel(rgb[1] + lift), clampChannel(rgb[2] + lift)];
-  };
-
-  const extractGlowColorsFromIcon = (icon: Element) => {
-    if (!(icon instanceof HTMLImageElement) || !icon.complete || icon.naturalWidth === 0 || icon.naturalHeight === 0) {
-      return null;
-    }
-
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d', { willReadFrequently: true });
-    if (!ctx) {
-      return null;
-    }
-
-    const sampleSize = 30;
-    canvas.width = sampleSize;
-    canvas.height = sampleSize;
-
-    try {
-      ctx.drawImage(icon, 0, 0, sampleSize, sampleSize);
-    } catch {
-      return null;
-    }
-
-    const { data } = ctx.getImageData(0, 0, sampleSize, sampleSize);
-    let rSum = 0;
-    let gSum = 0;
-    let bSum = 0;
-    let count = 0;
-    let best: [number, number, number] = [0, 240, 255];
-    let bestScore = -1;
-
-    for (let index = 0; index < data.length; index += 4) {
-      const r = data[index];
-      const g = data[index + 1];
-      const b = data[index + 2];
-      const alpha = data[index + 3];
-
-      if (alpha < 42) {
-        continue;
-      }
-
-      rSum += r;
-      gSum += g;
-      bSum += b;
-      count += 1;
-
-      const sat = saturationScore(r, g, b);
-      const luma = relativeLuminance(r, g, b);
-      const score = sat * 1.3 + (alpha / 255) * 0.25 + (luma > 35 && luma < 220 ? 0.2 : 0);
-
-      if (score > bestScore) {
-        bestScore = score;
-        best = [r, g, b];
-      }
-    }
-
-    if (count === 0) {
-      return null;
-    }
-
-    const average: [number, number, number] = [rSum / count, gSum / count, bSum / count];
-    const dominant = bestScore > 0.2 ? best : average;
-    const glow = brightenIfTooDark(dominant, 86);
-    const soft = brightenIfTooDark([
-      average[0] * 0.65 + glow[0] * 0.35,
-      average[1] * 0.65 + glow[1] * 0.35,
-      average[2] * 0.65 + glow[2] * 0.35,
-    ]);
-
-    return {
-      glow: `${clampChannel(glow[0])}, ${clampChannel(glow[1])}, ${clampChannel(glow[2])}`,
-      soft: `${clampChannel(soft[0])}, ${clampChannel(soft[1])}, ${clampChannel(soft[2])}`,
-    };
-  };
-
-  const applyLogoGlowColors = (card: Element) => {
-    if (!(card instanceof HTMLElement)) {
-      return;
-    }
-
-    const icon = card.querySelector('[data-card-icon]');
-    if (!(icon instanceof HTMLImageElement)) {
-      return;
-    }
-
-    const apply = () => {
-      const colors = extractGlowColorsFromIcon(icon);
-      if (!colors) {
-        return;
-      }
-
-      card.style.setProperty('--glow-rgb', colors.glow);
-      card.style.setProperty('--glow-soft-rgb', colors.soft);
-    };
-
-    if (icon.complete && icon.naturalWidth > 0) {
-      apply();
-      return;
-    }
-
-    icon.addEventListener('load', apply, { once: true });
-  };
+  const enableMagicHover = !prefersReducedMotion && !usesCoarsePointer;
+  const spotlightRadius = 300;
 
   const resetCardGlow = (card: Element) => {
     if (!(card instanceof HTMLElement)) {
       return;
     }
 
-    card.style.setProperty('--pointer-x', '50%');
-    card.style.setProperty('--pointer-y', '30%');
+    card.style.setProperty('--glow-x', '50%');
+    card.style.setProperty('--glow-y', '50%');
+    card.style.setProperty('--glow-intensity', '0');
+    card.style.setProperty('--glow-radius', `${spotlightRadius}px`);
   };
 
-  glowCards.forEach((card) => {
-    resetCardGlow(card);
-    applyLogoGlowColors(card);
+  const createParticleElement = (x: number, y: number, color = MAGIC_GLOW_COLOR) => {
+    const particle = document.createElement('div');
+    particle.className = 'project-particle';
+    particle.style.cssText = `
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: rgba(${color}, 1);
+      box-shadow: 0 0 6px rgba(${color}, 0.6);
+      pointer-events: none;
+      z-index: 100;
+      left: ${x}px;
+      top: ${y}px;
+    `;
+    return particle;
+  };
 
-    if (!(card instanceof HTMLElement) || prefersReducedMotion || usesCoarsePointer) {
+  const calculateSpotlightValues = (radius: number) => ({
+    proximity: radius * 0.5,
+    fadeDistance: radius * 0.75,
+  });
+
+  const getGlowIntensity = (card: HTMLElement, clientX: number, clientY: number) => {
+    const rect = card.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    const distance =
+      Math.hypot(clientX - centerX, clientY - centerY) - Math.max(rect.width, rect.height) / 2;
+    const effectiveDistance = Math.max(0, distance);
+    const { proximity, fadeDistance } = calculateSpotlightValues(spotlightRadius);
+
+    if (effectiveDistance <= proximity) {
+      return 1;
+    }
+
+    if (effectiveDistance >= fadeDistance) {
+      return 0;
+    }
+
+    return (fadeDistance - effectiveDistance) / (fadeDistance - proximity);
+  };
+
+  const updateCardGlowProperties = (card: HTMLElement, mouseX: number, mouseY: number, glow: number) => {
+    const rect = card.getBoundingClientRect();
+    const relativeX = ((mouseX - rect.left) / rect.width) * 100;
+    const relativeY = ((mouseY - rect.top) / rect.height) * 100;
+
+    card.style.setProperty('--glow-x', `${relativeX}%`);
+    card.style.setProperty('--glow-y', `${relativeY}%`);
+    card.style.setProperty('--glow-intensity', glow.toFixed(3));
+    card.style.setProperty('--glow-radius', `${spotlightRadius}px`);
+  };
+
+  const cardState = new WeakMap<
+    HTMLElement,
+    {
+      particles: HTMLElement[];
+      templates: HTMLElement[];
+      timeouts: number[];
+      hovered: boolean;
+    }
+  >();
+
+  glowCards.forEach((card) => {
+    if (!(card instanceof HTMLElement)) {
       return;
     }
+
+    resetCardGlow(card);
+
+    if (!enableMagicHover) {
+      return;
+    }
+
+    cardState.set(card, {
+      particles: [],
+      templates: [],
+      timeouts: [],
+      hovered: false,
+    });
+
+    const initializeParticles = () => {
+      const state = cardState.get(card);
+      if (!state || state.templates.length > 0) {
+        return;
+      }
+
+      const { width, height } = card.getBoundingClientRect();
+      state.templates = Array.from({ length: PARTICLE_COUNT }, () =>
+        createParticleElement(Math.random() * width, Math.random() * height)
+      );
+    };
+
+    const clearParticles = () => {
+      const state = cardState.get(card);
+      if (!state) {
+        return;
+      }
+
+      state.timeouts.forEach((timeoutId) => window.clearTimeout(timeoutId));
+      state.timeouts = [];
+
+      state.particles.forEach((particle) => {
+        gsap.to(particle, {
+          scale: 0,
+          opacity: 0,
+          duration: 0.3,
+          ease: 'back.in(1.7)',
+          onComplete: () => {
+            particle.parentNode?.removeChild(particle);
+          },
+        });
+      });
+      state.particles = [];
+    };
+
+    const animateParticles = () => {
+      const state = cardState.get(card);
+      if (!state) {
+        return;
+      }
+
+      initializeParticles();
+
+      state.templates.forEach((particle, index) => {
+        const timeoutId = window.setTimeout(() => {
+          const current = cardState.get(card);
+          if (!current?.hovered) {
+            return;
+          }
+
+          const clone = particle.cloneNode(true);
+          if (!(clone instanceof HTMLElement)) {
+            return;
+          }
+
+          card.appendChild(clone);
+          current.particles.push(clone);
+
+          gsap.fromTo(clone, { scale: 0, opacity: 0 }, {
+            scale: 1,
+            opacity: 1,
+            duration: 0.3,
+            ease: 'back.out(1.7)',
+          });
+
+          gsap.to(clone, {
+            x: (Math.random() - 0.5) * 100,
+            y: (Math.random() - 0.5) * 100,
+            rotation: Math.random() * 360,
+            duration: 2 + Math.random() * 2,
+            ease: 'none',
+            repeat: -1,
+            yoyo: true,
+          });
+
+          gsap.to(clone, {
+            opacity: 0.3,
+            duration: 1.5,
+            ease: 'power2.inOut',
+            repeat: -1,
+            yoyo: true,
+          });
+        }, index * 100);
+
+        state.timeouts.push(timeoutId);
+      });
+    };
+
+    card.addEventListener('pointerenter', () => {
+      const state = cardState.get(card);
+      if (!state) {
+        return;
+      }
+
+      state.hovered = true;
+      animateParticles();
+
+      gsap.to(card, {
+        rotateX: 2,
+        rotateY: 2,
+        duration: 0.3,
+        ease: 'power2.out',
+        transformPerspective: 1000,
+      });
+    }, { signal });
 
     card.addEventListener('pointermove', (event) => {
       const rect = card.getBoundingClientRect();
       const x = event.clientX - rect.left;
       const y = event.clientY - rect.top;
+      const centerX = rect.width / 2;
+      const centerY = rect.height / 2;
+      const rotateX = ((y - centerY) / centerY) * -4;
+      const rotateY = ((x - centerX) / centerX) * 4;
 
-      card.style.setProperty('--pointer-x', `${(x / rect.width) * 100}%`);
-      card.style.setProperty('--pointer-y', `${(y / rect.height) * 100}%`);
-    });
+      updateCardGlowProperties(card, event.clientX, event.clientY, getGlowIntensity(card, event.clientX, event.clientY));
+
+      gsap.to(card, {
+        rotateX,
+        rotateY,
+        duration: 0.1,
+        ease: 'power2.out',
+        transformPerspective: 1000,
+      });
+    }, { signal, passive: true });
 
     card.addEventListener('pointerleave', () => {
+      const state = cardState.get(card);
+      if (state) {
+        state.hovered = false;
+      }
+
+      clearParticles();
       resetCardGlow(card);
-    });
+
+      gsap.to(card, {
+        rotateX: 0,
+        rotateY: 0,
+        duration: 0.3,
+        ease: 'power2.out',
+      });
+    }, { signal });
+
+    card.addEventListener('click', (event) => {
+      const rect = card.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+      const maxDistance = Math.max(
+        Math.hypot(x, y),
+        Math.hypot(x - rect.width, y),
+        Math.hypot(x, y - rect.height),
+        Math.hypot(x - rect.width, y - rect.height)
+      );
+
+      const ripple = document.createElement('div');
+      ripple.style.cssText = `
+        position: absolute;
+        width: ${maxDistance * 2}px;
+        height: ${maxDistance * 2}px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(${MAGIC_GLOW_COLOR}, 0.4) 0%, rgba(${MAGIC_GLOW_COLOR}, 0.2) 30%, transparent 70%);
+        left: ${x - maxDistance}px;
+        top: ${y - maxDistance}px;
+        pointer-events: none;
+        z-index: 1000;
+      `;
+
+      card.appendChild(ripple);
+
+      gsap.fromTo(
+        ripple,
+        {
+          scale: 0,
+          opacity: 1,
+        },
+        {
+          scale: 1,
+          opacity: 0,
+          duration: 0.8,
+          ease: 'power2.out',
+          onComplete: () => ripple.remove(),
+        }
+      );
+    }, { signal });
   });
+
+  if (projectsGrid instanceof HTMLElement && enableMagicHover) {
+    const spotlight = document.createElement('div');
+    spotlight.className = 'projects-spotlight';
+    document.body.append(spotlight);
+
+    signal.addEventListener('abort', () => spotlight.remove(), { once: true });
+
+    let lastPointerX = 0;
+    let lastPointerY = 0;
+    let frameRequested = false;
+
+    const updateSpotlight = () => {
+      frameRequested = false;
+
+      const rect = projectsGrid.getBoundingClientRect();
+      const isInside =
+        lastPointerX >= rect.left &&
+        lastPointerX <= rect.right &&
+        lastPointerY >= rect.top &&
+        lastPointerY <= rect.bottom;
+
+      if (!isInside) {
+        spotlight.style.opacity = '0';
+        glowCards.forEach((card) => resetCardGlow(card));
+        return;
+      }
+
+      const { proximity, fadeDistance } = calculateSpotlightValues(spotlightRadius);
+      let minDistance = Infinity;
+
+      glowCards.forEach((card) => {
+        if (!(card instanceof HTMLElement)) {
+          return;
+        }
+
+        const rect = card.getBoundingClientRect();
+        const centerX = rect.left + rect.width / 2;
+        const centerY = rect.top + rect.height / 2;
+        const distance =
+          Math.hypot(lastPointerX - centerX, lastPointerY - centerY) - Math.max(rect.width, rect.height) / 2;
+        const effectiveDistance = Math.max(0, distance);
+
+        minDistance = Math.min(minDistance, effectiveDistance);
+
+        let intensity = 0;
+        if (effectiveDistance <= proximity) {
+          intensity = 1;
+        } else if (effectiveDistance <= fadeDistance) {
+          intensity = (fadeDistance - effectiveDistance) / (fadeDistance - proximity);
+        }
+
+        updateCardGlowProperties(card, lastPointerX, lastPointerY, intensity);
+      });
+
+      gsap.to(spotlight, {
+        left: lastPointerX,
+        top: lastPointerY,
+        duration: 0.1,
+        ease: 'power2.out',
+      });
+
+      const targetOpacity =
+        minDistance <= proximity
+          ? 0.8
+          : minDistance <= fadeDistance
+            ? ((fadeDistance - minDistance) / (fadeDistance - proximity)) * 0.8
+            : 0;
+
+      gsap.to(spotlight, {
+        opacity: targetOpacity,
+        duration: targetOpacity > 0 ? 0.2 : 0.5,
+        ease: 'power2.out',
+      });
+    };
+
+    const queueSpotlightUpdate = () => {
+      if (frameRequested) {
+        return;
+      }
+
+      frameRequested = true;
+      window.requestAnimationFrame(updateSpotlight);
+    };
+
+    document.addEventListener('pointermove', (event) => {
+      lastPointerX = event.clientX;
+      lastPointerY = event.clientY;
+      queueSpotlightUpdate();
+    }, { signal, passive: true });
+
+    document.addEventListener('pointerleave', () => {
+      spotlight.style.opacity = '0';
+      glowCards.forEach((card) => resetCardGlow(card));
+    }, { signal });
+
+    window.addEventListener('scroll', queueSpotlightUpdate, { signal, passive: true });
+  }
 </script>

@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useMemo, useCallback } from 'react'
+import { useEffect, useState, useRef, useMemo, useCallback, useSyncExternalStore } from 'react'
 import styles from './AsciiLogo.module.css'
 
 const LOGO = `    ███     ▄██   ▄   ███▄▄▄▄   ████████▄     ▄████████  ▄████████ ████████▄
@@ -21,7 +21,7 @@ const SVG_LOGO_HEIGHT = 39
 
 function shouldUseSvgFallback() {
   if (typeof window === 'undefined' || typeof navigator === 'undefined') {
-    return true
+    return false
   }
 
   const nav = navigator as Navigator & {
@@ -33,16 +33,27 @@ function shouldUseSvgFallback() {
   const userAgent = navigator.userAgent
   const isWindowsFirefox = /firefox/i.test(userAgent)
     && (/windows/i.test(userAgent) || /win/i.test(nav.userAgentData?.platform ?? ''))
-  const isMobileViewport = window.matchMedia('(max-width: 768px)').matches
 
-  return isWindowsFirefox || isMobileViewport
+  return isWindowsFirefox
+}
+
+function subscribeToSvgFallback() {
+  return () => {}
+}
+
+function getServerSvgFallbackSnapshot() {
+  return false
 }
 
 export function AsciiLogo() {
   const [displayText, setDisplayText] = useState(LOGO)
   const [glitchType, setGlitchType] = useState<GlitchType>('none')
   const [offset, setOffset] = useState({ x: 0, y: 0 })
-  const [useSvgFallback, setUseSvgFallback] = useState(true)
+  const forceSvgFallback = useSyncExternalStore(
+    subscribeToSvgFallback,
+    shouldUseSvgFallback,
+    getServerSvgFallbackSnapshot
+  )
   
   const refs = useRef({
     frameId: 0,
@@ -182,12 +193,6 @@ export function AsciiLogo() {
   }, [triggerGlitch, endGlitch])
 
   useEffect(() => {
-    if (shouldUseSvgFallback()) {
-      setUseSvgFallback(true)
-    }
-  }, [])
-
-  useEffect(() => {
     refs.current.timeoutId = setTimeout(triggerGlitch, 3000)
 
     return () => {
@@ -206,15 +211,15 @@ export function AsciiLogo() {
 
   return (
     <section 
-      className={styles.container} 
+      className={`${styles.container} ${forceSvgFallback ? styles.forceSvgFallback : ''}`}
       aria-label="Tyndfed logo"
       role="img"
     >
       <span className={styles.visuallyHidden}>Tyndfed</span>
       <div className={styles.wrapper}>
         <div
-          className={`${styles.asciiSurface} ${useSvgFallback ? styles.surfaceHidden : ''}`}
-          aria-hidden={useSvgFallback}
+          className={styles.asciiSurface}
+          aria-hidden="true"
         >
           <pre
             className={`${styles.art} ${isGlitching ? styles.glitching : ''} ${glitchType === 'shift' ? styles.shifting : ''}`}
@@ -233,8 +238,8 @@ export function AsciiLogo() {
           )}
         </div>
         <div
-          className={`${styles.svgSurface} ${!useSvgFallback ? styles.surfaceHidden : ''}`}
-          aria-hidden={!useSvgFallback}
+          className={styles.svgSurface}
+          aria-hidden="true"
         >
           <img
             src={SVG_LOGO_SRC}

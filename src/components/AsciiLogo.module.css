@@ -35,9 +35,23 @@
   position: relative;
 }
 
-.surfaceHidden {
+.asciiSurface {
+  visibility: visible;
+}
+
+.svgSurface {
   visibility: hidden;
   pointer-events: none;
+}
+
+.forceSvgFallback .asciiSurface {
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.forceSvgFallback .svgSurface {
+  visibility: visible;
+  pointer-events: auto;
 }
 
 .art {
@@ -180,6 +194,16 @@
 }
 
 @media (max-width: 768px) {
+  .asciiSurface {
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .svgSurface {
+    visibility: visible;
+    pointer-events: auto;
+  }
+
   .container {
     padding: 40px 16px 32px;
     overflow: hidden;
