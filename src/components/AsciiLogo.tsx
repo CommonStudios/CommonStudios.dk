@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useMemo, useCallback, useSyncExternalStore } from 'react'
+import { useEffect, useState, useRef, useMemo, useCallback } from 'react'
 import styles from './AsciiLogo.module.css'
 
 const LOGO = `    ███     ▄██   ▄   ███▄▄▄▄   ████████▄     ▄████████  ▄████████ ████████▄
@@ -16,10 +16,11 @@ type GlitchType = 'none' | 'corrupt' | 'shift' | 'wave' | 'flicker'
 
 const FRAME_INTERVAL = 50
 const SVG_LOGO_SRC = '/images/tyndfed.svg'
-const subscribeToStaticSnapshot = () => () => {}
+const SVG_LOGO_WIDTH = 147
+const SVG_LOGO_HEIGHT = 39
 
 function shouldUseSvgFallback() {
-  if (typeof navigator === 'undefined' || typeof document === 'undefined') {
+  if (typeof navigator === 'undefined') {
     return false
   }
 
@@ -33,37 +34,14 @@ function shouldUseSvgFallback() {
   const isWindowsFirefox = /firefox/i.test(userAgent)
     && (/windows/i.test(userAgent) || /win/i.test(nav.userAgentData?.platform ?? ''))
 
-  const canvas = document.createElement('canvas')
-  const context = canvas.getContext('2d')
-
-  if (!context) {
-    return isWindowsFirefox
-  }
-
-  context.font = "16px 'JetBrains Mono', 'Noto Sans Mono', 'SF Mono', 'Fira Code', ui-monospace, monospace"
-
-  const measurementPairs: Array<[string, string]> = [
-    ['MMMMMMMMMM', '██████████'],
-    ['▄▄▄▄▄▄▄▄▄▄', '▀▀▀▀▀▀▀▀▀▀'],
-    ['╬╬╬╬╬╬╬╬╬╬', '██████████']
-  ]
-
-  const hasMixedMetrics = measurementPairs.some(([left, right]) => (
-    Math.abs(context.measureText(left).width - context.measureText(right).width) > 0.5
-  ))
-
-  return isWindowsFirefox || hasMixedMetrics
+  return isWindowsFirefox
 }
 
 export function AsciiLogo() {
   const [displayText, setDisplayText] = useState(LOGO)
   const [glitchType, setGlitchType] = useState<GlitchType>('none')
   const [offset, setOffset] = useState({ x: 0, y: 0 })
-  const useSvgFallback = useSyncExternalStore(
-    subscribeToStaticSnapshot,
-    shouldUseSvgFallback,
-    () => false
-  )
+  const [useSvgFallback, setUseSvgFallback] = useState(false)
   
   const refs = useRef({
     frameId: 0,
@@ -203,6 +181,12 @@ export function AsciiLogo() {
   }, [triggerGlitch, endGlitch])
 
   useEffect(() => {
+    if (shouldUseSvgFallback()) {
+      setUseSvgFallback(true)
+    }
+  }, [])
+
+  useEffect(() => {
     refs.current.timeoutId = setTimeout(triggerGlitch, 3000)
 
     return () => {
@@ -255,14 +239,34 @@ export function AsciiLogo() {
             src={SVG_LOGO_SRC}
             alt=""
             className={`${styles.logoImage} ${isGlitching ? styles.glitching : ''} ${glitchType === 'shift' ? styles.shifting : ''}`}
+            width={SVG_LOGO_WIDTH}
+            height={SVG_LOGO_HEIGHT}
+            fetchPriority="high"
+            decoding="async"
             style={{
               transform: isGlitching ? `translate(${offset.x}px, ${offset.y}px)` : undefined
             }}
           />
           {isGlitching && (
             <>
-              <img src={SVG_LOGO_SRC} alt="" className={`${styles.logoImage} ${styles.chromaR}`} />
-              <img src={SVG_LOGO_SRC} alt="" className={`${styles.logoImage} ${styles.chromaB}`} />
+              <img
+                src={SVG_LOGO_SRC}
+                alt=""
+                className={`${styles.logoImage} ${styles.chromaR}`}
+                width={SVG_LOGO_WIDTH}
+                height={SVG_LOGO_HEIGHT}
+                loading="lazy"
+                decoding="async"
+              />
+              <img
+                src={SVG_LOGO_SRC}
+                alt=""
+                className={`${styles.logoImage} ${styles.chromaB}`}
+                width={SVG_LOGO_WIDTH}
+                height={SVG_LOGO_HEIGHT}
+                loading="lazy"
+                decoding="async"
+              />
             </>
           )}
         </div>
