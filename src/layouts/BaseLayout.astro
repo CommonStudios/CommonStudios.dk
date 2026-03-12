@@ -1,5 +1,6 @@
 ---
 import { SpeedInsights } from '@vercel/speed-insights/react';
+import { ClientRouter } from 'astro:transitions';
 import '~/styles/global.css';
 import ColorBends from '~/components/ColorBends';
 
@@ -109,9 +110,10 @@ const schema = {
     </style>
 
     <script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
+    <ClientRouter />
   </head>
   <body>
-    <div class="site-background" aria-hidden="true">
+    <div class="site-background" aria-hidden="true" transition:persist>
       <ColorBends
         client:load
         className="site-background-canvas"
