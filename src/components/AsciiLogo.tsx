@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef, useMemo, useCallback } from 'react'
+import { useEffect, useState, useRef, useMemo, useCallback, useSyncExternalStore } from 'react'
 import styles from './AsciiLogo.module.css'
 
 const LOGO = `    ███     ▄██   ▄   ███▄▄▄▄   ████████▄     ▄████████  ▄████████ ████████▄
@@ -15,11 +15,55 @@ const GLITCH_CHARS = '░▒▓█▀▄╔╗╚╝║═╬├┤┬┴┼'
 type GlitchType = 'none' | 'corrupt' | 'shift' | 'wave' | 'flicker'
 
 const FRAME_INTERVAL = 50
+const SVG_LOGO_SRC = '/images/tyndfed.svg'
+const subscribeToStaticSnapshot = () => () => {}
+
+function shouldUseSvgFallback() {
+  if (typeof navigator === 'undefined' || typeof document === 'undefined') {
+    return false
+  }
+
+  const nav = navigator as Navigator & {
+    userAgentData?: {
+      platform?: string
+    }
+  }
+
+  const userAgent = navigator.userAgent
+  const isWindowsFirefox = /firefox/i.test(userAgent)
+    && (/windows/i.test(userAgent) || /win/i.test(nav.userAgentData?.platform ?? ''))
+
+  const canvas = document.createElement('canvas')
+  const context = canvas.getContext('2d')
+
+  if (!context) {
+    return isWindowsFirefox
+  }
+
+  context.font = "16px 'JetBrains Mono', 'Noto Sans Mono', 'SF Mono', 'Fira Code', ui-monospace, monospace"
+
+  const measurementPairs: Array<[string, string]> = [
+    ['MMMMMMMMMM', '██████████'],
+    ['▄▄▄▄▄▄▄▄▄▄', '▀▀▀▀▀▀▀▀▀▀'],
+    ['╬╬╬╬╬╬╬╬╬╬', '██████████']
+  ]
+
+  const hasMixedMetrics = measurementPairs.some(([left, right]) => (
+    Math.abs(context.measureText(left).width - context.measureText(right).width) > 0.5
+  ))
+
+  return isWindowsFirefox || hasMixedMetrics
+}
 
 export function AsciiLogo() {
   const [displayText, setDisplayText] = useState(LOGO)
   const [glitchType, setGlitchType] = useState<GlitchType>('none')
   const [offset, setOffset] = useState({ x: 0, y: 0 })
+  const useSvgFallback = useSyncExternalStore(
+    subscribeToStaticSnapshot,
+    shouldUseSvgFallback,
+    () => false
+  )
   
   const refs = useRef({
     frameId: 0,
@@ -183,21 +227,45 @@ export function AsciiLogo() {
     >
       <span className={styles.visuallyHidden}>Tyndfed</span>
       <div className={styles.wrapper}>
-        <pre
-          className={`${styles.art} ${isGlitching ? styles.glitching : ''} ${glitchType === 'shift' ? styles.shifting : ''}`}
-          style={{
-            transform: isGlitching ? `translate(${offset.x}px, ${offset.y}px)` : undefined
-          }}
-          aria-hidden="true"
+        <div
+          className={`${styles.asciiSurface} ${useSvgFallback ? styles.surfaceHidden : ''}`}
+          aria-hidden={useSvgFallback}
         >
-          {displayText}
-        </pre>
-        {isGlitching && (
-          <>
-            <pre className={`${styles.art} ${styles.chromaR}`} aria-hidden="true">{displayText}</pre>
-            <pre className={`${styles.art} ${styles.chromaB}`} aria-hidden="true">{displayText}</pre>
-          </>
-        )}
+          <pre
+            className={`${styles.art} ${isGlitching ? styles.glitching : ''} ${glitchType === 'shift' ? styles.shifting : ''}`}
+            style={{
+              transform: isGlitching ? `translate(${offset.x}px, ${offset.y}px)` : undefined
+            }}
+            aria-hidden="true"
+          >
+            {displayText}
+          </pre>
+          {isGlitching && (
+            <>
+              <pre className={`${styles.art} ${styles.chromaR}`} aria-hidden="true">{displayText}</pre>
+              <pre className={`${styles.art} ${styles.chromaB}`} aria-hidden="true">{displayText}</pre>
+            </>
+          )}
+        </div>
+        <div
+          className={`${styles.svgSurface} ${!useSvgFallback ? styles.surfaceHidden : ''}`}
+          aria-hidden={!useSvgFallback}
+        >
+          <img
+            src={SVG_LOGO_SRC}
+            alt=""
+            className={`${styles.logoImage} ${isGlitching ? styles.glitching : ''} ${glitchType === 'shift' ? styles.shifting : ''}`}
+            style={{
+              transform: isGlitching ? `translate(${offset.x}px, ${offset.y}px)` : undefined
+            }}
+          />
+          {isGlitching && (
+            <>
+              <img src={SVG_LOGO_SRC} alt="" className={`${styles.logoImage} ${styles.chromaR}`} />
+              <img src={SVG_LOGO_SRC} alt="" className={`${styles.logoImage} ${styles.chromaB}`} />
+            </>
+          )}
+        </div>
         <div className={styles.glow} aria-hidden="true" />
       </div>
     </section>

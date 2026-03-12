@@ -22,17 +22,28 @@
 
 .wrapper {
   position: relative;
-  display: block;
+  display: grid;
   width: fit-content;
   max-width: 100%;
   margin-inline: auto;
   isolation: isolate;
 }
 
+.asciiSurface,
+.svgSurface {
+  grid-area: 1 / 1;
+  position: relative;
+}
+
+.surfaceHidden {
+  visibility: hidden;
+  pointer-events: none;
+}
+
 .art {
   display: block;
   margin: 0;
-  font-family: 'Noto Sans Mono', 'JetBrains Mono', 'SF Mono', 'Fira Code', ui-monospace, monospace;
+  font-family: 'JetBrains Mono', 'Noto Sans Mono', 'SF Mono', 'Fira Code', ui-monospace, monospace;
   font-size: clamp(6px, 0.95vw, 10px);
   line-height: 1;
   text-align: left;
@@ -40,10 +51,11 @@
   color: var(--text-primary);
   position: relative;
   letter-spacing: 0;
-  font-weight: 500;
+  font-weight: 400;
   font-kerning: none;
   font-variant-ligatures: none;
   font-feature-settings: 'liga' 0, 'calt' 0;
+  font-synthesis: none;
   text-rendering: optimizeSpeed;
   -webkit-font-smoothing: antialiased;
   text-size-adjust: none;
@@ -55,6 +67,22 @@
   z-index: 2;
 }
 
+.logoImage {
+  display: block;
+  width: min(100%, 880px);
+  height: auto;
+  position: relative;
+  z-index: 2;
+  transition:
+    filter 0.3s ease,
+    opacity 0.3s ease;
+}
+
+.svgSurface .logoImage:not(:first-child) {
+  position: absolute;
+  inset: 0;
+}
+
 .art.glitching {
   color: var(--text-warm);
   text-shadow:
@@ -64,6 +92,17 @@
 }
 
 .art.shifting {
+  animation: horizontalShift 0.05s ease-in-out infinite;
+}
+
+.logoImage.glitching {
+  filter:
+    drop-shadow(0 0 30px var(--accent-glow))
+    drop-shadow(0 0 60px rgba(0, 240, 255, 0.2));
+  animation: flicker 0.1s ease-in-out infinite;
+}
+
+.logoImage.shifting {
   animation: horizontalShift 0.05s ease-in-out infinite;
 }
 
@@ -90,6 +129,10 @@
   animation: chromaShiftR 0.15s ease-in-out infinite;
 }
 
+.logoImage.chromaR {
+  filter: sepia(1) saturate(12) hue-rotate(300deg) brightness(1.1);
+}
+
 .chromaB {
   position: absolute;
   top: 0;
@@ -99,6 +142,10 @@
   opacity: 0.6;
   z-index: 2;
   animation: chromaShiftB 0.15s ease-in-out infinite;
+}
+
+.logoImage.chromaB {
+  filter: sepia(1) saturate(12) hue-rotate(130deg) brightness(1.2);
 }
 
 @keyframes chromaShiftR {
@@ -144,6 +191,10 @@
     color: var(--text-secondary);
   }
 
+  .logoImage {
+    width: min(100%, 720px);
+  }
+
   .glow {
     inset: -20px;
   }
@@ -161,6 +212,10 @@
     line-height: 1.04;
   }
 
+  .logoImage {
+    width: min(100%, 560px);
+  }
+
   .art.glitching {
     animation: none;
   }
@@ -174,6 +229,10 @@
 @media (max-width: 360px) {
   .art {
     font-size: 4.4px;
+  }
+
+  .logoImage {
+    width: min(100%, 480px);
   }
 }
 

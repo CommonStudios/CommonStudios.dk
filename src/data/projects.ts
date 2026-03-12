@@ -27,12 +27,6 @@ export const projects: Project[] = [
     ],
   },
   {
-    name: 'HabitHero',
-    description: 'Motiverende todo-app med leaderboard til at konkurrere med vennerne.',
-    icon: '/images/project-icons/HH.jpg',
-    links: [{ label: 'App Store', url: 'https://apps.apple.com/dk/app/habithero/id6479268020' }],
-  },
-  {
     name: 'Baobab-kommunikation.dk',
     description: 'Skræddersyet hjemmeside til kommunikationsbureau med fokus på hurtig indlæsning, tilgængelighed og en visuel identitet der afspejler deres brand.',
     icon: '/images/project-icons/baobab-logo.jpg',

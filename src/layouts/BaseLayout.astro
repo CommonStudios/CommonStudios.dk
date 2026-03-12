@@ -1,6 +1,7 @@
 ---
 import { SpeedInsights } from '@vercel/speed-insights/react';
 import '~/styles/global.css';
+import ColorBends from '~/components/ColorBends';
 
 interface Props {
   title: string;
@@ -110,7 +111,27 @@ const schema = {
     <script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
   </head>
   <body>
-    <slot />
+    <div class="site-background" aria-hidden="true">
+      <ColorBends
+        client:load
+        className="site-background-canvas"
+        colors={["#ff5c7a", "#8a5cff", "#00ffd1"]}
+        rotation={0}
+        speed={0.2}
+        scale={1}
+        frequency={1}
+        warpStrength={1}
+        mouseInfluence={1}
+        parallax={0.5}
+        noise={0.1}
+        transparent
+        autoRotate={0}
+        color=""
+      />
+    </div>
+    <div class="site-content">
+      <slot />
+    </div>
     {isProd && <SpeedInsights client:only="react" />}
   </body>
 </html>
