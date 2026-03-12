@@ -20,8 +20,8 @@ const SVG_LOGO_WIDTH = 147
 const SVG_LOGO_HEIGHT = 39
 
 function shouldUseSvgFallback() {
-  if (typeof navigator === 'undefined') {
-    return false
+  if (typeof window === 'undefined' || typeof navigator === 'undefined') {
+    return true
   }
 
   const nav = navigator as Navigator & {
@@ -33,15 +33,16 @@ function shouldUseSvgFallback() {
   const userAgent = navigator.userAgent
   const isWindowsFirefox = /firefox/i.test(userAgent)
     && (/windows/i.test(userAgent) || /win/i.test(nav.userAgentData?.platform ?? ''))
+  const isMobileViewport = window.matchMedia('(max-width: 768px)').matches
 
-  return isWindowsFirefox
+  return isWindowsFirefox || isMobileViewport
 }
 
 export function AsciiLogo() {
   const [displayText, setDisplayText] = useState(LOGO)
   const [glitchType, setGlitchType] = useState<GlitchType>('none')
   const [offset, setOffset] = useState({ x: 0, y: 0 })
-  const [useSvgFallback, setUseSvgFallback] = useState(false)
+  const [useSvgFallback, setUseSvgFallback] = useState(true)
   
   const refs = useRef({
     frameId: 0,
