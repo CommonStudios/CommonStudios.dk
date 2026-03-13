@@ -124,11 +124,12 @@ html {
   height: 100%;
   background: var(--bg-void);
   scroll-behavior: smooth;
-  scrollbar-gutter: stable both-edges;
+  width: 100%;
 }
 
 body {
   height: 100%;
+  width: 100%;
   color: var(--text-primary);
   font-family: var(--font-mono);
   font-size: var(--font-size-base);
@@ -148,6 +149,7 @@ body {
   min-height: 100vh;
   position: relative;
   overflow-x: hidden;
+  background: var(--bg-void);
 }
 
 .site-background {
