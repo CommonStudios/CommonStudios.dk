@@ -4,12 +4,19 @@ import WindowChrome from '~/components/WindowChrome.astro';
 import BackLink from '~/components/BackLink.astro';
 import ProjectCard from '~/components/ProjectCard.astro';
 import { projects } from '~/data/projects';
+import { CANONICAL } from '~/config/site';
 ---
 
 <BaseLayout
   title="Tyndfed - Projects"
   description="View Tyndfed's portfolio of innovative projects including Bodegalisten, EXS Nordic, and more."
-  canonical="https://tyndfed.dk/projects"
+  canonical={CANONICAL.projects}
+  preloadHints={projects.slice(0, 2).map((p) => ({
+    href: p.icon,
+    as: 'image' as const,
+    type: 'image/png',
+    fetchPriority: 'high' as const,
+  }))}
 >
   <WindowChrome>
     <div class="projects-content window-scroll-region">
@@ -26,7 +33,7 @@ import { projects } from '~/data/projects';
         <header class="logo-window-header">
           <p class="logo-window-title" id="logo-window-title" data-image-window-title>EXS Nordic logo</p>
           <button type="button" class="logo-window-close" data-image-window-close aria-label="Close logo window">
-            Luk
+            <span class="logo-window-close-icon" aria-hidden="true">×</span>
           </button>
         </header>
         <div class="logo-window-body">
@@ -35,7 +42,6 @@ import { projects } from '~/data/projects';
       </article>
     </dialog>
   </WindowChrome>
-</BaseLayout>
 
 <style>
   .projects {
@@ -168,6 +174,18 @@ import { projects } from '~/data/projects';
     background: var(--interactive-bg-hover);
   }
 
+  .logo-window-close:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .logo-window-close-icon {
+    display: block;
+    font-size: 1.25rem;
+    line-height: 1;
+    padding: 0 2px;
+  }
+
   .logo-window-body {
     padding: 24px;
     background:
@@ -207,8 +225,6 @@ import { projects } from '~/data/projects';
 </style>
 
 <script>
-  import { gsap } from 'gsap';
-
   const imageWindow = document.querySelector('[data-image-window]');
   const projectsGrid = document.querySelector('[data-projects-grid]');
   const lifecycle = new AbortController();
@@ -221,6 +237,8 @@ import { projects } from '~/data/projects';
   });
 
   if (imageWindow instanceof HTMLDialogElement) {
+    let dialogFocusReturn: HTMLElement | null = null;
+
     const windowTitle = imageWindow.querySelector('[data-image-window-title]');
     const windowImage = imageWindow.querySelector('[data-image-window-image]');
     const closeButton = imageWindow.querySelector('[data-image-window-close]');
@@ -245,17 +263,25 @@ import { projects } from '~/data/projects';
       }
 
       if (!imageWindow.open) {
+        dialogFocusReturn =
+          document.activeElement instanceof HTMLElement ? document.activeElement : null;
         imageWindow.showModal();
       }
     };
 
     document.addEventListener('click', (event) => {
       const target = event.target;
-      if (!(target instanceof Element)) {
+      const el =
+        target instanceof Element
+          ? target
+          : target instanceof Text
+            ? target.parentElement
+            : null;
+      if (!el) {
         return;
       }
 
-      const trigger = target.closest('[data-image-window-trigger]');
+      const trigger = el.closest('[data-image-window-trigger]');
       if (!trigger) {
         return;
       }
@@ -273,12 +299,22 @@ import { projects } from '~/data/projects';
         imageWindow.close();
       }
     }, { signal });
+
+    imageWindow.addEventListener('close', () => {
+      dialogFocusReturn?.focus({ preventScroll: true });
+      dialogFocusReturn = null;
+    }, { signal });
+  }
+
+  void (async () => {
+  const { gsap } = await import('gsap');
+  if (signal.aborted) {
+    return;
   }
 
   const glowCards = projectsGrid?.querySelectorAll('[data-magic-card]') ?? [];
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const usesCoarsePointer = window.matchMedia('(pointer: coarse)').matches;
-  const enableMagicHover = !prefersReducedMotion && !usesCoarsePointer;
+  const enableMagicHover = !usesCoarsePointer;
   const spotlightRadius = 300;
 
   const resetCardGlow = (card: Element) => {
@@ -657,4 +693,6 @@ import { projects } from '~/data/projects';
 
     window.addEventListener('scroll', queueSpotlightUpdate, { signal, passive: true });
   }
+  })();
 </script>
+</BaseLayout>

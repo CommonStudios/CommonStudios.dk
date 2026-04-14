@@ -394,13 +394,6 @@
     }
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    .window,
-    .window.rainbow,
-    .window.matrix {
-      animation: none !important;
-    }
-  }
 </style>
 
 <script>
@@ -579,7 +572,7 @@
     }
 
     function startMatrix() {
-      if (matrixCanvas || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      if (matrixCanvas) {
         return;
       }
 

@@ -45,6 +45,7 @@ function getServerSvgFallbackSnapshot() {
   return false
 }
 
+
 export function AsciiLogo() {
   const [displayText, setDisplayText] = useState(LOGO)
   const [glitchType, setGlitchType] = useState<GlitchType>('none')
@@ -54,7 +55,6 @@ export function AsciiLogo() {
     shouldUseSvgFallback,
     getServerSvgFallbackSnapshot
   )
-  
   const refs = useRef({
     frameId: 0,
     timeoutId: null as ReturnType<typeof setTimeout> | null,
@@ -199,7 +199,7 @@ export function AsciiLogo() {
       if (refs.current.timeoutId) clearTimeout(refs.current.timeoutId)
       if (refs.current.frameId) cancelAnimationFrame(refs.current.frameId)
     }
-  }, [triggerGlitch])
+  }, [triggerGlitch, endGlitch])
 
   useEffect(() => {
     const onGlitch = () => triggerGlitchManual()

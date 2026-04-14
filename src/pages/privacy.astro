@@ -4,12 +4,14 @@ import WindowChrome from '~/components/WindowChrome.astro';
 import BackLink from '~/components/BackLink.astro';
 import LegalSection from '~/components/LegalSection.astro';
 import { legalContent } from '~/data/legal';
+import { CANONICAL } from '~/config/site';
 ---
 
 <BaseLayout
   title="Tyndfed - Privacy Policy & Terms of Service"
   description="Privacy Policy and Terms of Service for Tyndfed apps and services."
-  canonical="https://tyndfed.dk/privacy"
+  canonical={CANONICAL.privacy}
+  htmlLang="da"
 >
   <WindowChrome>
     <BackLink />
@@ -78,6 +80,7 @@ import { legalContent } from '~/data/legal';
     });
 
     function setLanguage(lang: Language) {
+      document.documentElement.lang = lang;
       buttons.forEach(btn => {
         const isActive = btn.getAttribute('data-lang') === lang;
         btn.classList.toggle('active', isActive);

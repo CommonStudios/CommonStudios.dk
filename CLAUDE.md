@@ -17,18 +17,18 @@ bun run preview      # Preview production build locally
 
 ## Architecture
 
-**Stack:** Astro 5 + React 19 (islands) + TypeScript + Vercel adapter
+**Stack:** Astro 6 + React 19 (islands) + TypeScript + Vercel adapter
 
 **Routing:** File-based routing in `src/pages/`. The `404.astro` file is the error page.
 
 **Key Files:**
 - `src/layouts/BaseLayout.astro` - Root HTML layout with meta tags, fonts, JSON-LD
 - `src/components/WindowChrome.astro` - macOS-style window wrapper (pure Astro, 0 JS)
-- `src/components/AsciiLogo.tsx` - React island with glitch animation (`client:load`)
+- `src/components/AsciiLogo.tsx` - React island with glitch animation (`client:idle` on home)
 
 **Key Patterns:**
 - Astro components for static content (WindowChrome, pages)
-- React islands only for interactive components (AsciiLogo with `client:load`)
+- React islands only for interactive components (AsciiLogo with `client:idle` on home)
 - SEO/meta tags handled via props in BaseLayout.astro
 - Vanilla JS for simple interactivity (language toggle on privacy page)
 
@@ -40,6 +40,8 @@ bun run preview      # Preview production build locally
 - Dark theme only - CSS variables defined in `:root`
 
 **Path Aliases:** `~/` maps to `src/`
+
+**Engineering:** See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for config layers, Zod content validation, and CI. Root scripts: `lint`, `test`, `verify`.
 
 ## Design Review Workflow
 

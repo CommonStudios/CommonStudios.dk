@@ -5,11 +5,12 @@ import SocialLinks from '~/components/SocialLinks.astro';
 import ContactInfo from '~/components/ContactInfo.astro';
 import StarBorder from '~/components/StarBorder';
 import { AsciiLogo } from '~/components/AsciiLogo';
+import { CANONICAL } from '~/config/site';
 ---
 
 <BaseLayout
   title="Tyndfed - Software Development & Creative Services"
-  canonical="https://tyndfed.dk/"
+  canonical={CANONICAL.home}
 >
   <WindowChrome>
     <div class="home-content window-scroll-region">
@@ -24,6 +25,8 @@ import { AsciiLogo } from '~/components/AsciiLogo';
             color="#ff4fd8"
             speed="5s"
             thickness={1}
+            aria-label="View projects"
+            data-astro-prefetch
           >
             <span class="hero-star-border-prompt">$</span>
             <span class="hero-star-border-command">view-projects</span>

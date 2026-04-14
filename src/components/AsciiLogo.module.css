@@ -260,24 +260,3 @@
   }
 }
 
-/* Reduced motion */
-@media (prefers-reduced-motion: reduce) {
-  .art {
-    transition: color 0.15s ease;
-  }
-
-  .art.glitching {
-    animation: none;
-  }
-
-  .chromaR,
-  .chromaB {
-    display: none;
-  }
-
-  .glow {
-    animation: none;
-    opacity: 0.4;
-  }
-
-}

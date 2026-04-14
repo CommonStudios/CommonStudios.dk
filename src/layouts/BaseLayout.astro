@@ -3,6 +3,22 @@ import { SpeedInsights } from '@vercel/speed-insights/react';
 import { ClientRouter } from 'astro:transitions';
 import '~/styles/global.css';
 import ColorBends from '~/components/ColorBends';
+import {
+  SITE_ORIGIN,
+  BRAND_MARK_SRC,
+  SEO,
+  FONT_PRECONNECT,
+  FONT_STYLESHEETS,
+  buildOrganizationJsonLd,
+} from '~/config/site';
+
+type PreloadHint = {
+  href: string;
+  as: 'image' | 'font' | 'style' | 'script';
+  type?: string;
+  crossOrigin?: 'anonymous';
+  fetchPriority?: 'high' | 'low' | 'auto';
+};
 
 interface Props {
   title: string;
@@ -10,17 +26,23 @@ interface Props {
   canonical?: string;
   noindex?: boolean;
   ogImage?: string;
+  /** BCP 47 language code for `<html lang>`. */
+  htmlLang?: string;
+  /** Same-origin `<link rel="preload">` hints (merged with brand mark; deduped by `href`). */
+  preloadHints?: ReadonlyArray<PreloadHint>;
 }
 
 const {
   title,
-  description = 'Tyndfed - Creative development studio specializing in mobile apps, websites, and digital design.',
+  description = SEO.defaultDescription,
   canonical,
   noindex = false,
-  ogImage = '/images/tyndfed.svg'
+  ogImage = SEO.defaultOgImage,
+  htmlLang = 'en',
+  preloadHints = [],
 } = Astro.props;
 
-const siteOrigin = Astro.site ? Astro.site.toString().replace(/\/$/, '') : 'https://tyndfed.dk';
+const siteOrigin = Astro.site ? Astro.site.toString().replace(/\/$/, '') : SITE_ORIGIN;
 const siteBase = `${siteOrigin}/`;
 const pageUrl = canonical
   ? new URL(canonical, siteBase).toString()
@@ -29,35 +51,42 @@ const socialImageUrl = new URL(ogImage, siteBase).toString();
 const robotsContent = noindex ? 'noindex, follow' : 'index, follow';
 const isProd = import.meta.env.PROD;
 
-const schema = {
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "Tyndfed",
-  "url": siteOrigin,
-  "logo": `${siteOrigin}/images/tyndfed.svg`,
-  "description": "Software development & creative services",
-  "address": { "@type": "PostalAddress", "addressCountry": "DK" },
-  "sameAs": [
-    "https://github.com/tobiasdosdal",
-    "https://www.linkedin.com/in/tobias-dosdal-feddersen/",
-    "https://instagram.com/tobiasdosdal"
-  ]
-};
+const schema = buildOrganizationJsonLd(siteOrigin);
+
+const defaultPreloads: PreloadHint[] = [
+  {
+    href: BRAND_MARK_SRC,
+    as: 'image',
+    type: 'image/svg+xml',
+    fetchPriority: 'high',
+  },
+];
+const preloadSeen = new Set<string>();
+const mergedPreloads: PreloadHint[] = [];
+for (const hint of [...defaultPreloads, ...preloadHints]) {
+  if (preloadSeen.has(hint.href)) {
+    continue;
+  }
+  preloadSeen.add(hint.href);
+  mergedPreloads.push(hint);
+}
+
+const satoshiStylesheetUrl = FONT_STYLESHEETS.satoshi;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={htmlLang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#0a0a0a" />
+    <meta name="theme-color" content={SEO.themeColor} />
     <meta name="color-scheme" content="dark" />
     <meta name="description" content={description} />
-    <meta name="author" content="Tobias Dosdal-Feddersen" />
+    <meta name="author" content={SEO.author} />
     <meta name="robots" content={robotsContent} />
 
     <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="Tyndfed" />
+    <meta property="og:site_name" content={SEO.siteName} />
     <meta property="og:url" content={pageUrl} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
@@ -69,25 +98,44 @@ const schema = {
 
     <title>{title}</title>
     <link rel="canonical" href={pageUrl} />
-    <link rel="icon" type="image/svg+xml" href="/images/tyndfed.svg" />
-    <link rel="apple-touch-icon" href="/images/tyndfed.svg" />
+    <link rel="icon" type="image/svg+xml" href={BRAND_MARK_SRC} />
+    <link rel="apple-touch-icon" href={BRAND_MARK_SRC} />
 
-    <!-- Preconnect to font origins -->
-    <link rel="preconnect" href="https://api.fontshare.com" crossorigin />
-    <link rel="preconnect" href="https://cdn.fontshare.com" crossorigin />
-    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    {mergedPreloads.map((hint) => (
+      <link
+        rel="preload"
+        href={hint.href}
+        as={hint.as}
+        {...(hint.type ? { type: hint.type } : {})}
+        {...(hint.crossOrigin ? { crossorigin: hint.crossOrigin } : {})}
+        {...(hint.fetchPriority ? { fetchpriority: hint.fetchPriority } : {})}
+      />
+    ))}
 
-    <!-- Load fonts without blocking initial render -->
-    <link rel="preload" as="style" href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,600,700&display=swap" />
-    <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,600,700&display=swap" media="print" onload="this.onload=null;this.setAttribute('media','all')" />
+    <!-- Warm connections before first font/CSS request. -->
+    {FONT_PRECONNECT.map((origin) => (
+      <link rel="preconnect" href={origin} crossorigin />
+    ))}
+    <link rel="dns-prefetch" href="https://vitals.vercel-insights.com" />
+
+    <!-- Mono CSS first (critical inline stack); Satoshi is non-blocking to shorten render path. -->
+    <link rel="preload" as="style" href={FONT_STYLESHEETS.mono} />
+    <link rel="stylesheet" href={FONT_STYLESHEETS.mono} />
+    <link rel="preload" as="style" href={FONT_STYLESHEETS.satoshi} />
+    <script is:inline define:vars={{ satoshiStylesheetUrl }}>
+      (function injectNonBlockingStylesheet(href) {
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = href;
+        link.media = 'print';
+        link.onload = function () {
+          link.media = 'all';
+        };
+        document.head.appendChild(link);
+      })(satoshiStylesheetUrl);
+    </script>
     <noscript>
-      <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=satoshi@400,500,600,700&display=swap" />
-    </noscript>
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Noto+Sans+Mono:wght@400;500&display=swap" />
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Noto+Sans+Mono:wght@400;500&display=swap" media="print" onload="this.onload=null;this.setAttribute('media','all')" />
-    <noscript>
-      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Noto+Sans+Mono:wght@400;500&display=swap" />
+      <link rel="stylesheet" href={FONT_STYLESHEETS.satoshi} />
     </noscript>
 
     <!-- Critical CSS to prevent layout shift -->
@@ -117,13 +165,13 @@ const schema = {
       }
     </style>
 
-    <script is:inline type="application/ld+json" set:html={JSON.stringify(schema)} />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify({ ...schema })} />
     <ClientRouter />
   </head>
   <body>
     <div class="site-background" aria-hidden="true" transition:persist>
       <ColorBends
-        client:media="(min-width: 900px) and (prefers-reduced-motion: no-preference)"
+        client:media="(min-width: 900px)"
         className="site-background-canvas"
         colors={["#ff5c7a", "#8a5cff", "#00ffd1"]}
         rotation={0}
@@ -142,6 +190,6 @@ const schema = {
     <div class="site-content">
       <slot />
     </div>
-    {isProd && <SpeedInsights client:only="react" />}
+    {isProd && <SpeedInsights client:idle />}
   </body>
 </html>
