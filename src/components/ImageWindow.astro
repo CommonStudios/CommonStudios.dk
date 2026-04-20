@@ -1,0 +1,226 @@
+---
+interface Props {
+  defaultTitle?: string;
+}
+
+const { defaultTitle = 'Image preview' } = Astro.props;
+---
+
+<dialog
+  class="image-window"
+  data-image-window
+  aria-labelledby="image-window-title"
+>
+  <article class="image-window-frame">
+    <header class="image-window-header">
+      <p class="image-window-title" id="image-window-title" data-image-window-title>{defaultTitle}</p>
+      <button
+        type="button"
+        class="image-window-close"
+        data-image-window-close
+        aria-label="Close image preview"
+      >
+        <span class="image-window-close-icon" aria-hidden="true">×</span>
+      </button>
+    </header>
+    <div class="image-window-body">
+      <img src="" alt="" class="image-window-image" data-image-window-image />
+    </div>
+  </article>
+</dialog>
+
+<style>
+  .image-window {
+    width: min(760px, calc(100vw - 28px));
+    max-width: 100%;
+    padding: 0;
+    border: none;
+    background: transparent;
+    overflow: visible;
+  }
+
+  .image-window[open] {
+    inset: 0;
+    margin: auto;
+  }
+
+  :global(.image-window::backdrop) {
+    background: rgba(4, 4, 7, 0.76);
+    backdrop-filter: blur(4px);
+  }
+
+  .image-window-frame {
+    background: var(--bg-surface);
+    border: 1px solid var(--interactive-border-hover);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 36px 60px -34px rgba(0, 0, 0, 0.8);
+  }
+
+  .image-window-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 16px;
+    background: var(--bg-elevated);
+    border-bottom: 1px solid var(--chrome-border);
+  }
+
+  .image-window-title {
+    margin: 0;
+    color: var(--text-primary);
+    font-family: var(--font-display);
+    font-size: var(--font-size-base);
+  }
+
+  .image-window-close {
+    border: 1px solid var(--interactive-border);
+    border-radius: 6px;
+    background: var(--interactive-bg);
+    color: var(--text-secondary);
+    padding: 6px 10px;
+    font-family: inherit;
+    font-size: var(--font-size-xs);
+    cursor: pointer;
+    transition:
+      color var(--duration-fast) ease,
+      border-color var(--duration-fast) ease,
+      background var(--duration-fast) ease;
+  }
+
+  .image-window-close:hover {
+    color: var(--text-primary);
+    border-color: var(--interactive-border-hover);
+    background: var(--interactive-bg-hover);
+  }
+
+  .image-window-close:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+
+  .image-window-close-icon {
+    display: block;
+    font-size: 1.25rem;
+    line-height: 1;
+    padding: 0 2px;
+  }
+
+  .image-window-body {
+    padding: 24px;
+    background:
+      linear-gradient(45deg, #d5d8de 25%, transparent 25%),
+      linear-gradient(-45deg, #d5d8de 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #d5d8de 75%),
+      linear-gradient(-45deg, transparent 75%, #d5d8de 75%),
+      #eceff4;
+    background-size: 30px 30px;
+    background-position:
+      0 0,
+      0 15px,
+      15px -15px,
+      -15px 0;
+  }
+
+  .image-window-image {
+    display: block;
+    width: 100%;
+    max-height: min(68vh, 640px);
+    object-fit: contain;
+  }
+
+  @media (max-width: 480px) {
+    .image-window {
+      width: calc(100vw - 16px);
+    }
+
+    .image-window-header {
+      padding: 10px 12px;
+    }
+
+    .image-window-body {
+      padding: 14px;
+    }
+  }
+</style>
+
+<script>
+  const imageWindow = document.querySelector('[data-image-window]');
+  const lifecycle = new AbortController();
+  const { signal } = lifecycle;
+
+  document.addEventListener('astro:before-swap', () => lifecycle.abort(), {
+    once: true,
+  });
+
+  if (imageWindow instanceof HTMLDialogElement) {
+    let dialogFocusReturn: HTMLElement | null = null;
+
+    const windowTitle = imageWindow.querySelector('[data-image-window-title]');
+    const windowImage = imageWindow.querySelector('[data-image-window-image]');
+    const closeButton = imageWindow.querySelector('[data-image-window-close]');
+
+    const openImageWindow = (trigger: Element) => {
+      if (!(windowImage instanceof HTMLImageElement)) {
+        return;
+      }
+
+      const imageSrc = trigger.getAttribute('data-image-window-src');
+      if (!imageSrc) {
+        return;
+      }
+
+      const imageTitle = trigger.getAttribute('data-image-window-title') ?? 'Image preview';
+
+      windowImage.src = imageSrc;
+      windowImage.alt = imageTitle;
+
+      if (windowTitle) {
+        windowTitle.textContent = imageTitle;
+      }
+
+      if (!imageWindow.open) {
+        dialogFocusReturn =
+          document.activeElement instanceof HTMLElement ? document.activeElement : null;
+        imageWindow.showModal();
+      }
+    };
+
+    document.addEventListener('click', (event) => {
+      const target = event.target;
+      const el =
+        target instanceof Element
+          ? target
+          : target instanceof Text
+            ? target.parentElement
+            : null;
+      if (!el) {
+        return;
+      }
+
+      const trigger = el.closest('[data-image-window-trigger]');
+      if (!trigger) {
+        return;
+      }
+
+      event.preventDefault();
+      openImageWindow(trigger);
+    }, { signal });
+
+    closeButton?.addEventListener('click', () => {
+      imageWindow.close();
+    }, { signal });
+
+    imageWindow.addEventListener('click', (event) => {
+      if (event.target === imageWindow) {
+        imageWindow.close();
+      }
+    }, { signal });
+
+    imageWindow.addEventListener('close', () => {
+      dialogFocusReturn?.focus({ preventScroll: true });
+      dialogFocusReturn = null;
+    }, { signal });
+  }
+</script>
