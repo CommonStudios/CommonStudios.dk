@@ -1,104 +1,262 @@
 ---
 import BaseLayout from '~/layouts/BaseLayout.astro';
 import WindowChrome from '~/components/WindowChrome.astro';
-import BackLink from '~/components/BackLink.astro';
-import ProjectCard from '~/components/ProjectCard.astro';
 import ImageWindow from '~/components/ImageWindow.astro';
 import { projects } from '~/data/projects';
 import { CANONICAL } from '~/config/site';
+import { isLogoPreviewLink } from '~/constants/project-ui';
+
+const getImageType = (src: string) => src.endsWith('.svg') ? 'image/svg+xml' : 'image/png';
 ---
 
 <BaseLayout
-  title="Tyndfed - Projects"
-  description="View Tyndfed's portfolio of innovative projects including Bodegalisten, EXS Nordic, and more."
+  title="Tyndfed — Projects"
+  description="Selected work from Tyndfed: software, brand identity, video and editorial web."
   canonical={CANONICAL.projects}
   preloadHints={projects.slice(0, 2).map((p) => ({
     href: p.icon,
     as: 'image' as const,
-    type: 'image/png',
+    type: getImageType(p.icon),
     fetchPriority: 'high' as const,
   }))}
 >
   <WindowChrome>
-    <div class="projects-content window-scroll-region">
-      <BackLink />
-      <section class="projects" data-projects-grid>
-        {projects.map((project, index) => (
-          <ProjectCard project={project} priority={index < 2} />
-        ))}
-      </section>
-    </div>
+    <section class="projects-list shell" aria-label="Project list">
+      {projects.map((project, index) => {
+        const tags = project.links.map((link) => link.label).join(' / ');
+        return (
+          <article class="project-row">
+            <div class="project-aside">
+              <img
+                src={project.icon}
+                alt=""
+                class="project-icon"
+                loading={index < 2 ? 'eager' : 'lazy'}
+                decoding="async"
+                width="56"
+                height="56"
+              />
+            </div>
 
-    <ImageWindow defaultTitle="EXS Nordic logo" />
+            <div class="project-main">
+              <div class="project-meta">
+                <span>{tags}</span>
+              </div>
+              <h2 class="project-name">{project.name}</h2>
+              <p class="project-desc">{project.description}</p>
+              <nav class="project-links" aria-label={`${project.name} links`}>
+                {project.links.map((link) =>
+                  isLogoPreviewLink(project.name, link.label) ? (
+                    <button
+                      type="button"
+                      class="project-link"
+                      data-image-window-trigger
+                      data-image-window-title={`${project.name} - ${link.label}`}
+                      data-image-window-src={link.url}
+                    >
+                      {link.label}
+                      <svg class="project-link-arrow" width="12" height="12" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                        <path d="M1 7h11m0 0L7.5 2.5M12 7L7.5 11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </button>
+                  ) : (
+                    <a
+                      class="project-link"
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {link.label}
+                      <svg class="project-link-arrow" width="12" height="12" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+                        <path d="M1 7h11m0 0L7.5 2.5M12 7L7.5 11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                      </svg>
+                    </a>
+                  )
+                )}
+              </nav>
+            </div>
+          </article>
+        );
+      })}
+    </section>
+
+    <ImageWindow defaultTitle="Logo preview" />
   </WindowChrome>
+</BaseLayout>
 
 <style>
-  .projects {
-    padding: 28px 32px 44px;
+  .projects-list {
+    padding-top: clamp(20px, 3vw, 36px);
+    padding-bottom: clamp(32px, 4vw, 56px);
+    display: flex;
+    flex-direction: column;
+    max-width: 860px;
+  }
+
+  .project-row {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
-    align-content: start;
+    grid-template-columns: 56px minmax(0, 1fr);
+    gap: clamp(18px, 3vw, 32px);
+    align-items: start;
+    padding: clamp(26px, 4vw, 42px) 0;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .project-aside {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+    padding-top: 24px;
+  }
+
+  .project-meta {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-xs);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    line-height: 1.4;
+  }
+
+  .project-meta {
+    color: var(--text-muted);
+    margin-bottom: 8px;
+  }
+
+  .project-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 2px;
+    overflow: hidden;
+    background: transparent;
+    object-fit: cover;
+    display: block;
+  }
+
+  .project-main {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  .project-name {
+    font-family: var(--font-display);
+    font-size: clamp(28px, 3.5vw, 44px);
+    line-height: 1;
+    letter-spacing: -0.025em;
+    font-variation-settings: 'opsz' 48, 'SOFT' 30;
+    margin: 0;
+  }
+
+  .project-desc {
+    color: var(--text-secondary);
+    font-size: var(--font-size-base);
+    line-height: 1.58;
+    margin: 10px 0 0;
+    max-width: 58ch;
+  }
+
+  .project-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 18px;
+  }
+
+  .project-link {
     position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    min-height: 36px;
+    font-family: var(--font-mono);
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    background: var(--interactive-bg);
+    border: 1px solid var(--rule-strong);
+    border-radius: 999px;
+    cursor: pointer;
+    padding: 9px 13px;
+    transition:
+      background var(--duration-fast) ease,
+      border-color var(--duration-fast) ease,
+      color var(--duration-fast) ease,
+      transform var(--duration-fast) var(--ease-out-expo);
   }
 
-  :global(.projects-spotlight) {
-    position: fixed;
-    width: 800px;
-    height: 800px;
-    border-radius: 50%;
-    pointer-events: none;
-    background:
-      radial-gradient(
-        circle,
-        rgba(132, 0, 255, 0.15) 0%,
-        rgba(132, 0, 255, 0.08) 15%,
-        rgba(132, 0, 255, 0.04) 25%,
-        rgba(132, 0, 255, 0.02) 40%,
-        rgba(132, 0, 255, 0.01) 65%,
-        transparent 70%
-      );
-    mix-blend-mode: screen;
-    opacity: 0;
-    transform: translate(-50%, -50%);
-    z-index: 200;
-    will-change: transform, opacity;
+  .project-link:hover {
+    color: var(--bg-void);
+    background: var(--text-primary);
+    border-color: var(--text-primary);
+    transform: translateY(-1px);
   }
 
-  :global(.project-particle::before) {
-    content: '';
-    position: absolute;
-    inset: -2px;
-    background: rgba(132, 0, 255, 0.2);
-    border-radius: 50%;
-    z-index: -1;
+  .project-link:active {
+    transform: translateY(0);
   }
 
-  @supports (content-visibility: auto) {
-    .projects {
-      content-visibility: auto;
-      contain-intrinsic-size: 980px;
+  .project-link:focus-visible {
+    outline: 1px solid var(--accent);
+    outline-offset: 4px;
+  }
+
+  .project-link:hover .project-link-arrow {
+    transform: translateX(3px);
+  }
+
+  .project-link-arrow {
+    color: var(--accent);
+    transition: transform var(--duration-fast) ease;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 900px) {
+    .project-row {
+      grid-template-columns: 56px minmax(0, 1fr);
+      gap: 18px;
     }
   }
 
-  @media (max-width: 768px) {
-    .projects {
-      padding: 16px 14px 18px;
-      grid-template-columns: 1fr;
+  @media (max-width: 640px) {
+    .project-row {
+      grid-template-columns: 44px minmax(0, 1fr);
+      gap: 12px;
+      padding: 24px 0;
+    }
+
+    .project-aside {
       gap: 10px;
+      padding-top: 22px;
     }
-  }
 
-  @media (max-width: 480px) {
-    .projects {
-      padding: 10px 10px 14px;
+    .project-icon {
+      width: 44px;
+      height: 44px;
+    }
+
+    .project-name {
+      font-size: clamp(26px, 8vw, 36px);
+    }
+
+    .project-desc {
+      font-size: var(--font-size-base);
+    }
+
+    .project-meta {
+      margin-bottom: 6px;
+    }
+
+    .project-links {
       gap: 8px;
+    }
+
+    .project-link {
+      min-height: 40px;
+      padding: 10px 14px;
     }
   }
 </style>
-
-<script>
-  import { initCardGlow } from '~/scripts/card-glow';
-  initCardGlow('[data-projects-grid]');
-</script>
-</BaseLayout>

@@ -8,16 +8,24 @@ import { CANONICAL } from '~/config/site';
 ---
 
 <BaseLayout
-  title="Tyndfed - Privacy Policy & Terms of Service"
+  title="Tyndfed — Privacy & Terms"
   description="Privacy Policy and Terms of Service for Tyndfed apps and services."
   canonical={CANONICAL.privacy}
   htmlLang="da"
 >
   <WindowChrome>
     <BackLink />
-    <div class="content-area window-scroll-region">
+
+    <section class="legal-hero shell">
+      <p class="eyebrow">
+        <span class="meta-num">N°3</span>
+        <span class="meta-sep">/</span>
+        Legal
+      </p>
       <header class="legal-header">
-        <h1 class="page-title">Privacy & Terms</h1>
+        <h1 class="legal-title">
+          Privacy &amp; <em>Terms</em>
+        </h1>
         <nav class="lang-switch" aria-label="Select language">
           <button
             type="button"
@@ -39,7 +47,9 @@ import { CANONICAL } from '~/config/site';
           </button>
         </nav>
       </header>
+    </section>
 
+    <section class="legal-body shell">
       <div id="content-da" class="lang-content" data-lang="da" lang="da">
         <LegalSection document={legalContent.da.privacy} />
         <hr class="divider" />
@@ -51,226 +61,149 @@ import { CANONICAL } from '~/config/site';
         <hr class="divider" />
         <LegalSection document={legalContent.en.terms} />
       </div>
-    </div>
+    </section>
   </WindowChrome>
+
+  <script>
+    const storageKey = 'tyndfed-lang';
+    const supportedLangs = ['da', 'en'] as const;
+    type Language = (typeof supportedLangs)[number];
+    const supportedLangSet = new Set<Language>(supportedLangs);
+
+    function initLanguageToggle() {
+      const buttons = document.querySelectorAll<HTMLButtonElement>('.lang-btn');
+      const contents = document.querySelectorAll<HTMLElement>('.lang-content');
+      if (buttons.length === 0 || contents.length === 0) return;
+
+      const savedLang = getSavedLanguage();
+      setLanguage(savedLang);
+
+      buttons.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const lang = btn.getAttribute('data-lang');
+          if (isSupportedLanguage(lang)) {
+            setLanguage(lang);
+            persistLanguage(lang);
+          }
+        });
+      });
+
+      function setLanguage(lang: Language) {
+        document.documentElement.lang = lang;
+        buttons.forEach((btn) => {
+          const isActive = btn.getAttribute('data-lang') === lang;
+          btn.classList.toggle('active', isActive);
+          btn.setAttribute('aria-pressed', String(isActive));
+        });
+        contents.forEach((content) => {
+          const contentLang = content.getAttribute('data-lang');
+          content.hidden = contentLang !== lang;
+        });
+      }
+
+      function persistLanguage(lang: Language) {
+        try {
+          localStorage.setItem(storageKey, lang);
+        } catch {}
+      }
+
+      function getSavedLanguage(): Language {
+        try {
+          const saved = localStorage.getItem(storageKey);
+          if (isSupportedLanguage(saved)) return saved;
+        } catch {}
+        return navigator.language?.toLowerCase().startsWith('da') ? 'da' : 'en';
+      }
+
+      function isSupportedLanguage(lang: string | null): lang is Language {
+        return typeof lang === 'string' && supportedLangSet.has(lang as Language);
+      }
+    }
+
+    initLanguageToggle();
+  </script>
 </BaseLayout>
 
-<script>
-  const storageKey = 'tyndfed-lang';
-  const supportedLangs = ['da', 'en'] as const;
-  type Language = (typeof supportedLangs)[number];
-  const supportedLangSet = new Set<Language>(supportedLangs);
-
-  function initLanguageToggle() {
-    const buttons = document.querySelectorAll<HTMLButtonElement>('.lang-btn');
-    const contents = document.querySelectorAll<HTMLElement>('.lang-content');
-    if (buttons.length === 0 || contents.length === 0) return;
-
-    const savedLang = getSavedLanguage();
-    setLanguage(savedLang);
-
-    buttons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        const lang = btn.getAttribute('data-lang');
-        if (isSupportedLanguage(lang)) {
-          setLanguage(lang);
-          persistLanguage(lang);
-        }
-      });
-    });
-
-    function setLanguage(lang: Language) {
-      document.documentElement.lang = lang;
-      buttons.forEach(btn => {
-        const isActive = btn.getAttribute('data-lang') === lang;
-        btn.classList.toggle('active', isActive);
-        btn.setAttribute('aria-pressed', String(isActive));
-      });
-      contents.forEach(content => {
-        const contentLang = content.getAttribute('data-lang');
-        content.hidden = contentLang !== lang;
-      });
-    }
-
-    function persistLanguage(lang: Language) {
-      try {
-        localStorage.setItem(storageKey, lang);
-      } catch {
-        // Ignore storage errors in strict privacy modes.
-      }
-    }
-
-    function getSavedLanguage(): Language {
-      try {
-        const saved = localStorage.getItem(storageKey);
-        if (isSupportedLanguage(saved)) return saved;
-      } catch {
-        // Ignore storage errors in strict privacy modes.
-      }
-      return navigator.language?.toLowerCase().startsWith('da') ? 'da' : 'en';
-    }
-
-    function isSupportedLanguage(lang: string | null): lang is Language {
-      return typeof lang === 'string' && supportedLangSet.has(lang as Language);
-    }
-  }
-
-  initLanguageToggle();
-</script>
-
 <style>
-  .content-area {
-    padding: 24px 28px 34px;
-    display: grid;
-    gap: 16px;
+  .legal-hero {
+    padding-block: 20px 20px;
+    border-bottom: 1px solid var(--rule);
   }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  .meta-num { color: var(--accent); font-weight: 500; }
+  .meta-sep { color: var(--text-ghost); }
 
   .legal-header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid var(--chrome-border);
+    align-items: end;
+    gap: 32px;
+    flex-wrap: wrap;
   }
 
-  .page-title {
-    margin: 0;
+  .legal-title {
     font-family: var(--font-display);
-    font-size: var(--font-size-lg);
-    font-weight: 600;
+    font-weight: 300;
+    font-variation-settings: 'opsz' 144, 'SOFT' 30;
+    font-size: var(--font-display-md);
+    line-height: 0.96;
+    letter-spacing: -0.035em;
     color: var(--text-primary);
-    letter-spacing: 0.02em;
-    text-transform: uppercase;
+    margin: 0;
+  }
+
+  .legal-title em {
+    font-style: italic;
+    font-variation-settings: 'opsz' 144, 'SOFT' 100;
+    color: var(--accent-strong);
   }
 
   .lang-switch {
     display: inline-flex;
-    gap: 10px;
+    border: 1px solid var(--rule-strong);
+    border-radius: 999px;
+    padding: 4px;
+    gap: 4px;
   }
 
   .lang-btn {
-    font-family: var(--font-display);
-    font-size: var(--font-size-sm);
-    font-weight: 500;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    background: var(--interactive-bg);
-    color: var(--text-secondary);
-    border: 1px solid var(--interactive-border);
-    padding: 8px 14px;
-    min-height: 38px;
-    border-radius: 8px;
+    appearance: none;
+    background: transparent;
+    border: none;
     cursor: pointer;
-    transition:
-      background var(--duration-fast) ease,
-      color var(--duration-fast) ease,
-      border-color var(--duration-fast) ease,
-      transform var(--duration-fast) var(--ease-smooth),
-      box-shadow var(--duration-normal) var(--ease-smooth);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    padding: 8px 16px;
+    border-radius: 999px;
+    transition: color var(--duration-fast) ease, background var(--duration-fast) ease;
   }
 
-  .lang-btn:hover {
-    background: var(--interactive-bg-hover);
-    color: var(--text-primary);
-    border-color: var(--interactive-border-hover);
-    box-shadow: var(--interactive-shadow);
-    transform: translateY(-1px);
-  }
+  .lang-btn:hover { color: var(--text-primary); }
 
   .lang-btn.active {
-    background: var(--interactive-bg-hover);
-    color: var(--text-primary);
-    border-color: var(--interactive-border-active);
-    box-shadow: var(--interactive-shadow);
+    color: var(--bg-void);
+    background: var(--accent-strong);
   }
 
-  .lang-btn:active {
-    transform: translateY(0);
-    border-color: var(--interactive-border-active);
+  .legal-body {
+    padding-block: 24px 32px;
   }
 
-  .lang-btn:focus-visible {
-    border-color: var(--interactive-border-active);
-    box-shadow: var(--interactive-shadow-strong);
-  }
-
-  .lang-content {
-    display: grid;
-    gap: 0;
-  }
-
-  .lang-content[hidden] {
-    display: none;
-  }
+  .lang-content[hidden] { display: none; }
 
   .divider {
     border: none;
-    border-top: 1px solid var(--chrome-border);
-    margin: 16px 0;
-    position: relative;
-  }
-
-  .divider::after {
-    content: '';
-    position: absolute;
-    top: -1px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 40px;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, var(--chrome-border-strong), transparent);
-  }
-
-  @media (max-width: 768px) {
-    .content-area {
-      padding: 16px 14px 20px;
-      gap: 12px;
-    }
-
-    .legal-header {
-      padding-bottom: 10px;
-      gap: 10px;
-    }
-
-    .page-title {
-      font-size: var(--font-size-base);
-    }
-  }
-
-  @media (max-width: 480px) {
-    .content-area {
-      padding: 10px 10px 14px;
-      gap: 10px;
-    }
-
-    .legal-header {
-      display: grid;
-      grid-template-columns: 1fr;
-      justify-items: start;
-      padding-bottom: 8px;
-    }
-
-    .page-title {
-      font-size: var(--font-size-sm);
-    }
-
-    .lang-switch {
-      width: 100%;
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-    }
-
-    .lang-btn {
-      min-height: 38px;
-      padding: 8px 10px;
-      font-size: var(--font-size-xs);
-      width: 100%;
-    }
-
-    .divider {
-      margin: 12px 0;
-    }
+    border-top: 1px solid var(--rule);
+    margin: 56px 0;
   }
 </style>

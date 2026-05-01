@@ -1,221 +1,106 @@
 ---
 import BaseLayout from '~/layouts/BaseLayout.astro';
 import WindowChrome from '~/components/WindowChrome.astro';
-import SocialLinks from '~/components/SocialLinks.astro';
-import ContactInfo from '~/components/ContactInfo.astro';
-import StarBorder from '~/components/StarBorder';
-import { AsciiLogo } from '~/components/AsciiLogo';
-import { CANONICAL } from '~/config/site';
+import { CANONICAL, ROUTES } from '~/config/site';
 ---
 
 <BaseLayout
-  title="Tyndfed - Software Development & Creative Services"
+  title="Tyndfed — Independent studio for software & creative work"
   canonical={CANONICAL.home}
 >
   <WindowChrome>
-    <div class="home-content window-scroll-region">
-      <AsciiLogo client:idle />
-      <p class="tagline">Software development & creative services</p>
-      <footer class="footer">
-        <nav>
-          <StarBorder
-            as="a"
-            href="/projects"
-            className="hero-star-border"
-            color="#ff4fd8"
-            speed="5s"
-            thickness={1}
-            aria-label="View projects"
-            data-astro-prefetch
-          >
-            <span class="hero-star-border-prompt">$</span>
-            <span class="hero-star-border-command">view-projects</span>
-            <span class="hero-star-border-cursor"></span>
-          </StarBorder>
-        </nav>
-        <SocialLinks />
-        <ContactInfo />
-      </footer>
-    </div>
+    <section class="hero shell" aria-label="Hero">
+      <p class="hero-eyebrow">Independent studio · Copenhagen</p>
+      <h1 class="hero-title">
+        Software and creative work for brands that want clarity.
+      </h1>
+      <p class="hero-lede">
+        Tyndfed builds websites, products and visual systems with a
+        clean, editorial approach.
+      </p>
+      <nav class="hero-actions" aria-label="Hero actions">
+        <a href={ROUTES.projects} class="hero-text-link">
+          View projects
+          <svg class="hero-text-arrow" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+            <path d="M1 7h11m0 0L7.5 2.5M12 7L7.5 11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        <a href="mailto:kontakt@tyndfed.dk" class="hero-text-link">
+          Start a project
+          <svg class="hero-text-arrow" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+            <path d="M1 7h11m0 0L7.5 2.5M12 7L7.5 11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </nav>
+    </section>
   </WindowChrome>
 </BaseLayout>
 
 <style>
-  .tagline {
-    text-align: center;
-    color: var(--text-secondary);
-    font-family: var(--font-display);
-    font-size: var(--font-size-base);
+  .hero {
+    padding-top: clamp(36px, 5vw, 64px);
+    padding-bottom: clamp(32px, 4vw, 56px);
+    max-width: 640px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .hero-eyebrow {
+    margin-bottom: 20px;
+    font-family: var(--font-mono);
+    font-size: var(--font-size-xs);
     font-weight: 500;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.14em;
     text-transform: uppercase;
-    margin: 0;
-    padding: 0 40px;
-    position: relative;
+    color: var(--text-muted);
+  }
+
+  .hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(36px, 5.5vw, 64px);
+    line-height: 1;
+    letter-spacing: -0.025em;
+    max-width: 18ch;
+    font-variation-settings: 'opsz' 48, 'SOFT' 40;
+  }
+
+  .hero-lede {
+    margin-top: 14px;
+    max-width: 44ch;
+    color: var(--text-secondary);
+    font-size: var(--font-size-base);
+    line-height: 1.6;
+  }
+
+  .hero-actions {
     display: flex;
-    align-items: center;
-    justify-content: center;
     gap: 20px;
-    line-height: 1.5;
+    margin-top: 24px;
+    flex-wrap: wrap;
   }
 
-  .tagline::before,
-  .tagline::after {
-    content: '';
-    width: 48px;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--chrome-border-strong));
-    flex-shrink: 0;
-  }
-
-  .tagline::after {
-    background: linear-gradient(90deg, var(--chrome-border-strong), transparent);
-  }
-
-  .footer {
-    text-align: center;
-    padding: 44px 24px 52px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 36px;
-  }
-
-  .footer nav {
-    margin: 0;
-  }
-
-  :global(.hero-star-border) {
-    display: inline-block;
-    text-decoration: none;
-  }
-
-  :global(.hero-star-border .inner-content) {
+  .hero-text-link {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-    font-family: var(--font-mono);
-    font-size: var(--font-size-sm);
+    gap: 6px;
+    font-family: var(--font-sans);
+    font-size: var(--font-size-base);
     font-weight: 500;
-    padding: 13px 22px;
     color: var(--text-secondary);
-    background:
-      linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0)),
-      rgba(7, 10, 18, 0.92);
-    border: 1px solid rgba(255, 79, 216, 0.2);
-    border-radius: 20px;
-    box-shadow:
-      0 16px 34px -22px rgba(0, 0, 0, 0.7),
-      inset 0 0 0 1px rgba(255, 255, 255, 0.03);
-    transition:
-      transform var(--duration-fast) var(--ease-smooth),
-      box-shadow var(--duration-normal) var(--ease-smooth),
-      border-color var(--duration-fast) ease,
-      background var(--duration-fast) ease,
-      color var(--duration-fast) ease;
-  }
-
-  :global(.hero-star-border:hover .inner-content) {
-    transform: translateY(-1px);
-    color: var(--text-primary);
-    border-color: rgba(255, 79, 216, 0.42);
-    background:
-      linear-gradient(180deg, rgba(255, 79, 216, 0.1), rgba(255, 255, 255, 0)),
-      rgba(7, 10, 18, 0.96);
-    box-shadow:
-      0 20px 40px -24px rgba(0, 0, 0, 0.76),
-      0 0 24px rgba(255, 79, 216, 0.16);
-  }
-
-  :global(.hero-star-border:active .inner-content) {
-    transform: translateY(0);
-  }
-
-  :global(.hero-star-border:focus-visible .inner-content) {
-    border-color: rgba(255, 79, 216, 0.58);
-    box-shadow:
-      0 0 0 1px rgba(255, 79, 216, 0.42),
-      0 0 0 6px rgba(255, 79, 216, 0.14);
-  }
-
-  :global(.hero-star-border-prompt) {
-    color: var(--accent);
-    font-weight: 600;
-  }
-
-  :global(.hero-star-border-command) {
-    color: inherit;
+    letter-spacing: -0.01em;
     transition: color var(--duration-fast) ease;
   }
 
-  :global(.hero-star-border-cursor) {
-    width: 7px;
-    height: 14px;
-    background: var(--accent);
-    opacity: 0.35;
-    animation: blink 1s step-end infinite;
-    transition: opacity var(--duration-fast) ease;
+  .hero-text-link:hover {
+    color: var(--text-primary);
   }
 
-  :global(.hero-star-border:hover .hero-star-border-cursor) {
-    opacity: 0.9;
+  .hero-text-link:hover .hero-text-arrow {
+    transform: translateX(3px);
   }
 
-  @keyframes blink {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0; }
-  }
-
-  @media (max-width: 768px) {
-    .tagline {
-      font-size: var(--font-size-sm);
-      padding: 0 24px;
-      gap: 14px;
-    }
-
-    .tagline::before,
-    .tagline::after {
-      width: 28px;
-    }
-
-    .footer {
-      padding: 32px 20px 40px;
-      gap: 28px;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .tagline {
-      font-size: var(--font-size-sm);
-      padding: 0 16px;
-      letter-spacing: 0.06em;
-      gap: 10px;
-      text-align: center;
-    }
-
-    .tagline::before,
-    .tagline::after {
-      width: 16px;
-    }
-
-    .footer {
-      padding: 24px 16px 32px;
-      gap: 22px;
-    }
-
-    .footer nav {
-      width: 100%;
-    }
-
-    :global(.hero-star-border) {
-      display: block;
-      width: 100%;
-    }
-
-    :global(.hero-star-border .inner-content) {
-      width: 100%;
-      justify-content: center;
-      padding: 11px 16px;
-    }
+  .hero-text-arrow {
+    color: var(--accent);
+    transition: transform var(--duration-fast) ease;
+    flex-shrink: 0;
   }
 </style>

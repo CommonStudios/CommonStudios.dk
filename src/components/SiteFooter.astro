@@ -1,0 +1,149 @@
+---
+import { socialLinks } from '~/data/social';
+import { ROUTES } from '~/config/site';
+---
+
+<footer class="footer-grid">
+  <div class="shell">
+    <div class="grid-body">
+      <div class="grid-col">
+        <p class="grid-label">Contact</p>
+        <a class="grid-email" href="mailto:kontakt@tyndfed.dk">
+          kontakt@tyndfed.dk
+        </a>
+        <p class="grid-detail">Copenhagen, Denmark</p>
+        <p class="grid-detail">CVR 39125307</p>
+      </div>
+
+      <div class="grid-col">
+        <p class="grid-label">Navigation</p>
+        <nav aria-label="Footer navigation">
+          <a class="grid-link" href={ROUTES.projects}>Projects</a>
+          <a class="grid-link" href={ROUTES.privacy}>Privacy</a>
+        </nav>
+      </div>
+
+      <div class="grid-col">
+        <p class="grid-label">Social</p>
+        <nav class="grid-social" aria-label="Social media">
+          {socialLinks.map((link) => (
+            <a
+              href={link.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="grid-social-link"
+              aria-label={link.name}
+            >
+              <svg viewBox="0 0 24 24" fill="currentColor" width="16" height="16" aria-hidden="true">
+                <path d={link.icon} />
+              </svg>
+              {link.name}
+            </a>
+          ))}
+        </nav>
+      </div>
+    </div>
+
+  </div>
+</footer>
+
+<style>
+  .footer-grid {
+    border-top: 1px solid var(--rule);
+  }
+
+  .grid-body {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 28px;
+    padding-block: 28px;
+  }
+
+  @media (min-width: 768px) {
+    .grid-body {
+      grid-template-columns: 2fr 1fr 1fr;
+    }
+  }
+
+  .grid-label {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 16px;
+  }
+
+  .grid-email {
+    display: block;
+    font-family: var(--font-display);
+    font-size: clamp(20px, 2.5vw, 28px);
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    transition: color var(--duration-fast) ease;
+  }
+
+  .grid-email:hover {
+    color: var(--accent-strong);
+  }
+
+  .grid-detail {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    line-height: 1.8;
+  }
+
+  .grid-link {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    border: 1px solid var(--rule-strong);
+    border-radius: 999px;
+    padding: 8px 14px;
+    margin-bottom: 8px;
+    width: fit-content;
+    transition: color var(--duration-fast) ease, background var(--duration-fast) ease, border-color var(--duration-fast) ease;
+  }
+
+  .grid-link:hover {
+    color: var(--bg-void);
+    background: var(--text-primary);
+    border-color: var(--text-primary);
+  }
+
+  .grid-social {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .grid-social-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    border: 1px solid var(--rule-strong);
+    border-radius: 999px;
+    padding: 8px 14px;
+    width: fit-content;
+    transition: color var(--duration-fast) ease, background var(--duration-fast) ease, border-color var(--duration-fast) ease;
+  }
+
+  .grid-social-link:hover {
+    color: var(--bg-void);
+    background: var(--text-primary);
+    border-color: var(--text-primary);
+  }
+
+</style>

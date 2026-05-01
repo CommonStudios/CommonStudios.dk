@@ -1,6 +1,7 @@
 import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
 import vercel from '@astrojs/vercel';
+import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'astro/config';
 import { SITE_ORIGIN } from './src/config/site';
 
@@ -24,14 +25,8 @@ export default defineConfig({
 
   compressHTML: true,
 
-  prefetch: {
-    defaultStrategy: 'viewport',
-  },
-
   vite: {
-    optimizeDeps: {
-      include: ['three'],
-    },
+    plugins: [tailwindcss()],
     resolve: {
       alias: {
         '~': '/src',

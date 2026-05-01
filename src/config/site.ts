@@ -24,7 +24,7 @@ export const SEO = {
     'Tyndfed - Creative development studio specializing in mobile apps, websites, and digital design.',
   defaultOgImage: BRAND_MARK_SRC,
   siteName: 'Tyndfed',
-  themeColor: '#0a0a0a',
+  themeColor: '#0a0a09',
   author: 'Tobias Dosdal-Feddersen',
 } as const;
 
@@ -43,15 +43,12 @@ export const ORGANIZATION = {
 
 /** External font stylesheet URLs — deduped here so prefetch/preload stay aligned. */
 export const FONT_STYLESHEETS = {
-  satoshi:
-    'https://api.fontshare.com/v2/css?f[]=satoshi@400,500,600,700&display=swap',
-  mono: 'https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Noto+Sans+Mono:wght@400;500&display=swap',
+  primary:
+    'https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300..700,30..100&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap',
 } as const;
 
 /** Origins we warm-connect to from `<head>`. */
 export const FONT_PRECONNECT = [
-  'https://api.fontshare.com',
-  'https://cdn.fontshare.com',
   'https://fonts.googleapis.com',
   'https://fonts.gstatic.com',
 ] as const;

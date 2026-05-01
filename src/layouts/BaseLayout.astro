@@ -1,8 +1,7 @@
 ---
-import { SpeedInsights } from '@vercel/speed-insights/react';
-import { ClientRouter } from 'astro:transitions';
 import '~/styles/global.css';
-import ColorBends from '~/components/ColorBends';
+import SiteHeader from '~/components/SiteHeader.astro';
+import SiteFooter from '~/components/SiteFooter.astro';
 import {
   SITE_ORIGIN,
   BRAND_MARK_SRC,
@@ -30,6 +29,10 @@ interface Props {
   htmlLang?: string;
   /** Same-origin `<link rel="preload">` hints (merged with brand mark; deduped by `href`). */
   preloadHints?: ReadonlyArray<PreloadHint>;
+  /** Hide the global header (e.g. for full-bleed hero pages). */
+  hideHeader?: boolean;
+  /** Hide the global footer. */
+  hideFooter?: boolean;
 }
 
 const {
@@ -40,6 +43,8 @@ const {
   ogImage = SEO.defaultOgImage,
   htmlLang = 'en',
   preloadHints = [],
+  hideHeader = false,
+  hideFooter = false,
 } = Astro.props;
 
 const siteOrigin = Astro.site ? Astro.site.toString().replace(/\/$/, '') : SITE_ORIGIN;
@@ -49,8 +54,6 @@ const pageUrl = canonical
   : new URL(Astro.url.pathname, siteBase).toString();
 const socialImageUrl = new URL(ogImage, siteBase).toString();
 const robotsContent = noindex ? 'noindex, follow' : 'index, follow';
-const isProd = import.meta.env.PROD;
-
 const schema = buildOrganizationJsonLd(siteOrigin);
 
 const defaultPreloads: PreloadHint[] = [
@@ -70,8 +73,6 @@ for (const hint of [...defaultPreloads, ...preloadHints]) {
   preloadSeen.add(hint.href);
   mergedPreloads.push(hint);
 }
-
-const satoshiStylesheetUrl = FONT_STYLESHEETS.satoshi;
 ---
 
 <!doctype html>
@@ -112,84 +113,86 @@ const satoshiStylesheetUrl = FONT_STYLESHEETS.satoshi;
       />
     ))}
 
-    <!-- Warm connections before first font/CSS request. -->
     {FONT_PRECONNECT.map((origin) => (
       <link rel="preconnect" href={origin} crossorigin />
     ))}
-    <link rel="dns-prefetch" href="https://vitals.vercel-insights.com" />
+    <link rel="preload" as="style" href={FONT_STYLESHEETS.primary} />
+    <link rel="stylesheet" href={FONT_STYLESHEETS.primary} />
 
-    <!-- Mono CSS first (critical inline stack); Satoshi is non-blocking to shorten render path. -->
-    <link rel="preload" as="style" href={FONT_STYLESHEETS.mono} />
-    <link rel="stylesheet" href={FONT_STYLESHEETS.mono} />
-    <link rel="preload" as="style" href={FONT_STYLESHEETS.satoshi} />
-    <script is:inline define:vars={{ satoshiStylesheetUrl }}>
-      (function injectNonBlockingStylesheet(href) {
-        const link = document.createElement('link');
-        link.rel = 'stylesheet';
-        link.href = href;
-        link.media = 'print';
-        link.onload = function () {
-          link.media = 'all';
-        };
-        document.head.appendChild(link);
-      })(satoshiStylesheetUrl);
-    </script>
-    <noscript>
-      <link rel="stylesheet" href={FONT_STYLESHEETS.satoshi} />
-    </noscript>
-
-    <!-- Critical CSS to prevent layout shift -->
+    <!-- Critical CSS — prevents flash, matches global tokens -->
     <style is:inline>
       html, body {
-        background: #0c0c0f;
+        background: #0a0a09;
         margin: 0;
         padding: 0;
       }
       body {
         min-height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 32px;
-        color: #f0f0f2;
-        font-family: 'JetBrains Mono', 'SF Mono', monospace;
-      }
-      @media (max-width: 768px) {
-        body { padding: 16px; }
-      }
-      @media (max-width: 480px) {
-        body {
-          padding: 10px;
-          align-items: flex-start;
-        }
+        color: #f4ede0;
+        font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, sans-serif;
+        font-size: 15px;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
       }
     </style>
 
     <script is:inline type="application/ld+json" set:html={JSON.stringify({ ...schema })} />
-    <ClientRouter />
   </head>
   <body>
     <div class="site-background" aria-hidden="true" transition:persist>
-      <ColorBends
-        client:media="(min-width: 900px)"
-        className="site-background-canvas"
-        colors={["#ff5c7a", "#8a5cff", "#00ffd1"]}
-        rotation={0}
-        speed={0.2}
-        scale={1}
-        frequency={1}
-        warpStrength={1}
-        mouseInfluence={1}
-        parallax={0.5}
-        noise={0.1}
-        transparent
-        autoRotate={0}
-        color=""
-      />
+      <div class="site-background-canvas" />
     </div>
+
+    <a href="#main" class="skip-link">Skip to content</a>
+
+    {!hideHeader && <SiteHeader />}
+
     <div class="site-content">
-      <slot />
+      <main id="main">
+        <slot />
+      </main>
     </div>
-    {isProd && <SpeedInsights client:idle />}
+
+    {!hideFooter && <SiteFooter />}
+
+    <style is:global>
+      html { height: 100%; }
+      body {
+        display: flex;
+        flex-direction: column;
+        min-height: 100dvh;
+      }
+      .site-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+      }
+      .site-content main {
+        flex: 1;
+      }
+    </style>
+
+    <style>
+      .skip-link {
+        position: fixed;
+        top: 8px;
+        left: 8px;
+        padding: 8px 14px;
+        background: var(--bg-elevated);
+        color: var(--text-primary);
+        border: 1px solid var(--rule-strong);
+        font-family: var(--font-mono);
+        font-size: var(--font-size-xs);
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        z-index: 1500;
+        transform: translateY(-200%);
+        transition: transform var(--duration-fast) ease;
+      }
+
+      .skip-link:focus-visible {
+        transform: translateY(0);
+      }
+    </style>
   </body>
 </html>

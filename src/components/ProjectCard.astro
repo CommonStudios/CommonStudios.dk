@@ -4,282 +4,263 @@ import { isLogoPreviewLink } from '~/constants/project-ui';
 
 interface Props {
   project: Project;
+  index?: number;
   priority?: boolean;
 }
 
-const { project, priority = false } = Astro.props;
+const { project, index = 0, priority = false } = Astro.props;
+const num = String(index + 1).padStart(2, '0');
+const tags = project.links.map((l) => l.label).join(' · ');
 ---
 
-<article class="project" data-card-glow data-magic-card>
-  <header class="project-header">
-    <img
-      src={project.icon}
-      alt={`${project.name} logo`}
-      class="project-icon"
-      data-card-icon
-      loading={priority ? 'eager' : 'lazy'}
-      fetchpriority={priority ? 'high' : 'auto'}
-      decoding="async"
-      width="64"
-      height="64"
-    />
-    <h3 class="project-title">{project.name}</h3>
-  </header>
-  <p class="project-description">{project.description}</p>
-  <div class="project-links">
-    {project.links.map((link) => {
-      return isLogoPreviewLink(project.name, link.label) ? (
-        <button
-          type="button"
-          class="project-link project-link-button"
-          data-image-window-trigger
-          data-image-window-title={`${project.name} - ${link.label}`}
-          data-image-window-src={link.url}
-          aria-label={`${project.name} - ${link.label} (opens logo preview window)`}
-        >
-          → {link.label}
-        </button>
-      ) : (
-        <a
-          href={link.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label={`${project.name} - ${link.label} (opens in a new tab)`}
-          class="project-link"
-        >
-          → {link.label}
-        </a>
-      );
-    })}
+<li class="project-row" data-project-row>
+  <div class="row-grid">
+    <span class="row-num">{num}</span>
+
+    <div class="row-main">
+      <h3 class="row-name">{project.name}</h3>
+      <p class="row-desc">{project.description}</p>
+      <ul class="row-links">
+        {project.links.map((link) =>
+          isLogoPreviewLink(project.name, link.label) ? (
+            <li>
+              <button
+                type="button"
+                class="row-link"
+                data-image-window-trigger
+                data-image-window-title={`${project.name} - ${link.label}`}
+                data-image-window-src={link.url}
+                aria-label={`${project.name} - ${link.label} (opens logo preview window)`}
+                data-magnetic
+              >
+                <span class="link-arrow" aria-hidden="true">↗</span>
+                <span>{link.label}</span>
+              </button>
+            </li>
+          ) : (
+            <li>
+              <a
+                href={link.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`${project.name} - ${link.label} (opens in a new tab)`}
+                class="row-link"
+                data-magnetic
+              >
+                <span class="link-arrow" aria-hidden="true">↗</span>
+                <span>{link.label}</span>
+              </a>
+            </li>
+          )
+        )}
+      </ul>
+    </div>
+
+    <p class="row-tags" aria-hidden="true">{tags}</p>
+
+    <span class="row-icon-wrap" aria-hidden="true">
+      <img
+        src={project.icon}
+        alt=""
+        class="row-icon"
+        loading={priority ? 'eager' : 'lazy'}
+        fetchpriority={priority ? 'high' : 'auto'}
+        decoding="async"
+        width="80"
+        height="80"
+      />
+    </span>
   </div>
-</article>
+</li>
 
 <style>
-  .project {
-    --glow-x: 50%;
-    --glow-y: 50%;
-    --glow-intensity: 0;
-    --glow-radius: 300px;
-    --project-glow-rgb: 132, 0, 255;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
+  .project-row {
+    border-bottom: 1px solid var(--rule);
     position: relative;
-    min-height: 228px;
-    width: 100%;
-    padding: 1.25em;
-    border-radius: 20px;
-    border: 1px solid #392e4e;
-    background: #060010;
-    font-weight: 300;
-    overflow: hidden;
-    isolation: isolate;
-    gap: 14px;
-    will-change: transform;
-    transition:
-      transform 0.3s ease,
-      box-shadow 0.3s ease,
-      border-color 0.3s ease;
   }
 
-  @supports (content-visibility: auto) {
-    .project {
-      content-visibility: auto;
-      contain-intrinsic-size: 260px;
-    }
+  .row-grid {
+    display: grid;
+    grid-template-columns: 80px 1fr 200px 80px;
+    gap: 32px;
+    align-items: start;
+    padding: 36px 0;
+    transition: padding-inline var(--duration-normal) var(--ease-out-expo);
   }
 
-  .project::after {
+  .project-row:hover .row-grid {
+    padding-inline: 8px;
+  }
+
+  /* Subtle hover wash */
+  .project-row::before {
     content: '';
     position: absolute;
     inset: 0;
-    pointer-events: none;
-    border-radius: inherit;
-    padding: 6px;
     background: radial-gradient(
-      var(--glow-radius) circle at var(--glow-x) var(--glow-y),
-      rgba(var(--project-glow-rgb), calc(var(--glow-intensity) * 0.8)) 0%,
-      rgba(var(--project-glow-rgb), calc(var(--glow-intensity) * 0.4)) 30%,
-      transparent 78%
+      ellipse 80% 60% at 30% 50%,
+      rgba(212, 184, 122, 0.05),
+      transparent 70%
     );
-    -webkit-mask:
-      linear-gradient(#fff 0 0) content-box,
-      linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask:
-      linear-gradient(#fff 0 0) content-box,
-      linear-gradient(#fff 0 0);
-    mask-composite: exclude;
-    z-index: 0;
+    opacity: 0;
+    transition: opacity var(--duration-normal) ease;
+    pointer-events: none;
   }
 
-  .project > * {
-    position: relative;
-    z-index: 1;
+  .project-row:hover::before {
+    opacity: 1;
   }
 
-  .project:hover {
-    border-color: rgba(132, 0, 255, 0.5);
-    box-shadow:
-      0 8px 25px rgba(0, 0, 0, 0.15),
-      0 4px 20px rgba(46, 24, 78, 0.4),
-      0 0 30px rgba(132, 0, 255, 0.2);
+  .row-num {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    color: var(--text-muted);
+    padding-top: 12px;
   }
 
-  .project-header {
+  .row-main {
     display: flex;
-    align-items: center;
-    gap: 12px;
+    flex-direction: column;
+    gap: 14px;
+    min-width: 0;
   }
 
-  .project-icon {
-    width: 64px;
-    height: 64px;
-    border-radius: 12px;
-    object-fit: cover;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    background: rgba(255, 255, 255, 0.03);
-  }
-
-  .project-title {
-    color: #fff;
-    margin: 0;
+  .row-name {
     font-family: var(--font-display);
-    font-size: 1rem;
-    font-weight: 400;
-  }
-
-  .project-description {
-    color: rgba(255, 255, 255, 0.78);
+    font-weight: 300;
+    font-variation-settings: 'opsz' 144, 'SOFT' 30;
+    font-size: clamp(36px, 4.5vw, 72px);
+    line-height: 0.96;
+    letter-spacing: -0.03em;
+    color: var(--text-primary);
     margin: 0;
-    font-size: 0.82rem;
-    line-height: 1.35;
+    transition: font-style 320ms ease, font-variation-settings 320ms ease, color var(--duration-fast) ease;
   }
 
-  .project-links {
+  .project-row:hover .row-name {
+    font-style: italic;
+    font-variation-settings: 'opsz' 144, 'SOFT' 100;
+    color: var(--accent-strong);
+  }
+
+  .row-desc {
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--text-secondary);
+    max-width: 60ch;
+    margin: 0;
+  }
+
+  .row-links {
+    list-style: none;
     display: flex;
-    gap: 10px;
     flex-wrap: wrap;
-    margin-top: auto;
+    gap: 6px;
+    margin-top: 8px;
   }
 
-  .project-link {
+  .row-link {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    color: rgba(255, 255, 255, 0.84);
-    font-size: 0.74rem;
-    font-weight: 500;
-    padding: 7px 12px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    gap: 6px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    padding: 8px 14px;
+    border: 1px solid var(--rule-strong);
     border-radius: 999px;
+    background: transparent;
+    cursor: pointer;
     transition:
       color var(--duration-fast) ease,
       border-color var(--duration-fast) ease,
       background var(--duration-fast) ease,
-      transform var(--duration-fast) var(--ease-smooth),
-      box-shadow var(--duration-normal) var(--ease-smooth);
+      transform 280ms var(--ease-out-expo);
   }
 
-  .project-link:hover {
-    color: #fff;
-    border-color: rgba(132, 0, 255, 0.55);
-    background: rgba(132, 0, 255, 0.12);
-    box-shadow: 0 0 24px rgba(132, 0, 255, 0.18);
+  .row-link:hover {
+    color: var(--bg-void);
+    background: var(--accent-strong);
+    border-color: var(--accent-strong);
     transform: translateY(-1px);
   }
 
-  .project-link:active {
-    transform: translateY(0);
-    border-color: var(--interactive-border-active);
+  .row-link .link-arrow {
+    font-family: var(--font-sans);
+    font-size: 12px;
+    transition: transform var(--duration-normal) var(--ease-out-expo);
   }
 
-  .project-link:focus-visible {
-    border-color: var(--interactive-border-active);
-    box-shadow: var(--interactive-shadow-strong);
+  .row-link:hover .link-arrow {
+    transform: translate(2px, -2px);
   }
 
-  .project-link-button {
-    font-family: inherit;
-    line-height: 1.2;
-    cursor: pointer;
+  .row-tags {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    line-height: 1.6;
+    padding-top: 14px;
+    margin: 0;
   }
 
-  @media (max-width: 768px) {
-    .project {
-      padding: 14px;
-      gap: 11px;
-      min-height: 200px;
-    }
+  .row-icon-wrap {
+    width: 80px;
+    height: 80px;
+    border: 1px solid var(--rule);
+    border-radius: 4px;
+    overflow: hidden;
+    background: var(--bg-elevated);
+    align-self: start;
+    display: block;
+    transition: transform 360ms var(--ease-out-expo), border-color var(--duration-fast) ease;
+  }
 
-    .project-header {
-      gap: 10px;
-    }
+  .project-row:hover .row-icon-wrap {
+    transform: scale(1.08) rotate(-2deg);
+    border-color: var(--rule-accent);
+  }
 
-    .project-icon {
-      width: 48px;
-      height: 48px;
-    }
+  .row-icon {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
 
-    .project-title {
-      font-size: var(--font-size-base);
+  @media (max-width: 900px) {
+    .row-grid {
+      grid-template-columns: 50px 1fr 60px;
+      gap: 18px;
+      padding: 24px 0;
     }
-
-    .project-description {
-      font-size: var(--font-size-xs);
-      line-height: 1.55;
-    }
-
-    .project-links {
-      gap: 7px;
-      margin-top: 2px;
-    }
-
-    .project-link {
-      font-size: 11px;
-      padding: 5px 8px;
-      min-height: 30px;
-    }
+    .row-tags { display: none; }
+    .row-icon-wrap { width: 60px; height: 60px; }
+    .row-num { padding-top: 8px; }
+    .row-name { font-size: clamp(26px, 6vw, 44px); }
+    .row-desc { font-size: 14px; }
   }
 
   @media (max-width: 480px) {
-    .project {
-      padding: 12px;
-      gap: 10px;
+    .row-grid {
+      grid-template-columns: 40px 1fr;
+      gap: 14px;
+      padding: 20px 0;
     }
-
-    .project-header {
-      gap: 9px;
-    }
-
-    .project-icon {
-      width: 42px;
-      height: 42px;
-    }
-
-    .project-title {
-      font-size: var(--font-size-sm);
-    }
-
-    .project-description {
-      line-height: 1.45;
+    .row-icon-wrap { display: none; }
+    .row-name { font-size: clamp(24px, 8vw, 36px); }
+    .row-desc {
+      font-size: 13px;
       display: -webkit-box;
       -webkit-line-clamp: 3;
       -webkit-box-orient: vertical;
       overflow: hidden;
-    }
-
-    .project-links {
-      gap: 6px;
-      margin-top: 0;
-    }
-
-    .project-link {
-      width: auto;
-      text-align: left;
-      min-height: 28px;
-      padding: 4px 7px;
     }
   }
 

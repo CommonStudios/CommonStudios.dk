@@ -51,10 +51,10 @@ const { defaultTitle = 'Image preview' } = Astro.props;
 
   .image-window-frame {
     background: var(--bg-surface);
-    border: 1px solid var(--interactive-border-hover);
-    border-radius: 10px;
+    border: 1px solid var(--rule-strong);
+    border-radius: 0;
     overflow: hidden;
-    box-shadow: 0 36px 60px -34px rgba(0, 0, 0, 0.8);
+    box-shadow: 0 40px 80px -28px rgba(0, 0, 0, 0.85);
   }
 
   .image-window-header {
@@ -62,37 +62,38 @@ const { defaultTitle = 'Image preview' } = Astro.props;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    padding: 12px 16px;
+    padding: 14px 18px;
     background: var(--bg-elevated);
-    border-bottom: 1px solid var(--chrome-border);
+    border-bottom: 1px solid var(--rule);
   }
 
   .image-window-title {
     margin: 0;
     color: var(--text-primary);
-    font-family: var(--font-display);
-    font-size: var(--font-size-base);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
   }
 
   .image-window-close {
-    border: 1px solid var(--interactive-border);
-    border-radius: 6px;
-    background: var(--interactive-bg);
+    border: 1px solid var(--rule-strong);
+    border-radius: 999px;
+    background: transparent;
     color: var(--text-secondary);
-    padding: 6px 10px;
-    font-family: inherit;
-    font-size: var(--font-size-xs);
+    padding: 6px 14px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
     cursor: pointer;
-    transition:
-      color var(--duration-fast) ease,
-      border-color var(--duration-fast) ease,
-      background var(--duration-fast) ease;
+    transition: color var(--duration-fast) ease, border-color var(--duration-fast) ease, background var(--duration-fast) ease;
   }
 
   .image-window-close:hover {
-    color: var(--text-primary);
-    border-color: var(--interactive-border-hover);
-    background: var(--interactive-bg-hover);
+    color: var(--bg-void);
+    border-color: var(--accent-strong);
+    background: var(--accent-strong);
   }
 
   .image-window-close:focus-visible {
@@ -108,19 +109,15 @@ const { defaultTitle = 'Image preview' } = Astro.props;
   }
 
   .image-window-body {
-    padding: 24px;
+    padding: 32px;
     background:
-      linear-gradient(45deg, #d5d8de 25%, transparent 25%),
-      linear-gradient(-45deg, #d5d8de 25%, transparent 25%),
-      linear-gradient(45deg, transparent 75%, #d5d8de 75%),
-      linear-gradient(-45deg, transparent 75%, #d5d8de 75%),
-      #eceff4;
-    background-size: 30px 30px;
-    background-position:
-      0 0,
-      0 15px,
-      15px -15px,
-      -15px 0;
+      linear-gradient(45deg, #1a1a14 25%, transparent 25%),
+      linear-gradient(-45deg, #1a1a14 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #1a1a14 75%),
+      linear-gradient(-45deg, transparent 75%, #1a1a14 75%),
+      #0f0f0d;
+    background-size: 24px 24px;
+    background-position: 0 0, 0 12px, 12px -12px, -12px 0;
   }
 
   .image-window-image {
