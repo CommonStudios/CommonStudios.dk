@@ -50,6 +50,7 @@ import { ROUTES } from '~/config/site';
 <style>
   .footer-grid {
     border-top: 1px solid var(--rule);
+    padding-top: 24px;
   }
 
   .grid-body {
@@ -68,7 +69,6 @@ import { ROUTES } from '~/config/site';
   .grid-label {
     font-family: var(--font-mono);
     font-size: 11px;
-    letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--text-muted);
     margin-bottom: 16px;
@@ -76,9 +76,10 @@ import { ROUTES } from '~/config/site';
 
   .grid-email {
     display: block;
-    font-family: var(--font-display);
-    font-size: clamp(20px, 2.5vw, 28px);
-    letter-spacing: -0.02em;
+    font-family: var(--font-sans);
+    font-size: 24px;
+    font-weight: 560;
+    letter-spacing: 0;
     color: var(--text-primary);
     margin-bottom: 8px;
     transition: color var(--duration-fast) ease;
@@ -91,7 +92,6 @@ import { ROUTES } from '~/config/site';
   .grid-detail {
     font-family: var(--font-mono);
     font-size: 11px;
-    letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--text-muted);
     line-height: 1.8;
@@ -101,11 +101,10 @@ import { ROUTES } from '~/config/site';
     display: block;
     font-family: var(--font-mono);
     font-size: 11px;
-    letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--text-secondary);
     border: 1px solid var(--rule-strong);
-    border-radius: 999px;
+    border-radius: 8px;
     padding: 8px 14px;
     margin-bottom: 8px;
     width: fit-content;
@@ -114,8 +113,8 @@ import { ROUTES } from '~/config/site';
 
   .grid-link:hover {
     color: var(--bg-void);
-    background: var(--text-primary);
-    border-color: var(--text-primary);
+    background: var(--accent);
+    border-color: var(--accent);
   }
 
   .grid-social {
@@ -130,11 +129,10 @@ import { ROUTES } from '~/config/site';
     gap: 8px;
     font-family: var(--font-mono);
     font-size: 11px;
-    letter-spacing: 0.08em;
     text-transform: uppercase;
     color: var(--text-secondary);
     border: 1px solid var(--rule-strong);
-    border-radius: 999px;
+    border-radius: 8px;
     padding: 8px 14px;
     width: fit-content;
     transition: color var(--duration-fast) ease, background var(--duration-fast) ease, border-color var(--duration-fast) ease;
@@ -142,8 +140,8 @@ import { ROUTES } from '~/config/site';
 
   .grid-social-link:hover {
     color: var(--bg-void);
-    background: var(--text-primary);
-    border-color: var(--text-primary);
+    background: var(--accent);
+    border-color: var(--accent);
   }
 
 </style>

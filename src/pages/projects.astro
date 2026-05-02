@@ -21,6 +21,15 @@ const getImageType = (src: string) => src.endsWith('.svg') ? 'image/svg+xml' : '
   }))}
 >
   <WindowChrome>
+    <section class="projects-hero shell" aria-label="Projects intro">
+      <p class="projects-eyebrow">Selected work / Index</p>
+      <h1>Work that shipped</h1>
+      <p>
+        Software, identity, web, and production systems with a bias toward
+        clear interfaces and practical output.
+      </p>
+    </section>
+
     <section class="projects-list shell" aria-label="Project list">
       {projects.map((project, index) => {
         const tags = project.links.map((link) => link.label).join(' / ');
@@ -85,20 +94,51 @@ const getImageType = (src: string) => src.endsWith('.svg') ? 'image/svg+xml' : '
 </BaseLayout>
 
 <style>
+  .projects-hero {
+    display: grid;
+    gap: 18px;
+    max-width: 980px;
+    padding-top: 12px;
+    padding-bottom: 36px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .projects-eyebrow {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .projects-hero h1 {
+    font-size: var(--font-display-md);
+    font-weight: 540;
+    line-height: 1;
+    letter-spacing: 0;
+  }
+
+  .projects-hero p {
+    max-width: 54ch;
+    color: var(--text-secondary);
+    font-size: 20px;
+    line-height: 1.5;
+  }
+
   .projects-list {
-    padding-top: clamp(20px, 3vw, 36px);
-    padding-bottom: clamp(32px, 4vw, 56px);
+    padding-top: 10px;
+    padding-bottom: 28px;
     display: flex;
     flex-direction: column;
-    max-width: 860px;
+    max-width: 980px;
   }
 
   .project-row {
     display: grid;
     grid-template-columns: 56px minmax(0, 1fr);
-    gap: clamp(18px, 3vw, 32px);
+    gap: 28px;
     align-items: start;
-    padding: clamp(26px, 4vw, 42px) 0;
+    padding: 34px 0;
     border-bottom: 1px solid var(--rule);
   }
 
@@ -113,7 +153,6 @@ const getImageType = (src: string) => src.endsWith('.svg') ? 'image/svg+xml' : '
   .project-meta {
     font-family: var(--font-mono);
     font-size: var(--font-size-xs);
-    letter-spacing: 0.12em;
     text-transform: uppercase;
     line-height: 1.4;
   }
@@ -126,11 +165,12 @@ const getImageType = (src: string) => src.endsWith('.svg') ? 'image/svg+xml' : '
   .project-icon {
     width: 56px;
     height: 56px;
-    border-radius: 2px;
+    border-radius: 8px;
     overflow: hidden;
-    background: transparent;
+    background: var(--bg-elevated);
     object-fit: cover;
     display: block;
+    border: 1px solid var(--rule);
   }
 
   .project-main {
@@ -141,18 +181,18 @@ const getImageType = (src: string) => src.endsWith('.svg') ? 'image/svg+xml' : '
 
   .project-name {
     font-family: var(--font-display);
-    font-size: clamp(28px, 3.5vw, 44px);
+    font-size: 42px;
     line-height: 1;
-    letter-spacing: -0.025em;
-    font-variation-settings: 'opsz' 48, 'SOFT' 30;
+    letter-spacing: 0;
+    font-weight: 520;
     margin: 0;
   }
 
   .project-desc {
     color: var(--text-secondary);
     font-size: var(--font-size-base);
-    line-height: 1.58;
-    margin: 10px 0 0;
+    line-height: 1.62;
+    margin: 12px 0 0;
     max-width: 58ch;
   }
 
@@ -173,12 +213,11 @@ const getImageType = (src: string) => src.endsWith('.svg') ? 'image/svg+xml' : '
     font-family: var(--font-mono);
     font-size: var(--font-size-xs);
     font-weight: 500;
-    letter-spacing: 0.1em;
     text-transform: uppercase;
     color: var(--text-secondary);
     background: var(--interactive-bg);
     border: 1px solid var(--rule-strong);
-    border-radius: 999px;
+    border-radius: 8px;
     cursor: pointer;
     padding: 9px 13px;
     transition:
@@ -190,8 +229,8 @@ const getImageType = (src: string) => src.endsWith('.svg') ? 'image/svg+xml' : '
 
   .project-link:hover {
     color: var(--bg-void);
-    background: var(--text-primary);
-    border-color: var(--text-primary);
+    background: var(--accent);
+    border-color: var(--accent);
     transform: translateY(-1px);
   }
 
@@ -215,6 +254,10 @@ const getImageType = (src: string) => src.endsWith('.svg') ? 'image/svg+xml' : '
   }
 
   @media (max-width: 900px) {
+    .projects-hero p {
+      font-size: 18px;
+    }
+
     .project-row {
       grid-template-columns: 56px minmax(0, 1fr);
       gap: 18px;
@@ -239,7 +282,7 @@ const getImageType = (src: string) => src.endsWith('.svg') ? 'image/svg+xml' : '
     }
 
     .project-name {
-      font-size: clamp(26px, 8vw, 36px);
+      font-size: 32px;
     }
 
     .project-desc {

@@ -13,14 +13,16 @@ const { href = '/', label = 'Back to home' } = Astro.props;
     class="back-link"
     data-magnetic
   >
-    <span class="back-arrow" aria-hidden="true">←</span>
+    <svg class="back-arrow" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+      <path d="M13 7H2m0 0 4.5-4.5M2 7l4.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
     <span>{label}</span>
   </a>
 </nav>
 
 <style>
   .back-nav {
-    padding-block: 24px 0;
+    padding-block: 0;
   }
 
   .back-link {
@@ -29,12 +31,11 @@ const { href = '/', label = 'Back to home' } = Astro.props;
     gap: 12px;
     font-family: var(--font-mono);
     font-size: 11px;
-    letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--text-secondary);
     padding: 10px 16px;
     border: 1px solid var(--rule-strong);
-    border-radius: 999px;
+    border-radius: 8px;
     transition:
       color var(--duration-fast) ease,
       border-color var(--duration-fast) ease,
@@ -43,11 +44,12 @@ const { href = '/', label = 'Back to home' } = Astro.props;
 
   .back-link:hover {
     color: var(--bg-void);
-    background: var(--text-primary);
-    border-color: var(--text-primary);
+    background: var(--accent);
+    border-color: var(--accent);
   }
 
   .back-arrow {
+    flex-shrink: 0;
     transition: transform var(--duration-normal) var(--ease-out-expo);
   }
 

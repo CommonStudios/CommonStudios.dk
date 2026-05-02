@@ -1,5 +1,5 @@
 ---
-import { ROUTES } from '~/config/site';
+import { BRAND_MARK_SRC, ROUTES } from '~/config/site';
 
 type NavLink = { label: string; href: string; external?: boolean };
 const navLinks: NavLink[] = [
@@ -11,6 +11,7 @@ const navLinks: NavLink[] = [
 <header class="site-header" data-site-header>
   <div class="shell site-header-inner">
     <a href={ROUTES.home} class="brand" aria-label="Tyndfed — back to home">
+      <img src={BRAND_MARK_SRC} alt="" width="28" height="28" class="brand-mark" />
       <span class="brand-name">Tyndfed</span>
     </a>
 
@@ -30,12 +31,8 @@ const navLinks: NavLink[] = [
 
 <style>
   .site-header {
-    position: sticky;
-    top: 0;
     z-index: 100;
-    backdrop-filter: none;
-    background: rgba(10, 10, 9, 0.94);
-    border-bottom: 1px solid var(--rule);
+    width: 100%;
   }
 
   .site-header-inner {
@@ -43,22 +40,28 @@ const navLinks: NavLink[] = [
     grid-template-columns: 1fr auto;
     align-items: center;
     gap: 24px;
-    padding-block: 16px;
   }
 
   .brand {
     display: inline-flex;
     align-items: center;
+    gap: 10px;
     color: var(--text-primary);
     width: fit-content;
   }
 
+  .brand-mark {
+    width: 28px;
+    height: 28px;
+    object-fit: contain;
+  }
+
   .brand-name {
-    font-family: var(--font-display);
+    font-family: var(--font-sans);
     font-style: normal;
-    font-weight: 400;
-    font-size: 18px;
-    letter-spacing: 0.02em;
+    font-weight: 650;
+    font-size: 22px;
+    letter-spacing: 0;
   }
 
   .site-nav ul {
@@ -71,10 +74,9 @@ const navLinks: NavLink[] = [
   .site-nav a {
     font-family: var(--font-mono);
     font-size: 11px;
-    letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--text-secondary);
-    padding: 0;
+    padding: 7px 0;
     border: none;
     background: transparent;
     transition: color var(--duration-fast) ease;
@@ -87,11 +89,10 @@ const navLinks: NavLink[] = [
   @media (max-width: 480px) {
     .site-header-inner {
       gap: 12px;
-      padding-block: 14px;
     }
 
     .brand-name {
-      font-size: 16px;
+      font-size: 18px;
     }
 
     .site-nav ul {

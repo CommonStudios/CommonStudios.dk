@@ -7,100 +7,281 @@ import { CANONICAL, ROUTES } from '~/config/site';
 <BaseLayout
   title="Tyndfed — Independent studio for software & creative work"
   canonical={CANONICAL.home}
+  hideFooter
 >
   <WindowChrome>
     <section class="hero shell" aria-label="Hero">
-      <p class="hero-eyebrow">Independent studio · Copenhagen</p>
-      <h1 class="hero-title">
-        Software and creative work for brands that want clarity.
-      </h1>
-      <p class="hero-lede">
-        Tyndfed builds websites, products and visual systems with a
-        clean, editorial approach.
-      </p>
-      <nav class="hero-actions" aria-label="Hero actions">
-        <a href={ROUTES.projects} class="hero-text-link">
-          View projects
-          <svg class="hero-text-arrow" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-            <path d="M1 7h11m0 0L7.5 2.5M12 7L7.5 11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </a>
-        <a href="mailto:kontakt@tyndfed.dk" class="hero-text-link">
-          Start a project
-          <svg class="hero-text-arrow" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
-            <path d="M1 7h11m0 0L7.5 2.5M12 7L7.5 11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </a>
-      </nav>
+      <div class="hero-copy">
+        <p class="hero-eyebrow">Independent studio / Copenhagen</p>
+        <h1 class="hero-title">
+          <span>Turn unclear ideas into</span>
+          <span class="hero-type" aria-label="websites, products, and identity systems">
+            <span class="type-words" aria-hidden="true">
+              <span>websites</span>
+              <span>products</span>
+              <span>systems</span>
+            </span>
+            <span class="type-cursor" aria-hidden="true"></span>
+          </span>
+        </h1>
+        <p class="hero-lede">
+          Tyndfed builds focused websites, products, visual systems, and
+          production workflows for people who care how the work feels.
+        </p>
+      </div>
+
+      <div class="hero-lower">
+        <nav class="hero-actions" aria-label="Hero actions">
+          <a href="mailto:kontakt@tyndfed.dk" class="hero-cta">
+            Start a project
+            <span class="hero-cta-icon" aria-hidden="true">
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                <path d="M13.25 2.75v7.5m0-7.5h-7.5m7.5 0-10.5 10.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+          </a>
+          <a href={ROUTES.projects} class="hero-link">
+            View projects
+          </a>
+        </nav>
+
+        <div class="hero-proof" aria-label="Studio focus">
+          <p>
+            Software<br />
+            Brand systems<br />
+            Video production
+          </p>
+          <div class="proof-stack" aria-hidden="true">
+            <span>CPH</span>
+            <span>DK</span>
+          </div>
+        </div>
+      </div>
     </section>
   </WindowChrome>
 </BaseLayout>
 
 <style>
   .hero {
-    padding-top: clamp(36px, 5vw, 64px);
-    padding-bottom: clamp(32px, 4vw, 56px);
-    max-width: 640px;
-    border-bottom: 1px solid var(--rule);
+    min-height: calc(100dvh - 190px);
+    display: grid;
+    align-content: end;
+    gap: 40px;
+    padding-top: 48px;
   }
 
   .hero-eyebrow {
-    margin-bottom: 20px;
+    margin-bottom: 18px;
     font-family: var(--font-mono);
     font-size: var(--font-size-xs);
     font-weight: 500;
-    letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--text-muted);
   }
 
   .hero-title {
     font-family: var(--font-display);
-    font-size: clamp(36px, 5.5vw, 64px);
+    font-size: var(--font-display-lg);
     line-height: 1;
-    letter-spacing: -0.025em;
-    max-width: 18ch;
-    font-variation-settings: 'opsz' 48, 'SOFT' 40;
+    letter-spacing: 0;
+    max-width: 13ch;
+    font-weight: 520;
+  }
+
+  .hero-title span {
+    display: block;
+  }
+
+  .hero-type {
+    min-height: 1.02em;
+    white-space: nowrap;
+  }
+
+  .type-words {
+    display: inline-grid;
+    vertical-align: top;
+  }
+
+  .type-words span {
+    grid-area: 1 / 1;
+    opacity: 0;
+    animation: typedWords 9s steps(1, end) infinite;
+  }
+
+  .type-words span:nth-child(2) {
+    animation-delay: 3s;
+  }
+
+  .type-words span:nth-child(3) {
+    animation-delay: 6s;
+  }
+
+  .type-cursor {
+    display: inline-block;
+    width: 0.58em;
+    height: 0.84em;
+    margin-left: 0.05em;
+    transform: translateY(0.08em);
+    background: color-mix(in oklch, currentColor 18%, transparent);
+    animation: cursorBlink 1s steps(2, end) infinite;
   }
 
   .hero-lede {
-    margin-top: 14px;
-    max-width: 44ch;
+    margin-top: 24px;
+    max-width: 58ch;
     color: var(--text-secondary);
-    font-size: var(--font-size-base);
-    line-height: 1.6;
+    font-size: 22px;
+    line-height: 1.48;
+  }
+
+  .hero-lower {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 32px;
   }
 
   .hero-actions {
     display: flex;
-    gap: 20px;
-    margin-top: 24px;
+    align-items: center;
+    gap: 18px;
     flex-wrap: wrap;
   }
 
-  .hero-text-link {
+  .hero-cta {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    justify-content: space-between;
+    gap: 24px;
+    min-height: 56px;
+    padding: 6px 6px 6px 22px;
+    border-radius: 14px;
+    background: var(--text-primary);
     font-family: var(--font-sans);
-    font-size: var(--font-size-base);
-    font-weight: 500;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--bg-void);
+    box-shadow: 0 18px 44px -24px rgba(0, 0, 0, 0.82);
+    transition:
+      background var(--duration-fast) ease,
+      transform var(--duration-fast) var(--ease-out-expo);
+  }
+
+  .hero-cta:hover {
+    background: var(--accent-strong);
+    transform: translateY(-1px);
+  }
+
+  .hero-cta:active {
+    transform: translateY(0);
+  }
+
+  .hero-cta-icon {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    color: var(--bg-void);
+    background: var(--accent);
+  }
+
+  .hero-link {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    text-transform: uppercase;
     color: var(--text-secondary);
-    letter-spacing: -0.01em;
     transition: color var(--duration-fast) ease;
   }
 
-  .hero-text-link:hover {
+  .hero-link:hover {
     color: var(--text-primary);
   }
 
-  .hero-text-link:hover .hero-text-arrow {
-    transform: translateX(3px);
+  .hero-proof {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    color: var(--text-secondary);
   }
 
-  .hero-text-arrow {
-    color: var(--accent);
-    transition: transform var(--duration-fast) ease;
+  .hero-proof p {
+    font-size: 14px;
+    line-height: 1.6;
+    text-align: right;
+  }
+
+  .proof-stack {
+    display: flex;
     flex-shrink: 0;
+  }
+
+  .proof-stack span {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    outline: 2px solid var(--bg-void);
+    background: var(--bg-elevated);
+    border: 1px solid var(--rule-strong);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-primary);
+  }
+
+  .proof-stack span + span {
+    margin-left: -12px;
+    background: var(--accent);
+    color: var(--bg-void);
+  }
+
+  @keyframes typedWords {
+    0%, 32% { opacity: 1; }
+    33%, 100% { opacity: 0; }
+  }
+
+  @keyframes cursorBlink {
+    0%, 48% { opacity: 1; }
+    49%, 100% { opacity: 0; }
+  }
+
+  @media (max-width: 900px) {
+    .hero {
+      min-height: calc(100dvh - 160px);
+      padding-top: 36px;
+    }
+
+    .hero-lede {
+      font-size: 19px;
+    }
+  }
+
+  @media (max-width: 700px) {
+    .hero {
+      min-height: calc(100dvh - 150px);
+      gap: 32px;
+    }
+
+    .hero-title {
+      max-width: 10ch;
+    }
+
+    .hero-type {
+      white-space: normal;
+    }
+
+    .hero-lower {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .hero-proof {
+      flex-direction: row-reverse;
+    }
+
+    .hero-proof p {
+      text-align: left;
+    }
   }
 </style>

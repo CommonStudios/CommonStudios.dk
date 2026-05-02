@@ -24,7 +24,7 @@ export const SEO = {
     'Tyndfed - Creative development studio specializing in mobile apps, websites, and digital design.',
   defaultOgImage: BRAND_MARK_SRC,
   siteName: 'Tyndfed',
-  themeColor: '#0a0a09',
+  themeColor: '#0b0c0a',
   author: 'Tobias Dosdal-Feddersen',
 } as const;
 
@@ -44,7 +44,7 @@ export const ORGANIZATION = {
 /** External font stylesheet URLs — deduped here so prefetch/preload stay aligned. */
 export const FONT_STYLESHEETS = {
   primary:
-    'https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300..700,30..100&family=Inter+Tight:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap',
+    'https://fonts.googleapis.com/css2?family=Geist:wght@400..700&family=Geist+Mono:wght@400..700&display=swap',
 } as const;
 
 /** Origins we warm-connect to from `<head>`. */

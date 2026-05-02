@@ -14,7 +14,7 @@ import WindowChrome from '~/components/WindowChrome.astro';
 
       <h1 class="error-headline">
         <span class="line">Lost in</span>
-        <span class="line"><em>transit</em>.</span>
+        <span class="line">transit.</span>
       </h1>
 
       <p class="error-lede">
@@ -46,9 +46,9 @@ import WindowChrome from '~/components/WindowChrome.astro';
 
 <style>
   .not-found {
-    padding-block: clamp(60px, 10vw, 140px);
+    padding-block: 80px;
     position: relative;
-    min-height: 60vh;
+    min-height: 62vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -62,7 +62,6 @@ import WindowChrome from '~/components/WindowChrome.astro';
     color: var(--text-secondary);
     font-family: var(--font-mono);
     font-size: var(--font-size-xs);
-    letter-spacing: 0.14em;
     text-transform: uppercase;
   }
 
@@ -71,11 +70,11 @@ import WindowChrome from '~/components/WindowChrome.astro';
 
   .error-headline {
     font-family: var(--font-display);
-    font-weight: 300;
-    font-variation-settings: 'opsz' 144, 'SOFT' 30;
+    font-weight: 540;
+    font-variation-settings: normal;
     font-size: var(--font-display-lg);
-    line-height: 0.92;
-    letter-spacing: -0.04em;
+    line-height: 1;
+    letter-spacing: 0;
     margin: 0;
     color: var(--text-primary);
   }
@@ -90,7 +89,7 @@ import WindowChrome from '~/components/WindowChrome.astro';
     margin-top: 32px;
     max-width: 50ch;
     font-family: var(--font-sans);
-    font-size: clamp(16px, 1.4vw, 20px);
+    font-size: 20px;
     line-height: 1.5;
     color: var(--text-secondary);
   }
@@ -110,7 +109,7 @@ import WindowChrome from '~/components/WindowChrome.astro';
     padding: 14px 8px 14px 22px;
     background: var(--text-primary);
     color: var(--bg-void);
-    border-radius: 999px;
+    border-radius: 14px;
     font-family: var(--font-sans);
     font-size: 15px;
     font-weight: 500;
@@ -167,16 +166,15 @@ import WindowChrome from '~/components/WindowChrome.astro';
   .glyph-text {
     display: block;
     font-family: var(--font-display);
-    font-style: italic;
-    font-variation-settings: 'opsz' 144, 'SOFT' 100;
-    font-weight: 300;
-    font-size: clamp(160px, 32vw, 480px);
+    font-variation-settings: normal;
+    font-weight: 650;
+    font-size: 260px;
     line-height: 0.8;
-    letter-spacing: -0.05em;
+    letter-spacing: 0;
     background: linear-gradient(
       180deg,
-      rgba(212, 184, 122, 0.18),
-      rgba(212, 184, 122, 0.04) 60%,
+      rgba(200, 255, 66, 0.18),
+      rgba(200, 255, 66, 0.04) 60%,
       transparent
     );
     -webkit-background-clip: text;
@@ -187,6 +185,18 @@ import WindowChrome from '~/components/WindowChrome.astro';
   }
 
   @media (max-width: 600px) {
+    .not-found {
+      padding-block: 56px;
+    }
+
+    .error-lede {
+      font-size: 17px;
+    }
+
+    .glyph-text {
+      font-size: 150px;
+    }
+
     .error-actions {
       flex-direction: column;
       align-items: stretch;

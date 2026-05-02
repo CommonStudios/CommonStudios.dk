@@ -27,7 +27,7 @@ const { document } = Astro.props;
   .legal-section {
     display: grid;
     grid-template-columns: 1fr 2fr;
-    gap: 56px;
+    gap: 48px;
     padding-bottom: 24px;
   }
 
@@ -41,11 +41,11 @@ const { document } = Astro.props;
 
   .ls-head h2 {
     font-family: var(--font-display);
-    font-weight: 300;
-    font-variation-settings: 'opsz' 60, 'SOFT' 30;
-    font-size: clamp(28px, 3vw, 44px);
+    font-weight: 520;
+    font-variation-settings: normal;
+    font-size: 36px;
     line-height: 1;
-    letter-spacing: -0.025em;
+    letter-spacing: 0;
     color: var(--text-primary);
     margin: 0;
   }
@@ -54,7 +54,6 @@ const { document } = Astro.props;
     margin-top: 12px;
     font-family: var(--font-mono);
     font-size: 11px;
-    letter-spacing: 0.12em;
     text-transform: uppercase;
     color: var(--text-muted);
     display: inline-flex;
@@ -66,7 +65,7 @@ const { document } = Astro.props;
     content: '';
     width: 6px;
     height: 6px;
-    border-radius: 50%;
+    border-radius: 2px;
     background: var(--accent);
   }
 
@@ -80,11 +79,11 @@ const { document } = Astro.props;
 
   .ls-block h3 {
     font-family: var(--font-display);
-    font-weight: 400;
-    font-variation-settings: 'opsz' 36, 'SOFT' 50;
+    font-weight: 560;
+    font-variation-settings: normal;
     font-size: 20px;
     line-height: 1.2;
-    letter-spacing: -0.015em;
+    letter-spacing: 0;
     color: var(--text-primary);
     margin-bottom: 8px;
   }

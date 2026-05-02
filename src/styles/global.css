@@ -1,38 +1,38 @@
 @import "tailwindcss/utilities";
 
 /* =============================================================
-   Tyndfed — Dark Studio tokens
-   Editorial near-black, warm cream ink, graphite-gold accent.
+   Tyndfed — Framed terminal tokens
+   Neutral near-black, clean ink, restrained acid accent.
    ============================================================= */
 
 @theme {
-  --color-void: #0a0a09;
-  --color-surface: #0f0f0d;
-  --color-elevated: #14140f;
-  --color-hover: #1a1a14;
-  --color-active: #20201a;
+  --color-void: #0b0c0a;
+  --color-surface: #10110e;
+  --color-elevated: #171914;
+  --color-hover: #20231b;
+  --color-active: #282c21;
 
-  --color-ink: #f4ede0;
-  --color-ink-secondary: #b8ad99;
-  --color-ink-muted: #7a7163;
-  --color-ink-ghost: #4a4439;
-  --color-ink-warm: #fff8ec;
+  --color-ink: #f7f7f2;
+  --color-ink-secondary: #b9bcb1;
+  --color-ink-muted: #74796c;
+  --color-ink-ghost: #3e4338;
+  --color-ink-warm: #ffffff;
 
-  --color-gold: #d4b87a;
-  --color-gold-strong: #e8cf94;
-  --color-gold-dim: rgba(212, 184, 122, 0.12);
-  --color-gold-glow: rgba(212, 184, 122, 0.32);
-  --color-terracotta: #c46a4a;
-  --color-terracotta-dim: rgba(196, 106, 74, 0.12);
-  --color-olive: #8a7a5c;
+  --color-gold: #c8ff42;
+  --color-gold-strong: #ddff78;
+  --color-gold-dim: rgba(200, 255, 66, 0.12);
+  --color-gold-glow: rgba(200, 255, 66, 0.2);
+  --color-terracotta: #f0f0e8;
+  --color-terracotta-dim: rgba(240, 240, 232, 0.1);
+  --color-olive: #98a184;
 
-  --color-rule: rgba(244, 237, 224, 0.08);
-  --color-rule-strong: rgba(244, 237, 224, 0.16);
-  --color-rule-accent: rgba(212, 184, 122, 0.28);
+  --color-rule: rgba(247, 247, 242, 0.11);
+  --color-rule-strong: rgba(247, 247, 242, 0.2);
+  --color-rule-accent: rgba(200, 255, 66, 0.36);
 
-  --font-display: 'Fraunces', 'PP Editorial New', 'Tiempos', Georgia, serif;
-  --font-sans: 'Inter Tight', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
+  --font-display: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-sans: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'Geist Mono', 'SF Mono', 'Fira Code', monospace;
 }
 
 @property --pointer-x {
@@ -54,49 +54,51 @@
 }
 
 :root {
-  /* Surfaces — warm near-black, layered subtly */
-  --bg-void: #0a0a09;
-  --bg-surface: #0f0f0d;
-  --bg-elevated: #14140f;
-  --bg-hover: #1a1a14;
-  --bg-active: #20201a;
+  /* Surfaces — ui.sh-inspired neutral frame */
+  --bg-void: #0b0c0a;
+  --bg-surface: #10110e;
+  --bg-elevated: #171914;
+  --bg-hover: #20231b;
+  --bg-active: #282c21;
 
-  /* Ink — warm cream */
-  --text-primary: #f4ede0;
-  --text-secondary: #b8ad99;
-  --text-muted: #7a7163;
-  --text-ghost: #4a4439;
-  --text-warm: #fff8ec;
+  /* Ink */
+  --text-primary: #f7f7f2;
+  --text-secondary: #b9bcb1;
+  --text-muted: #74796c;
+  --text-ghost: #3e4338;
+  --text-warm: #ffffff;
 
-  /* Accent — graphite-gold */
-  --accent: #d4b87a;
-  --accent-strong: #e8cf94;
-  --accent-dim: rgba(212, 184, 122, 0.12);
-  --accent-glow: rgba(212, 184, 122, 0.32);
-  --accent-secondary: #c46a4a;
-  --accent-secondary-dim: rgba(196, 106, 74, 0.12);
-  --accent-tertiary: #8a7a5c;
+  /* Accent */
+  --accent: #c8ff42;
+  --accent-strong: #ddff78;
+  --accent-dim: rgba(200, 255, 66, 0.12);
+  --accent-glow: rgba(200, 255, 66, 0.2);
+  --accent-secondary: #f0f0e8;
+  --accent-secondary-dim: rgba(240, 240, 232, 0.1);
+  --accent-tertiary: #98a184;
 
   /* Rules & chrome */
-  --rule: rgba(244, 237, 224, 0.08);
-  --rule-strong: rgba(244, 237, 224, 0.16);
-  --rule-accent: rgba(212, 184, 122, 0.28);
+  --rule: rgba(247, 247, 242, 0.11);
+  --rule-strong: rgba(247, 247, 242, 0.2);
+  --rule-accent: rgba(200, 255, 66, 0.36);
+  --frame-rule: rgba(247, 247, 242, 0.12);
+  --frame-rule-soft: rgba(247, 247, 242, 0.055);
   --chrome-border: var(--rule);
   --chrome-border-strong: var(--rule-strong);
   --chrome-border-accent: var(--rule-accent);
 
   /* Interactive */
-  --interactive-bg: rgba(244, 237, 224, 0.02);
-  --interactive-bg-hover: rgba(244, 237, 224, 0.05);
-  --interactive-border: rgba(244, 237, 224, 0.1);
-  --interactive-border-hover: rgba(244, 237, 224, 0.2);
-  --interactive-border-active: rgba(212, 184, 122, 0.45);
+  --interactive-bg: rgba(247, 247, 242, 0.025);
+  --interactive-bg-hover: rgba(247, 247, 242, 0.06);
+  --interactive-border: rgba(247, 247, 242, 0.12);
+  --interactive-border-hover: rgba(247, 247, 242, 0.24);
+  --interactive-border-active: rgba(200, 255, 66, 0.5);
   --interactive-shadow: 0 12px 28px -18px rgba(0, 0, 0, 0.7);
   --interactive-shadow-strong: 0 24px 48px -22px rgba(0, 0, 0, 0.78);
 
   /* Legacy compatibility (window-chrome easter-egg toggles) */
-  --traffic-close: #c46a4a;
-  --traffic-minimize: #d4b87a;
+  --traffic-close: #f0f0e8;
+  --traffic-minimize: #c8ff42;
   --traffic-maximize: #6b8b5a;
   --traffic-inactive: #2a2a26;
 
@@ -111,9 +113,9 @@
   --space-4xl: 200px;
 
   /* Typography */
-  --font-display: 'Fraunces', 'PP Editorial New', 'Tiempos', Georgia, serif;
-  --font-sans: 'Inter Tight', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', monospace;
+  --font-display: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-sans: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'Geist Mono', 'SF Mono', 'Fira Code', monospace;
 
   /* Back-compat alias used by some legacy components */
   --font-body: var(--font-sans);
@@ -127,13 +129,13 @@
   --font-size-3xl: 48px;
 
   /* Fluid display sizes — for hero & section headlines */
-  --font-display-sm: clamp(36px, 5vw, 64px);
-  --font-display-md: clamp(56px, 8vw, 112px);
-  --font-display-lg: clamp(80px, 12vw, 200px);
+  --font-display-sm: 48px;
+  --font-display-md: 80px;
+  --font-display-lg: 112px;
 
   /* Layout */
-  --shell-pad: clamp(20px, 4vw, 56px);
-  --max-w: 1480px;
+  --shell-pad: 0px;
+  --max-w: 1280px;
 
   /* Animation */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
@@ -150,14 +152,14 @@
 
 @supports (color: oklch(0.5 0.1 200)) {
   :root {
-    --accent: oklch(0.8 0.085 80);
-    --accent-strong: oklch(0.86 0.09 80);
-    --accent-dim: oklch(0.8 0.085 80 / 0.12);
-    --accent-glow: oklch(0.8 0.085 80 / 0.32);
-    --accent-secondary: oklch(0.62 0.13 38);
-    --accent-tertiary: oklch(0.55 0.04 70);
-    --rule-accent: oklch(0.8 0.085 80 / 0.28);
-    --interactive-border-active: oklch(0.8 0.085 80 / 0.45);
+    --accent: oklch(0.9 0.23 128);
+    --accent-strong: oklch(0.94 0.18 126);
+    --accent-dim: oklch(0.9 0.23 128 / 0.12);
+    --accent-glow: oklch(0.9 0.23 128 / 0.2);
+    --accent-secondary: oklch(0.95 0.01 95);
+    --accent-tertiary: oklch(0.68 0.035 126);
+    --rule-accent: oklch(0.9 0.23 128 / 0.36);
+    --interactive-border-active: oklch(0.9 0.23 128 / 0.5);
   }
 }
 
@@ -182,7 +184,7 @@ body {
   font-family: var(--font-sans);
   font-size: var(--font-size-base);
   font-weight: 400;
-  letter-spacing: -0.011em;
+  letter-spacing: 0;
   line-height: 1.55;
   background: var(--bg-void);
   position: relative;
@@ -192,23 +194,25 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* Ambient WebGL backdrop — keep it, but barely there */
 .site-background {
   position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  opacity: 0.18;
-  filter: saturate(0.55) hue-rotate(-30deg);
+  opacity: 0.3;
 }
 
 .site-background-canvas {
   width: 100%;
   height: 100%;
   background:
-    radial-gradient(ellipse 70% 55% at 72% 0%, rgba(212, 184, 122, 0.16), transparent 68%),
-    radial-gradient(ellipse 55% 45% at 12% 18%, rgba(196, 106, 74, 0.08), transparent 72%),
-    linear-gradient(150deg, rgba(212, 184, 122, 0.05), transparent 42%);
+    linear-gradient(rgba(247, 247, 242, 0.018) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(247, 247, 242, 0.018) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(200, 255, 66, 0.055), transparent 28%);
+  background-size:
+    44px 44px,
+    44px 44px,
+    100% 100%;
 }
 
 .site-content {
@@ -232,37 +236,24 @@ body::before {
   background-position:
     0 0,
     47px 29px;
-  opacity: 0.04;
+  opacity: 0.035;
   pointer-events: none;
   z-index: 1000;
   mix-blend-mode: overlay;
   filter: contrast(140%) brightness(108%);
 }
 
-/* Soft warm glow at top — gives the page a stage light feel */
 body::after {
-  content: '';
-  position: fixed;
-  inset: -10% -10% auto -10%;
-  height: 70vh;
-  background: radial-gradient(
-    ellipse 90% 100% at 50% 0%,
-    rgba(212, 184, 122, 0.06),
-    rgba(212, 184, 122, 0.02) 40%,
-    transparent 70%
-  );
-  pointer-events: none;
-  z-index: 0;
+  content: none;
 }
 
-/* Display headlines lean into the serif's optical sizing */
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
-  font-weight: 400;
-  font-variation-settings: 'opsz' 144, 'SOFT' 30;
+  font-weight: 500;
+  font-variation-settings: normal;
   text-wrap: balance;
-  letter-spacing: -0.025em;
-  line-height: 0.94;
+  letter-spacing: 0;
+  line-height: 1;
   color: var(--text-primary);
 }
 
@@ -318,11 +309,27 @@ button:focus-visible {
   padding-inline: var(--shell-pad);
 }
 
+@media (max-width: 900px) {
+  :root {
+    --font-display-sm: 40px;
+    --font-display-md: 56px;
+    --font-display-lg: 72px;
+  }
+}
+
+@media (max-width: 640px) {
+  :root {
+    --font-display-sm: 34px;
+    --font-display-md: 44px;
+    --font-display-lg: 52px;
+  }
+}
+
 .eyebrow {
   font-family: var(--font-mono);
   font-size: var(--font-size-xs);
   font-weight: 500;
-  letter-spacing: 0.14em;
+  letter-spacing: 0;
   text-transform: uppercase;
   color: var(--text-muted);
 }

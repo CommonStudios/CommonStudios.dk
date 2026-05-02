@@ -20,7 +20,9 @@ const { defaultTitle = 'Image preview' } = Astro.props;
         data-image-window-close
         aria-label="Close image preview"
       >
-        <span class="image-window-close-icon" aria-hidden="true">×</span>
+        <svg class="image-window-close-icon" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+          <path d="m3.25 3.25 7.5 7.5m0-7.5-7.5 7.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
+        </svg>
       </button>
     </header>
     <div class="image-window-body">
@@ -72,21 +74,22 @@ const { defaultTitle = 'Image preview' } = Astro.props;
     color: var(--text-primary);
     font-family: var(--font-mono);
     font-size: 11px;
-    letter-spacing: 0.14em;
     text-transform: uppercase;
   }
 
   .image-window-close {
     border: 1px solid var(--rule-strong);
-    border-radius: 999px;
+    border-radius: 8px;
     background: transparent;
     color: var(--text-secondary);
-    padding: 6px 14px;
+    width: 34px;
+    height: 34px;
     font-family: var(--font-mono);
     font-size: 10px;
-    letter-spacing: 0.14em;
     text-transform: uppercase;
     cursor: pointer;
+    display: grid;
+    place-items: center;
     transition: color var(--duration-fast) ease, border-color var(--duration-fast) ease, background var(--duration-fast) ease;
   }
 
@@ -103,19 +106,16 @@ const { defaultTitle = 'Image preview' } = Astro.props;
 
   .image-window-close-icon {
     display: block;
-    font-size: 1.25rem;
-    line-height: 1;
-    padding: 0 2px;
   }
 
   .image-window-body {
     padding: 32px;
     background:
-      linear-gradient(45deg, #1a1a14 25%, transparent 25%),
-      linear-gradient(-45deg, #1a1a14 25%, transparent 25%),
-      linear-gradient(45deg, transparent 75%, #1a1a14 75%),
-      linear-gradient(-45deg, transparent 75%, #1a1a14 75%),
-      #0f0f0d;
+      linear-gradient(45deg, #171914 25%, transparent 25%),
+      linear-gradient(-45deg, #171914 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #171914 75%),
+      linear-gradient(-45deg, transparent 75%, #171914 75%),
+      #10110e;
     background-size: 24px 24px;
     background-position: 0 0, 0 12px, 12px -12px, -12px 0;
   }

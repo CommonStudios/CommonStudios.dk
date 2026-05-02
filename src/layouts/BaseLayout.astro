@@ -122,14 +122,14 @@ for (const hint of [...defaultPreloads, ...preloadHints]) {
     <!-- Critical CSS — prevents flash, matches global tokens -->
     <style is:inline>
       html, body {
-        background: #0a0a09;
+        background: #0b0c0a;
         margin: 0;
         padding: 0;
       }
       body {
         min-height: 100vh;
-        color: #f4ede0;
-        font-family: 'Inter Tight', -apple-system, BlinkMacSystemFont, sans-serif;
+        color: #f7f7f2;
+        font-family: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
         font-size: 15px;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
@@ -145,30 +145,139 @@ for (const hint of [...defaultPreloads, ...preloadHints]) {
 
     <a href="#main" class="skip-link">Skip to content</a>
 
-    {!hideHeader && <SiteHeader />}
+    <div class="site-frame">
+      <div class="frame-rule frame-rule-top" aria-hidden="true" />
+      <div class="frame-rule frame-rule-bottom" aria-hidden="true" />
+      <div class="frame-rule frame-rule-left" aria-hidden="true" />
+      <div class="frame-rule frame-rule-right" aria-hidden="true" />
+      <div class="frame-corner frame-corner-tl" aria-hidden="true" />
+      <div class="frame-corner frame-corner-tr" aria-hidden="true" />
+      <div class="frame-corner frame-corner-bl" aria-hidden="true" />
+      <div class="frame-corner frame-corner-br" aria-hidden="true" />
 
-    <div class="site-content">
-      <main id="main">
-        <slot />
-      </main>
+      <div class="site-frame-content">
+        {!hideHeader && <SiteHeader />}
+
+        <main id="main" class="frame-main">
+          <slot />
+        </main>
+
+        {!hideFooter && <SiteFooter />}
+      </div>
     </div>
-
-    {!hideFooter && <SiteFooter />}
 
     <style is:global>
       html { height: 100%; }
       body {
-        display: flex;
-        flex-direction: column;
         min-height: 100dvh;
       }
-      .site-content {
+      .site-frame {
+        --frame-pad: 16px;
+        --frame-gap: 44px;
+        --frame-content-pad: 18px;
+        position: relative;
+        z-index: 1;
+        min-height: 100dvh;
+        display: grid;
+        grid-template-columns: var(--frame-pad) 1px minmax(0, 1fr) 1px var(--frame-pad);
+        grid-template-rows: var(--frame-pad) 1px minmax(calc(100dvh - (var(--frame-pad) * 2) - 2px), auto) 1px var(--frame-pad);
+      }
+      .site-frame-content {
+        grid-column: 3;
+        grid-row: 3;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: var(--frame-gap);
+        padding: var(--frame-content-pad);
+      }
+      .frame-main {
         flex: 1;
+        min-width: 0;
         display: flex;
         flex-direction: column;
       }
-      .site-content main {
-        flex: 1;
+      .frame-rule {
+        position: relative;
+        background: var(--frame-rule);
+      }
+      .frame-rule::before {
+        content: '';
+        position: absolute;
+        background: var(--frame-rule-soft);
+      }
+      .frame-rule-top {
+        grid-column: 1 / -1;
+        grid-row: 2;
+      }
+      .frame-rule-top::before,
+      .frame-rule-bottom::before {
+        inset: -8px 0;
+      }
+      .frame-rule-bottom {
+        grid-column: 1 / -1;
+        grid-row: 4;
+      }
+      .frame-rule-left {
+        grid-column: 2;
+        grid-row: 1 / -1;
+      }
+      .frame-rule-right {
+        grid-column: 4;
+        grid-row: 1 / -1;
+      }
+      .frame-rule-left::before,
+      .frame-rule-right::before {
+        inset: 0 -8px;
+      }
+      .frame-corner {
+        width: 7px;
+        height: 7px;
+        border: 1px solid var(--frame-rule);
+        background: var(--bg-void);
+        z-index: 2;
+      }
+      .frame-corner-tl {
+        grid-column: 1;
+        grid-row: 1;
+        align-self: end;
+        justify-self: end;
+        transform: translate(4px, 4px);
+      }
+      .frame-corner-tr {
+        grid-column: 5;
+        grid-row: 1;
+        align-self: end;
+        justify-self: start;
+        transform: translate(-4px, 4px);
+      }
+      .frame-corner-bl {
+        grid-column: 1;
+        grid-row: 5;
+        align-self: start;
+        justify-self: end;
+        transform: translate(4px, -4px);
+      }
+      .frame-corner-br {
+        grid-column: 5;
+        grid-row: 5;
+        align-self: start;
+        justify-self: start;
+        transform: translate(-4px, -4px);
+      }
+      @media (min-width: 640px) {
+        .site-frame {
+          --frame-pad: 28px;
+          --frame-gap: 64px;
+          --frame-content-pad: 28px;
+        }
+      }
+      @media (min-width: 1100px) {
+        .site-frame {
+          --frame-pad: 40px;
+          --frame-gap: 88px;
+          --frame-content-pad: 40px;
+        }
       }
     </style>
 
@@ -183,7 +292,7 @@ for (const hint of [...defaultPreloads, ...preloadHints]) {
         border: 1px solid var(--rule-strong);
         font-family: var(--font-mono);
         font-size: var(--font-size-xs);
-        letter-spacing: 0.1em;
+        letter-spacing: 0;
         text-transform: uppercase;
         z-index: 1500;
         transform: translateY(-200%);
