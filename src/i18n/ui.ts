@@ -70,12 +70,12 @@ type UiForLocale = {
 
 const en: UiForLocale = {
   meta: {
-    homeTitle: 'Tyndfed — Independent studio for software & creative work',
+    homeTitle: 'Tyndfed — Independent software development studio',
     homeDescription:
-      'Tyndfed is an independent Copenhagen studio for websites, products, brand systems, and video.',
+      'Tyndfed is an independent Copenhagen studio for software development, websites, web apps, and digital systems.',
     projectsTitle: 'Tyndfed — Projects',
     projectsDescription:
-      'Tyndfed projects: software, brand, web, and production — work built to ship and last.',
+      'Tyndfed projects: software, websites, web apps, and digital systems — work built to ship and last.',
     privacyTitle: 'Tyndfed — Privacy & Terms',
     privacyDescription:
       'Privacy Policy and Terms of Service for Tyndfed apps and services.',
@@ -100,24 +100,25 @@ const en: UiForLocale = {
   },
   home: {
     heroAria: 'Hero',
-    heroTitle: 'Clarity for work that matters.',
+    heroTitle: 'Work that reads clearly.',
     heroTypingLines: [
-      'Clarity for work that matters.',
-      'Websites, brand systems, and video.',
-      'Built to read well — built to ship.',
+      'Work that reads clearly.',
+      'Software that ships cleanly.',
+      'Web apps with less friction.',
+      'Interfaces built to last.',
     ],
     heroLede:
-      'Independent studio for websites, products, brand systems, and video — for clients who care how things read, move, and ship.',
+      'Independent software studio for websites, web apps, internal tools, and digital systems — for clients who care how things work, read, and hold up.',
     heroActionsAria: 'Hero actions',
     heroCta: 'View selected work',
     heroCreditLead: 'By ',
-    heroCreditTail: ' — software, brand & video, from Copenhagen.',
+    heroCreditTail: ' — software development and web systems, from Copenhagen.',
   },
   projects: {
     introAria: 'Projects intro',
     eyebrow: 'Tyndfed · Projects',
     title: 'Built to be used',
-    lede: 'Websites, identities, products, and video — work made to read clearly, load fast, and hold up once it’s in the wild.',
+    lede: 'Websites, web apps, product interfaces, and digital systems — work made to read clearly, load fast, and hold up once it’s in the wild.',
     listAria: 'Project list',
     imageWindowTitle: 'Logo preview',
     linksNavSuffix: 'links',
@@ -145,12 +146,12 @@ const en: UiForLocale = {
 
 const da: UiForLocale = {
   meta: {
-    homeTitle: 'Tyndfed — Uafhængigt studio til software og kreativt arbejde',
+    homeTitle: 'Tyndfed — Uafhængigt studio til softwareudvikling',
     homeDescription:
-      'Tyndfed er et uafhængigt Københavns-studio til web, produkt, brandsystemer og video.',
+      'Tyndfed er et uafhængigt Københavns-studio til softwareudvikling, websites, webapps og digitale systemer.',
     projectsTitle: 'Tyndfed — Projekter',
     projectsDescription:
-      'Udvalgte projekter fra Tyndfed: software, brand, web og produktion — bygget til at blive brugt.',
+      'Udvalgte projekter fra Tyndfed: software, websites, webapps og digitale systemer — bygget til at blive brugt.',
     privacyTitle: 'Tyndfed — Privatliv & vilkår',
     privacyDescription:
       'Privatlivspolitik og servicevilkår for Tyndfeds apps og tjenester.',
@@ -175,24 +176,25 @@ const da: UiForLocale = {
   },
   home: {
     heroAria: 'Forside',
-    heroTitle: 'Klarhed i arbejde, der betyder noget.',
+    heroTitle: 'Arbejde, der står skarpt.',
     heroTypingLines: [
-      'Klarhed i arbejde, der betyder noget.',
-      'Web, brandsystemer og video.',
-      'Skabt til at læse godt — skabt til at levere.',
+      'Arbejde, der står skarpt.',
+      'Software, der leverer.',
+      'Webapps uden friktion.',
+      'Interfaces bygget til drift.',
     ],
     heroLede:
-      'Uafhængigt studio til web, produkt, brandsystemer og video — med omtanke for hvordan det føles, læses og leveres.',
+      'Uafhængigt softwarestudio til websites, webapps, interne værktøjer og digitale systemer — med omtanke for hvordan det virker, læses og holder.',
     heroActionsAria: 'Handlinger',
     heroCta: 'Se udvalgte projekter',
     heroCreditLead: 'Af ',
-    heroCreditTail: ' — software, brand og video fra København.',
+    heroCreditTail: ' — softwareudvikling og websystemer fra København.',
   },
   projects: {
     introAria: 'Projektoversigt',
     eyebrow: 'Tyndfed · Projekter',
     title: 'Skabt til at blive brugt',
-    lede: 'Websites, identiteter, produkter og video — arbejde, der er let at læse, hurtigt at indlæse, og som holder, når det er ude.',
+    lede: 'Websites, webapps, produktinterfaces og digitale systemer — arbejde, der er let at læse, hurtigt at indlæse, og som holder, når det er ude.',
     listAria: 'Projektliste',
     imageWindowTitle: 'Logo forhåndsvisning',
     linksNavSuffix: 'henvisninger',

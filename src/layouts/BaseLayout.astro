@@ -4,6 +4,8 @@ import { ClientRouter } from 'astro:transitions';
 import SiteHeader from '~/components/SiteHeader.astro';
 import SiteFooter from '~/components/SiteFooter.astro';
 import Silk from '~/components/Silk';
+import geistLatinUrl from '@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url';
+import geistMonoLatinUrl from '@fontsource-variable/geist-mono/files/geist-mono-latin-wght-normal.woff2?url';
 import {
   SITE_ORIGIN,
   BRAND_MARK_SRC,
@@ -40,6 +42,8 @@ interface Props {
   hideFooter?: boolean;
   /** Lock the page to the viewport (no scroll, full-bleed one-pager). */
   noScroll?: boolean;
+  /** Render the animated WebGL silk background. Keep opt-in because it is GPU-heavy. */
+  showSilkBackground?: boolean;
   /** Persist locale and emit hreflang when set (locale-prefixed pages). */
   localeContext?: { locale: Locale; pathKey: LocalePathKey };
   /** Translated skip link label (pass from `ui(locale).skipToContent`). */
@@ -57,6 +61,7 @@ const {
   hideHeader = false,
   hideFooter = false,
   noScroll = false,
+  showSilkBackground = false,
   localeContext,
   skipLinkLabel = 'Skip to content',
 } = Astro.props;
@@ -75,6 +80,20 @@ const defaultPreloads: PreloadHint[] = [
     href: BRAND_MARK_SRC,
     as: 'image',
     type: 'image/svg+xml',
+    fetchPriority: 'high',
+  },
+  {
+    href: geistLatinUrl,
+    as: 'font',
+    type: 'font/woff2',
+    crossOrigin: 'anonymous',
+    fetchPriority: 'high',
+  },
+  {
+    href: geistMonoLatinUrl,
+    as: 'font',
+    type: 'font/woff2',
+    crossOrigin: 'anonymous',
     fetchPriority: 'high',
   },
 ];
@@ -192,16 +211,18 @@ for (const hint of [...defaultPreloads, ...preloadHints]) {
   </head>
   <body class:list={[{ 'no-scroll': noScroll }]}>
     <div class="site-background" aria-hidden="true" transition:persist>
-      <div class="site-background-silk">
-        <Silk
-          client:media="(prefers-reduced-motion: no-preference)"
-          speed={4}
-          scale={1.08}
-          color="#2d2923"
-          noiseIntensity={1}
-          rotation={0}
-        />
-      </div>
+      {showSilkBackground && (
+        <div class="site-background-silk">
+          <Silk
+            client:media="(prefers-reduced-motion: no-preference)"
+            speed={4}
+            scale={1.08}
+            color="#2d2923"
+            noiseIntensity={1}
+            rotation={0}
+          />
+        </div>
+      )}
       <div class="site-background-canvas" />
     </div>
 
@@ -259,11 +280,14 @@ for (const hint of [...defaultPreloads, ...preloadHints]) {
       body.no-scroll .site-frame-content {
         min-height: 0;
         height: 100%;
-        overflow: hidden;
+        overflow-x: hidden;
+        overflow-y: auto;
+        scrollbar-width: thin;
+        scrollbar-color: var(--text-ghost) transparent;
       }
       body.no-scroll .frame-main {
         min-height: 0;
-        overflow: hidden;
+        overflow: visible;
         display: flex;
         flex-direction: column;
       }
@@ -272,7 +296,7 @@ for (const hint of [...defaultPreloads, ...preloadHints]) {
         min-height: 0;
       }
       body.no-scroll .frame-main .window-shell {
-        height: 100%;
+        min-height: 100%;
         display: flex;
         flex-direction: column;
       }

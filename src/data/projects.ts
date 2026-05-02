@@ -22,8 +22,8 @@ const PROJECTS_SEED = [
   {
     name: 'PL Showet',
     description: {
-      da: 'Komplet videoproduktion for Premier League-podcast med ugentlige episoder, grafik og distribution på Youtube og Spotify.',
-      en: 'End-to-end video production for a Premier League podcast — weekly episodes, motion graphics, and distribution across YouTube and Spotify.',
+      da: 'Digitalt format og distributionsflow for Premier League-podcast med ugentlige episoder, grafik og publicering på YouTube og Spotify.',
+      en: 'Digital format and distribution workflow for a Premier League podcast — weekly episodes, graphics, and publishing across YouTube and Spotify.',
     },
     icon: '/images/project-icons/pllogo.png',
     links: [

@@ -101,6 +101,10 @@ const SilkPlane = forwardRef<Mesh, SilkPlaneProps>(function SilkPlane({ uniforms
 
   useFrame((_state: RootState, delta: number) => {
     const mesh = ref as React.RefObject<Mesh | null>;
+    if (document.hidden) {
+      return;
+    }
+
     if (mesh.current) {
       const material = mesh.current.material as ShaderMaterial & { uniforms: SilkUniforms };
       material.uniforms.uTime.value += 0.1 * delta;
@@ -149,7 +153,7 @@ const Silk = ({
 
   return (
     <div className={`h-full w-full min-h-[1px] ${className}`.trim()} aria-hidden="true">
-      <Canvas className="block h-full w-full touch-none" dpr={[1, 2]} frameloop="always">
+      <Canvas className="block h-full w-full touch-none" dpr={[1, 1.5]} frameloop="always">
         <SilkPlane ref={meshRef} uniforms={uniforms} />
       </Canvas>
     </div>

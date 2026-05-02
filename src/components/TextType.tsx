@@ -34,6 +34,8 @@ export interface TextTypeProps {
   reverseMode?: boolean;
 }
 
+const EMPTY_TEXT_COLORS: string[] = [];
+
 const TextType = ({
   text,
   as: Component = 'div',
@@ -48,7 +50,7 @@ const TextType = ({
   cursorCharacter = '|',
   cursorClassName = '',
   cursorBlinkDuration = 0.5,
-  textColors = [],
+  textColors = EMPTY_TEXT_COLORS,
   variableSpeed,
   onSentenceComplete,
   startOnVisible = false,
@@ -56,12 +58,12 @@ const TextType = ({
   style: styleProp,
   ...restDomProps
 }: TextTypeProps & Omit<HTMLAttributes<HTMLElement>, 'children'>) => {
-  const respectReducedMotion =
-    typeof window !== 'undefined' &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const textArray = useMemo(() => (Array.isArray(text) ? text : [text]), [text]);
+  const initialText = textArray[0] ?? '';
+  const [respectReducedMotion, setRespectReducedMotion] = useState(false);
 
-  const [displayedText, setDisplayedText] = useState('');
-  const [currentCharIndex, setCurrentCharIndex] = useState(0);
+  const [displayedText, setDisplayedText] = useState(initialText);
+  const [currentCharIndex, setCurrentCharIndex] = useState(initialText.length);
   const [isDeleting, setIsDeleting] = useState(false);
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(!startOnVisible);
@@ -71,7 +73,21 @@ const TextType = ({
     null,
   );
 
-  const textArray = useMemo(() => (Array.isArray(text) ? text : [text]), [text]);
+  useEffect(() => {
+    const media = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const syncPreference = () => setRespectReducedMotion(media.matches);
+
+    syncPreference();
+    media.addEventListener('change', syncPreference);
+    return () => media.removeEventListener('change', syncPreference);
+  }, []);
+
+  useEffect(() => {
+    setDisplayedText(initialText);
+    setCurrentCharIndex(initialText.length);
+    setIsDeleting(false);
+    setCurrentTextIndex(0);
+  }, [initialText]);
 
   const getRandomSpeed = useCallback(() => {
     if (!variableSpeed) return typingSpeed;
@@ -154,11 +170,19 @@ const TextType = ({
       setReservedMinHeightPx(maxH);
     };
 
-    measure();
-    void document.fonts?.ready?.then(measure);
+    let cancelled = false;
+    const safeMeasure = () => {
+      if (!cancelled) {
+        measure();
+      }
+    };
+
+    safeMeasure();
+    void document.fonts?.ready?.then(safeMeasure);
     const ro = new ResizeObserver(measure);
     ro.observe(parent);
     return () => {
+      cancelled = true;
       ro.disconnect();
     };
   }, [cursorCharacter, respectReducedMotion, showCursor, textArray]);

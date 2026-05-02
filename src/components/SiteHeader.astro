@@ -48,6 +48,7 @@ const t = ui(locale);
           class:list={['locale-link', { 'is-active': locale === 'da' }]}
           aria-current={locale === 'da' ? 'page' : undefined}
           lang="da"
+          data-astro-reload
         >
           DA
         </a>
@@ -56,6 +57,7 @@ const t = ui(locale);
           class:list={['locale-link', { 'is-active': locale === 'en' }]}
           aria-current={locale === 'en' ? 'page' : undefined}
           lang="en"
+          data-astro-reload
         >
           EN
         </a>

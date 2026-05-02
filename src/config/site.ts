@@ -4,25 +4,12 @@
  */
 export const SITE_ORIGIN = 'https://tyndfed.dk' as const;
 
-export const ROUTES = {
-  /** @deprecated Use `pathForLocale` from `~/i18n/paths` for locale-prefixed links. */
-  home: '/',
-  projects: '/projects',
-  privacy: '/privacy',
-} as const;
-
-export const CANONICAL = {
-  home: `${SITE_ORIGIN}/`,
-  projects: `${SITE_ORIGIN}${ROUTES.projects}`,
-  privacy: `${SITE_ORIGIN}${ROUTES.privacy}`,
-} as const;
-
 /** Favicon + Ascii fallback SVG — safe to preload on every route. */
 export const BRAND_MARK_SRC = '/images/tyndfed.svg' as const;
 
 export const SEO = {
   defaultDescription:
-    'Tyndfed - Creative development studio specializing in mobile apps, websites, and digital design.',
+    'Tyndfed - Independent software development studio specializing in websites, web apps, and digital systems.',
   defaultOgImage: BRAND_MARK_SRC,
   siteName: 'Tyndfed',
   themeColor: '#0b0c0a',
@@ -32,7 +19,7 @@ export const SEO = {
 export const ORGANIZATION = {
   jsonLdType: 'Organization' as const,
   name: 'Tyndfed',
-  description: 'Software development & creative services',
+  description: 'Software development, websites, web apps, and digital systems',
   logoPath: BRAND_MARK_SRC,
   addressCountry: 'DK',
   sameAs: [

@@ -5,7 +5,7 @@ import ImageWindow from '~/components/ImageWindow.astro';
 import { projects } from '~/data/projects';
 import { SITE_ORIGIN } from '~/config/site';
 import { isLogoPreviewLink } from '~/constants/project-ui';
-import { LOCALES, DEFAULT_LOCALE, isLocale } from '~/i18n/constants';
+import { LOCALES, isLocale } from '~/i18n/constants';
 import { canonicalUrl } from '~/i18n/paths';
 import { ui } from '~/i18n/ui';
 
@@ -17,7 +17,7 @@ export function getStaticPaths() {
 
 const { locale: raw } = Astro.params;
 if (!isLocale(raw)) {
-  return Astro.redirect(`/${DEFAULT_LOCALE}/projects`);
+  return Astro.redirect('/da/projects');
 }
 const locale = raw;
 const t = ui(locale);
