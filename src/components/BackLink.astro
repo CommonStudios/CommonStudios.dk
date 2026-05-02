@@ -4,92 +4,52 @@ interface Props {
   label?: string;
 }
 
-const { href = '/', label = 'Back to main' } = Astro.props;
+const { href = '/', label = 'Back to home' } = Astro.props;
 ---
 
-<nav class="back-nav">
-  <a
-    href={href}
-    class="back-link"
-    {...(href.startsWith('/') ? ({ 'data-astro-prefetch': true } as const) : {})}
-  >
-    ← {label}
+<nav class="back-nav shell">
+  <a href={href} class="back-link">
+    <svg class="back-arrow" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
+      <path d="M13 7H2m0 0 4.5-4.5M2 7l4.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+    <span>{label}</span>
   </a>
 </nav>
 
 <style>
   .back-nav {
-    padding: 16px 24px;
-    border-bottom: 1px solid var(--chrome-border);
+    padding-block: 0;
   }
 
   .back-link {
-    color: var(--text-secondary);
-    font-family: var(--font-display);
-    font-size: var(--font-size-sm);
-    font-weight: 500;
-    letter-spacing: 0.01em;
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    min-height: 38px;
-    padding: 8px 14px;
-    margin: -8px -14px;
+    gap: 12px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    padding: 10px 16px;
+    border: 1px solid var(--rule-strong);
     border-radius: 8px;
-    border: 1px solid var(--interactive-border);
-    background: var(--interactive-bg);
     transition:
       color var(--duration-fast) ease,
-      background var(--duration-fast) ease,
       border-color var(--duration-fast) ease,
-      transform var(--duration-fast) var(--ease-smooth),
-      box-shadow var(--duration-normal) var(--ease-smooth);
+      background var(--duration-fast) ease;
   }
 
   .back-link:hover {
-    color: var(--text-primary);
-    background: var(--interactive-bg-hover);
-    border-color: var(--interactive-border-hover);
-    box-shadow: var(--interactive-shadow);
-    transform: translateY(-1px);
-    text-decoration: none;
+    color: var(--bg-void);
+    background: var(--accent);
+    border-color: var(--accent);
   }
 
-  .back-link:active {
-    transform: translateY(0);
-    border-color: var(--interactive-border-active);
+  .back-arrow {
+    flex-shrink: 0;
+    transition: transform var(--duration-normal) var(--ease-out-expo);
   }
 
-  .back-link:focus-visible {
-    border-color: var(--interactive-border-active);
-    box-shadow: var(--interactive-shadow-strong);
-  }
-
-  @media (max-width: 768px) {
-    .back-nav {
-      padding: 10px 14px;
-    }
-
-    .back-link {
-      min-height: 34px;
-      padding: 6px 11px;
-      margin: 0;
-      font-size: 12px;
-      border-radius: 7px;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .back-nav {
-      padding: 8px 10px;
-    }
-
-    .back-link {
-      width: auto;
-      justify-content: flex-start;
-      min-height: 32px;
-      padding: 5px 10px;
-      font-size: 11px;
-    }
+  .back-link:hover .back-arrow {
+    transform: translateX(-3px);
   }
 </style>

@@ -9,99 +9,100 @@ const { document } = Astro.props;
 ---
 
 <section class="legal-section">
-  <h2>{document.title}</h2>
-  <p class="updated">{document.updated}</p>
-  {document.sections.map((section) => (
-    <div>
-      <h3>{section.heading}</h3>
-      <p>{section.text}</p>
-    </div>
-  ))}
+  <header class="ls-head">
+    <h2>{document.title}</h2>
+    <p class="updated">{document.updated}</p>
+  </header>
+  <div class="ls-body">
+    {document.sections.map((section) => (
+      <article class="ls-block">
+        <h3>{section.heading}</h3>
+        <p>{section.text}</p>
+      </article>
+    ))}
+  </div>
 </section>
 
 <style>
   .legal-section {
-    padding: 18px 18px 16px;
-    background: var(--bg-elevated);
-    border: 1px solid var(--interactive-border);
-    border-radius: 8px;
-    color: var(--text-secondary);
-    line-height: 1.7;
-    font-size: var(--font-size-sm);
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 48px;
+    padding-bottom: 24px;
   }
 
-  .legal-section h2 {
-    color: var(--text-primary);
+  .ls-head {
+    position: sticky;
+    top: 100px;
+    align-self: start;
+    border-top: 1px solid var(--rule-strong);
+    padding-top: 16px;
+  }
+
+  .ls-head h2 {
     font-family: var(--font-display);
-    font-size: var(--font-size-lg);
-    font-weight: 600;
-    letter-spacing: 0.01em;
-    border-bottom: 1px solid var(--chrome-border);
-    padding-bottom: 10px;
-    margin-bottom: 14px;
-    position: relative;
-  }
-
-  .legal-section h2::after {
-    content: '';
-    position: absolute;
-    bottom: -1px;
-    left: 0;
-    width: 60px;
-    height: 2px;
-    background: var(--accent);
-    border-radius: 1px;
-  }
-
-  .legal-section h3 {
+    font-weight: 520;
+    font-variation-settings: normal;
+    font-size: 36px;
+    line-height: 1;
+    letter-spacing: 0;
     color: var(--text-primary);
-    font-family: var(--font-display);
-    font-size: var(--font-size-base);
-    font-weight: 500;
-    margin-top: 16px;
-    margin-bottom: 6px;
-  }
-
-  .legal-section p {
-    margin-bottom: 10px;
+    margin: 0;
   }
 
   .updated {
+    margin-top: 12px;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
     color: var(--text-muted);
-    font-size: var(--font-size-xs);
-    margin-bottom: 14px;
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px;
   }
 
   .updated::before {
     content: '';
     width: 6px;
     height: 6px;
-    border-radius: 50%;
+    border-radius: 2px;
     background: var(--accent);
-    opacity: 0.6;
   }
 
-  @media (max-width: 480px) {
+  .ls-body {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    border-top: 1px solid var(--rule-strong);
+    padding-top: 16px;
+  }
+
+  .ls-block h3 {
+    font-family: var(--font-display);
+    font-weight: 560;
+    font-variation-settings: normal;
+    font-size: 20px;
+    line-height: 1.2;
+    letter-spacing: 0;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+  }
+
+  .ls-block p {
+    font-family: var(--font-sans);
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--text-secondary);
+    max-width: 70ch;
+  }
+
+  @media (max-width: 768px) {
     .legal-section {
-      padding: 12px 12px 10px;
-      font-size: var(--font-size-xs);
+      grid-template-columns: 1fr;
+      gap: 24px;
     }
-
-    .legal-section h2 {
-      font-size: var(--font-size-base);
-      margin-bottom: 12px;
-    }
-
-    .legal-section h3 {
-      font-size: var(--font-size-sm);
-      margin-top: 14px;
-    }
-
-    .legal-section p {
-      margin-bottom: 8px;
+    .ls-head {
+      position: static;
     }
   }
 </style>

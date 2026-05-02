@@ -1,76 +1,39 @@
 ---
+/**
+ * Quiet shell. Hosts the keyboard easter-egg controls (terminal/matrix/rainbow/ascii/reset)
+ * and renders no visible window chrome — the "modern web bureau" redesign uses an editorial
+ * shell instead of a macOS window. The element id is preserved so the script keeps working.
+ */
 ---
 
-<main class="window" id="main-window">
-  <header class="title-bar">
-    <div class="controls" aria-hidden="true">
-      <span class="control-btn close" aria-hidden="true">
-        <svg viewBox="0 0 10 10" class="control-icon" aria-hidden="true" focusable="false">
-          <path d="M1 1L9 9M9 1L1 9" stroke-width="1.5" stroke-linecap="round" />
-        </svg>
-      </span>
-      <span class="control-btn minimize" aria-hidden="true">
-        <svg viewBox="0 0 10 10" class="control-icon" aria-hidden="true" focusable="false">
-          <path d="M1 5H9" stroke-width="1.5" stroke-linecap="round" />
-        </svg>
-      </span>
-      <span class="control-btn maximize" aria-hidden="true">
-        <svg viewBox="0 0 10 10" class="control-icon" aria-hidden="true" focusable="false">
-          <path d="M1 1h8v8H1z" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" />
-        </svg>
-      </span>
-    </div>
-    <div class="title-area"></div>
-  </header>
+<div class="window-shell page-boot" id="main-window">
   <slot />
-</main>
+</div>
 
 <style>
-  .window {
-    background: var(--bg-surface);
-    border-radius: 8px;
-    overflow: hidden;
-    width: 100%;
-    max-width: 960px;
-    margin: 0 auto;
-    border: 1px solid var(--interactive-border-hover);
+  .window-shell {
     position: relative;
-    z-index: 10;
-    animation: windowBoot var(--duration-slow) var(--ease-out-expo) both;
-    box-shadow: 0 28px 52px -28px rgba(0, 0, 0, 0.72);
-    /* Allow normal page scrolling on touch devices. */
-    touch-action: pan-y;
+    width: 100%;
   }
 
-  .window.rainbow {
-    animation: rainbowBorder 2s linear infinite;
+  /* Easter-egg modes — visual cues only, no chrome to recolour */
+  .window-shell.terminal {
+    text-shadow: 0 0 14px rgba(212, 184, 122, 0.18);
   }
 
-  .window.matrix {
+  .window-shell.rainbow {
+    animation: rainbowHue 3s linear infinite;
+  }
+
+  .window-shell.matrix-mode {
+    filter: hue-rotate(85deg) saturate(1.4);
+  }
+
+  .window-shell.matrix {
     animation: matrixGlitch 0.3s ease-in-out;
   }
 
-  .window.terminal {
-    border-color: rgba(0, 240, 255, 0.28);
-    box-shadow:
-      0 28px 52px -28px rgba(0, 0, 0, 0.72),
-      0 0 0 1px rgba(0, 240, 255, 0.10),
-      0 0 60px rgba(0, 240, 255, 0.12);
-  }
-
-  .window.terminal .title-bar {
-    background: linear-gradient(180deg, rgba(0, 240, 255, 0.08), rgba(0, 0, 0, 0));
-  }
-
-  .window.matrix-mode {
-    border-color: rgba(57, 255, 20, 0.28);
-    box-shadow:
-      0 28px 52px -28px rgba(0, 0, 0, 0.72),
-      0 0 0 1px rgba(57, 255, 20, 0.10),
-      0 0 70px rgba(57, 255, 20, 0.10);
-  }
-
-  /* Full-page Matrix background (canvas is appended to <body>) */
+  /* Full-page Matrix background (canvas appended to <body>) */
   :global(canvas.matrix-bg-canvas) {
     position: fixed;
     inset: 0;
@@ -83,31 +46,9 @@
     filter: drop-shadow(0 0 12px rgba(57, 255, 20, 0.16));
   }
 
-  .window.matrix-mode .title-bar {
-    background: linear-gradient(180deg, rgba(57, 255, 20, 0.06), rgba(0, 0, 0, 0));
-  }
-
-  @keyframes windowBoot {
-    0% {
-      opacity: 0;
-      transform: scale(0.95) translateY(20px);
-      filter: blur(4px);
-    }
-    100% {
-      opacity: 1;
-      transform: scale(1) translateY(0);
-      filter: blur(0);
-    }
-  }
-
-  @keyframes rainbowBorder {
-    0% { border-color: #ff5f57; }
-    17% { border-color: #febc2e; }
-    33% { border-color: #28c840; }
-    50% { border-color: #00f0ff; }
-    67% { border-color: #a78bfa; }
-    83% { border-color: #ff6b4a; }
-    100% { border-color: #ff5f57; }
+  @keyframes rainbowHue {
+    0% { filter: hue-rotate(0deg); }
+    100% { filter: hue-rotate(360deg); }
   }
 
   @keyframes matrixGlitch {
@@ -117,72 +58,7 @@
     75% { filter: hue-rotate(270deg) brightness(1.1); }
   }
 
-  .title-bar {
-    padding: 12px 18px;
-    display: flex;
-    align-items: center;
-    gap: var(--space-md);
-    background: var(--bg-elevated);
-    border-bottom: 1px solid var(--chrome-border);
-  }
-
-  .title-area {
-    flex: 1;
-  }
-
-  .controls {
-    display: flex;
-    gap: 8px;
-    align-items: center;
-  }
-
-  .control-btn {
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    cursor: default;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform var(--duration-fast) ease,
-                opacity var(--duration-fast) ease;
-    background: var(--traffic-close);
-  }
-
-  .control-btn:hover {
-    transform: scale(1.15);
-  }
-
-  .control-btn:active {
-    transform: scale(0.95);
-  }
-
-  .control-icon {
-    width: 6px;
-    height: 6px;
-    stroke: currentColor;
-    stroke-width: 1.5;
-    fill: none;
-    opacity: 0;
-    transition: opacity var(--duration-fast) ease;
-    color: rgba(0, 0, 0, 0.7);
-  }
-
-  .minimize {
-    background: var(--traffic-minimize);
-  }
-
-  .maximize {
-    background: var(--traffic-maximize);
-  }
-
-  .window:hover .control-icon {
-    opacity: 1;
-  }
-
-  /* Toasts (toastify-js)
-   * These are created dynamically and appended to <body>, so they must be global.
-   */
+  /* Toast styling — kept for easter eggs */
   :global(.toastify.tyndfed-toastify) {
     background: transparent !important;
     box-shadow: none !important;
@@ -195,12 +71,10 @@
 
   :global(.tyndfed-toast) {
     position: relative;
-    background: var(--bg-void);
-    border: 1px solid rgba(255, 255, 255, 0.16);
-    border-radius: 10px;
-    box-shadow:
-      0 18px 48px -28px rgba(0, 0, 0, 0.85),
-      inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+    background: var(--bg-surface);
+    border: 1px solid var(--rule-strong);
+    border-radius: 0;
+    box-shadow: 0 18px 48px -28px rgba(0, 0, 0, 0.85);
     overflow: hidden;
   }
 
@@ -211,12 +85,7 @@
     top: 0;
     bottom: 0;
     width: 2px;
-    background: rgba(255, 255, 255, 0.22);
-    opacity: 1;
-  }
-
-  :global(.tyndfed-toast)::after {
-    content: none;
+    background: var(--accent);
   }
 
   :global(.tyndfed-toast__inner) {
@@ -224,64 +93,46 @@
     align-items: flex-start;
     gap: 12px;
     padding: 14px 16px;
-    padding-left: 14px;
   }
 
   :global(.tyndfed-toast__msg) {
     flex: 1;
-    min-width: 0;
     color: var(--text-secondary);
     line-height: 1.4;
     word-break: break-word;
-    font-weight: 400;
-    letter-spacing: -0.01em;
+    font-size: 12px;
+    letter-spacing: 0.04em;
   }
 
   :global(.tyndfed-toast__msg strong) {
-    font-weight: 600;
     color: var(--text-primary);
-    letter-spacing: -0.02em;
+    font-weight: 600;
   }
 
   :global(.tyndfed-toast__close) {
     flex-shrink: 0;
     appearance: none;
-    border: 1px solid var(--interactive-border);
-    background: var(--interactive-bg);
-    color: var(--text-ghost);
-    width: 28px;
-    height: 28px;
-    padding: 0;
-    margin: -4px -6px 0 0;
-    border-radius: 8px;
+    border: 1px solid var(--rule-strong);
+    background: transparent;
+    color: var(--text-muted);
+    width: 26px;
+    height: 26px;
+    border-radius: 0;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition:
-      transform var(--duration-fast) var(--ease-smooth),
-      background var(--duration-fast) ease,
-      border-color var(--duration-fast) ease,
-      color var(--duration-fast) ease,
-      opacity var(--duration-fast) ease;
-    opacity: 0.85;
+    transition: color var(--duration-fast) ease, border-color var(--duration-fast) ease;
   }
 
   :global(.tyndfed-toast__close:hover) {
-    background: var(--interactive-bg-hover);
-    border-color: var(--interactive-border-hover);
     color: var(--text-primary);
-    opacity: 1;
-  }
-
-  :global(.tyndfed-toast__close:active) {
-    transform: scale(0.96);
-    border-color: var(--interactive-border-active);
+    border-color: var(--accent);
   }
 
   :global(.tyndfed-toast__close svg) {
-    width: 12px;
-    height: 12px;
+    width: 10px;
+    height: 10px;
     stroke: currentColor;
     stroke-width: 1.6;
     fill: none;
@@ -294,16 +145,11 @@
     right: 0;
     bottom: 0;
     height: 1px;
-    background: linear-gradient(90deg, rgba(255, 255, 255, 0.55), rgba(255, 255, 255, 0));
+    background: var(--accent);
     transform-origin: left;
     animation: tyndfedToastProgress linear forwards;
     animation-duration: var(--toast-duration, 2500ms);
-    opacity: 0.9;
-  }
-
-  :global(.tyndfed-toast.tyndfed-toast--muted .tyndfed-toast__progress) {
-    background: linear-gradient(90deg, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0));
-    opacity: 0.8;
+    opacity: 0.85;
   }
 
   @keyframes tyndfedToastProgress {
@@ -312,7 +158,7 @@
   }
 
   :global(.tyndfed-toast .accent) {
-    color: var(--accent);
+    color: var(--accent-strong);
     font-weight: 500;
   }
 
@@ -326,74 +172,15 @@
     align-items: center;
     justify-content: center;
     padding: 2px 8px;
-    border-radius: 6px;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--rule-strong);
+    background: rgba(244, 237, 224, 0.04);
     color: var(--text-primary);
     font-family: var(--font-mono);
     font-size: 11px;
-    font-weight: 500;
-    line-height: 1.3;
     margin: 0 2px;
-    vertical-align: middle;
     text-transform: uppercase;
-    letter-spacing: 0.03em;
+    letter-spacing: 0.04em;
   }
-
-  @media (max-width: 768px) {
-    .window {
-      border-radius: 6px;
-      animation: none;
-    }
-  }
-
-  @media (max-width: 480px) {
-    .window {
-      max-width: 100%;
-      max-height: none;
-      overflow: hidden;
-    }
-
-    .title-bar {
-      padding: 10px 12px;
-      cursor: default;
-    }
-
-    .control-btn {
-      width: 10px;
-      height: 10px;
-    }
-
-    .control-icon {
-      width: 5px;
-      height: 5px;
-    }
-
-    .controls {
-      gap: 6px;
-    }
-
-    :global(.toastify.tyndfed-toastify) {
-      width: calc(100vw - 32px) !important;
-      max-width: calc(100vw - 32px) !important;
-    }
-
-    :global(.tyndfed-toast__inner) {
-      gap: 10px;
-      padding: 12px 14px;
-    }
-
-    :global(.tyndfed-toast__close) {
-      width: 26px;
-      height: 26px;
-    }
-
-    :global(.tyndfed-toast .kbd) {
-      font-size: 10px;
-      padding: 1px 6px;
-    }
-  }
-
 </style>
 
 <script>
@@ -406,10 +193,8 @@
       return;
     }
 
-    // Astro's script type-checking can be conservative about narrowing in .astro files.
     const mainWindowEl = mainWindow;
 
-    // Prevent duplicated listeners when this script re-runs during HMR.
     if (mainWindowEl.dataset.windowChromeInit === '1') {
       return;
     }
@@ -445,8 +230,8 @@
     let onMatrixResize: (() => void) | null = null;
 
     const lastToastAtByKey = new Map<string, number>();
-    const MATRIX_COLOR = 'rgba(57, 255, 20, 0.9)'; // neon green
-    const MATRIX_BG_FADE = 'rgba(12, 12, 15, 0.16)'; // fade-to-black per frame
+    const MATRIX_COLOR = 'rgba(212, 184, 122, 0.95)';
+    const MATRIX_BG_FADE = 'rgba(10, 10, 9, 0.16)';
     const MATRIX_CHARS = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ#$%&*+-=<>?';
 
     window.addEventListener('beforeunload', stopMatrix);
@@ -460,7 +245,6 @@
     }
 
     function normalizeToastKey(message: string) {
-      // Key on the raw HTML message we control.
       return message.replace(/\s+/g, ' ').trim();
     }
 
@@ -588,7 +372,7 @@
         return;
       }
 
-      const fontSize = 14; // CSS px, scaled by DPR in backing store
+      const fontSize = 14;
       let dpr = Math.max(1, Math.floor(window.devicePixelRatio || 1));
       let width = 0;
       let height = 0;
@@ -621,7 +405,7 @@
       window.visualViewport?.addEventListener('resize', onMatrixResize, { passive: true });
 
       let lastFrameTime = 0;
-      const frameInterval = 1000 / 30; // ~30fps
+      const frameInterval = 1000 / 30;
 
       const draw = (time: number) => {
         if (!matrixCanvas) {
@@ -751,6 +535,12 @@
     }
 
     document.addEventListener('keydown', (event) => {
+      const target = event.target;
+      const isEditable =
+        target instanceof HTMLElement &&
+        (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable);
+      if (isEditable) return;
+
       if (event.key === '?') {
         showToast(HELP_MESSAGE, { variant: 'secret', duration: 4200 });
         return;
@@ -763,7 +553,6 @@
 
       handleKonamiKey(event.key);
 
-      // Typed word codes (ignore modifier combos).
       if (event.ctrlKey || event.metaKey || event.altKey || event.key.length !== 1) {
         return;
       }

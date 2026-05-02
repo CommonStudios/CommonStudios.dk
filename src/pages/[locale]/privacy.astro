@@ -1,0 +1,102 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import WindowChrome from '~/components/WindowChrome.astro';
+import BackLink from '~/components/BackLink.astro';
+import LegalSection from '~/components/LegalSection.astro';
+import { legalContent } from '~/data/legal';
+import { SITE_ORIGIN } from '~/config/site';
+import { LOCALES, isLocale } from '~/i18n/constants';
+import type { Locale } from '~/i18n/constants';
+import { canonicalUrl, pathForLocale } from '~/i18n/paths';
+import { ui } from '~/i18n/ui';
+
+export function getStaticPaths() {
+  return LOCALES.map((locale) => ({ params: { locale } }));
+}
+
+const { locale: raw } = Astro.params;
+if (!isLocale(raw)) {
+  return Astro.redirect('/da/privacy');
+}
+const locale: Locale = raw;
+const t = ui(locale);
+const legal = legalContent[locale];
+---
+
+<BaseLayout
+  title={t.meta.privacyTitle}
+  description={t.meta.privacyDescription}
+  canonical={canonicalUrl(SITE_ORIGIN, locale, 'privacy')}
+  htmlLang={locale}
+  localeContext={{ locale, pathKey: 'privacy' }}
+  skipLinkLabel={t.skipToContent}
+>
+  <WindowChrome>
+    <BackLink href={pathForLocale(locale, '')} label={t.privacy.backHome} />
+
+    <section class="legal-hero shell">
+      <p class="eyebrow">
+        <span class="meta-num">{t.privacy.docMarker}</span>
+        <span class="meta-sep">/</span>
+        {t.privacy.eyebrow}
+      </p>
+      <header class="legal-header">
+        <h1 class="legal-title">
+          {t.privacy.title}
+        </h1>
+      </header>
+    </section>
+
+    <section class="legal-body shell" aria-label={t.privacy.sectionAria}>
+      <LegalSection document={legal.privacy} />
+      <hr class="divider" />
+      <LegalSection document={legal.terms} />
+    </section>
+  </WindowChrome>
+</BaseLayout>
+
+<style>
+  .legal-hero {
+    padding-block: 22px 34px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  .meta-num { color: var(--text-secondary); font-weight: 500; }
+  .meta-sep { color: var(--text-ghost); }
+
+  .legal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: 32px;
+    flex-wrap: wrap;
+  }
+
+  .legal-title {
+    font-family: var(--font-display);
+    font-weight: 540;
+    font-variation-settings: normal;
+    font-size: var(--font-display-md);
+    line-height: 1;
+    letter-spacing: 0;
+    color: var(--text-primary);
+    margin: 0;
+  }
+
+  .legal-body {
+    padding-block: 28px 32px;
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px solid var(--rule);
+    margin: 56px 0;
+  }
+</style>

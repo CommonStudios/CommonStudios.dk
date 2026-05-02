@@ -1,0 +1,229 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import WindowChrome from '~/components/WindowChrome.astro';
+import TextType from '~/components/TextType';
+import { SITE_ORIGIN, SEO } from '~/config/site';
+import { LOCALES, isLocale } from '~/i18n/constants';
+import { canonicalUrl, pathForLocale } from '~/i18n/paths';
+import { ui } from '~/i18n/ui';
+
+export function getStaticPaths() {
+  return LOCALES.map((locale) => ({ params: { locale } }));
+}
+
+const { locale: raw } = Astro.params;
+if (!isLocale(raw)) {
+  return Astro.redirect('/da');
+}
+const locale = raw;
+const t = ui(locale);
+---
+
+<BaseLayout
+  title={t.meta.homeTitle}
+  description={t.meta.homeDescription}
+  canonical={canonicalUrl(SITE_ORIGIN, locale, '')}
+  hideFooter
+  noScroll
+  showSilkBackground
+  htmlLang={locale}
+  localeContext={{ locale, pathKey: '' }}
+  skipLinkLabel={t.skipToContent}
+>
+  <WindowChrome>
+    <section class="hero shell" aria-label={t.home.heroAria} data-locale={locale}>
+      <div class="hero-center">
+        <h1
+          class="hero-title"
+          aria-label={t.home.heroTitle}
+        >
+          <TextType
+            client:load
+            as="span"
+            text={[...t.home.heroTypingLines]}
+            typingSpeed={46}
+            pauseDuration={2200}
+            deletingSpeed={26}
+            loop={true}
+            initialDelay={350}
+            showCursor={true}
+            cursorCharacter="|"
+            cursorClassName="ml-0.5 text-[var(--accent)]"
+            startOnVisible={true}
+            className="block w-full max-w-full"
+          />
+        </h1>
+
+        <p class="hero-lede">
+          {t.home.heroLede}
+        </p>
+
+        <nav class="hero-actions" aria-label={t.home.heroActionsAria}>
+          <a href={pathForLocale(locale, 'projects')} class="hero-link">
+            <span>{t.home.heroCta}</span>
+            <svg
+              class="hero-link-arrow"
+              width="14"
+              height="14"
+              viewBox="0 0 14 14"
+              fill="none"
+              aria-hidden="true"
+            >
+              <path
+                d="M2 7h10m0 0L7.5 2.5M12 7l-4.5 4.5"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </a>
+        </nav>
+      </div>
+
+      <p class="hero-credit">
+        {t.home.heroCreditLead}<span class="hero-credit-name">{SEO.author}</span>{t.home.heroCreditTail}
+      </p>
+    </section>
+  </WindowChrome>
+</BaseLayout>
+
+<style>
+  .hero {
+    height: 100%;
+    display: grid;
+    grid-template-rows: 1fr auto;
+    align-items: start;
+    gap: 24px;
+    text-align: left;
+  }
+
+  .hero-center {
+    align-self: stretch;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1.5rem;
+    align-items: flex-start;
+    max-width: min(44rem, 100%);
+    padding-left: 0;
+  }
+
+  .hero-title {
+    font-family: var(--font-display);
+    font-size: clamp(2.25rem, 5.2vw, 4.25rem);
+    line-height: 1.12;
+    letter-spacing: -0.03em;
+    font-weight: 520;
+    color: var(--text-primary);
+    width: 100%;
+    max-width: 100%;
+    text-wrap: wrap;
+    overflow-wrap: normal;
+    word-break: normal;
+    /* No text-wrap: balance or hyphens — they reflow each keystroke and look jumpy */
+    hyphens: none;
+    -webkit-hyphens: none;
+    /* Fallback before the island measures all hero lines */
+    min-height: 2.75lh;
+  }
+
+  .hero[data-locale='da'] .hero-title {
+    line-height: 1.14;
+    min-height: 2.75lh;
+  }
+
+  @media (max-width: 480px) {
+    .hero-title {
+      min-height: 3lh;
+    }
+
+    .hero[data-locale='da'] .hero-title {
+      min-height: 3lh;
+    }
+  }
+
+  .hero-lede {
+    max-width: 42rem;
+    color: var(--text-secondary);
+    font-family: var(--font-sans);
+    font-size: clamp(1rem, 1.25vw, 1.125rem);
+    line-height: 1.65;
+    font-weight: 400;
+  }
+
+  .hero[data-locale='da'] .hero-lede {
+    line-height: 1.72;
+  }
+
+  .hero-actions {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    flex-wrap: wrap;
+    margin-top: 0.25rem;
+  }
+
+  .hero-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 40px;
+    font-family: var(--font-sans);
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: 0;
+    color: var(--text-primary);
+    padding: 8px 0 6px;
+    border-bottom: 1px solid var(--rule-strong);
+    transition:
+      color var(--duration-fast) ease,
+      border-color var(--duration-fast) ease;
+  }
+
+  .hero-link-arrow {
+    flex-shrink: 0;
+    transition: transform var(--duration-normal) var(--ease-out-expo);
+  }
+
+  .hero-link:hover {
+    color: var(--accent-strong);
+    border-color: var(--accent);
+  }
+
+  .hero-link:hover .hero-link-arrow {
+    transform: translateX(3px);
+  }
+
+  .hero-credit {
+    align-self: end;
+    padding-top: 24px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: none;
+    color: var(--text-muted);
+    letter-spacing: 0.02em;
+    line-height: 1.5;
+    max-width: 36rem;
+  }
+
+  .hero-credit-name {
+    color: var(--text-secondary);
+  }
+
+  @media (max-width: 700px) {
+    .hero {
+      gap: 22px;
+    }
+
+    .hero-center {
+      gap: 1.25rem;
+    }
+
+    .hero-credit {
+      padding-top: 16px;
+    }
+  }
+</style>

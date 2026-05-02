@@ -1,0 +1,249 @@
+---
+import { BRAND_MARK_SRC } from '~/config/site';
+import type { Locale } from '~/i18n/constants';
+import { DEFAULT_LOCALE } from '~/i18n/constants';
+import { pathForLocale } from '~/i18n/paths';
+import { ui } from '~/i18n/ui';
+
+type Segment = '' | 'projects' | 'privacy';
+
+interface Props {
+  locale?: Locale;
+  segment?: Segment;
+}
+
+const locale = Astro.props.locale ?? DEFAULT_LOCALE;
+const segment: Segment = Astro.props.segment ?? '';
+const t = ui(locale);
+---
+
+<header class="site-header" data-site-header>
+  <div class="site-header-inner">
+    <a href={pathForLocale(locale, '')} class="brand" aria-label={t.header.brandAria}>
+      <img src={BRAND_MARK_SRC} alt="" width="220" height="58" class="brand-mark" />
+    </a>
+
+    <div class="site-header-end">
+      <nav class="site-nav" aria-label={t.header.navPrimary}>
+        <ul>
+          <li>
+            <a
+              href={pathForLocale(locale, 'projects')}
+              class:list={['site-nav-link', { 'is-current': segment === 'projects' }]}
+              aria-current={segment === 'projects' ? 'page' : undefined}
+            >
+              {t.header.projects}
+            </a>
+          </li>
+          <li>
+            <a class="site-nav-link" href="mailto:kontakt@tyndfed.dk">{t.header.contact}</a>
+          </li>
+        </ul>
+      </nav>
+
+      <div class="locale-switch" role="group" aria-label={t.header.chooseLanguage} data-active={locale}>
+        <span class="locale-pill" aria-hidden="true"></span>
+        <a
+          href={pathForLocale('da', segment)}
+          class:list={['locale-link', { 'is-active': locale === 'da' }]}
+          aria-current={locale === 'da' ? 'page' : undefined}
+          lang="da"
+          data-astro-reload
+        >
+          DA
+        </a>
+        <a
+          href={pathForLocale('en', segment)}
+          class:list={['locale-link', { 'is-active': locale === 'en' }]}
+          aria-current={locale === 'en' ? 'page' : undefined}
+          lang="en"
+          data-astro-reload
+        >
+          EN
+        </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    z-index: 100;
+    width: 100%;
+  }
+
+  .site-header-inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 24px;
+    min-width: 0;
+  }
+
+  .site-header-end {
+    display: flex;
+    align-items: center;
+    gap: 16px 22px;
+    flex-wrap: nowrap;
+    justify-content: flex-end;
+    min-width: 0;
+  }
+
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    color: var(--text-primary);
+    width: fit-content;
+    line-height: 0;
+  }
+
+  .brand-mark {
+    width: auto;
+    height: 38px;
+    display: block;
+  }
+
+  .site-nav {
+    flex-shrink: 0;
+  }
+
+  .site-nav ul {
+    list-style: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 20px;
+    white-space: nowrap;
+  }
+
+  .site-nav-link {
+    position: relative;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    color: var(--text-secondary);
+    padding: 7px 0;
+    border: none;
+    background: transparent;
+    transition: color var(--duration-fast) ease;
+  }
+
+  .site-nav-link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 1px;
+    height: 1px;
+    background: currentColor;
+    opacity: 0;
+    transform: scaleX(0.6);
+    transform-origin: left center;
+    transition:
+      opacity var(--duration-fast) ease,
+      transform var(--duration-normal) var(--ease-out-expo);
+  }
+
+  .site-nav-link:hover {
+    color: var(--accent-strong);
+  }
+
+  .site-nav-link:hover::after,
+  .site-nav-link.is-current::after {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+
+  .site-nav-link.is-current {
+    color: var(--text-primary);
+  }
+
+  .locale-switch {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: stretch;
+    padding: 4px;
+    gap: 4px;
+    border-radius: 10px;
+    border: 1px solid var(--rule);
+    background: rgba(247, 247, 242, 0.03);
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    flex-shrink: 0;
+    min-width: 7.5rem;
+  }
+
+  .locale-pill {
+    position: absolute;
+    top: 4px;
+    bottom: 4px;
+    left: 4px;
+    width: calc(50% - 6px);
+    background: var(--accent);
+    border-radius: 7px;
+    z-index: 0;
+    transform: translateX(0);
+    transition: transform 0.38s var(--ease-out-expo);
+    pointer-events: none;
+    box-shadow: 0 0 0 1px color-mix(in oklch, var(--accent) 35%, transparent);
+  }
+
+  .locale-switch[data-active='en'] .locale-pill {
+    transform: translateX(calc(100% + 4px));
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .locale-pill,
+    .locale-link {
+      transition: color 0.15s ease;
+    }
+  }
+
+  .locale-link {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 10px;
+    border-radius: 7px;
+    color: var(--text-muted);
+    transition: color 0.24s ease;
+    border-bottom: none;
+  }
+
+  .locale-link:focus-visible {
+    outline: 1px solid var(--accent);
+    outline-offset: 2px;
+    border-radius: 7px;
+  }
+
+  .locale-link:hover {
+    color: var(--text-primary);
+  }
+
+  .locale-link.is-active {
+    color: var(--bg-void);
+  }
+
+  @media (max-width: 480px) {
+    .site-header-inner {
+      gap: 12px;
+    }
+
+    .brand-mark {
+      height: 28px;
+    }
+
+    .site-header-end {
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .site-nav ul {
+      gap: 12px;
+    }
+  }
+</style>

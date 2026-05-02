@@ -4,34 +4,22 @@
  */
 export const SITE_ORIGIN = 'https://tyndfed.dk' as const;
 
-export const ROUTES = {
-  home: '/',
-  projects: '/projects',
-  privacy: '/privacy',
-} as const;
-
-export const CANONICAL = {
-  home: `${SITE_ORIGIN}/`,
-  projects: `${SITE_ORIGIN}${ROUTES.projects}`,
-  privacy: `${SITE_ORIGIN}${ROUTES.privacy}`,
-} as const;
-
 /** Favicon + Ascii fallback SVG — safe to preload on every route. */
 export const BRAND_MARK_SRC = '/images/tyndfed.svg' as const;
 
 export const SEO = {
   defaultDescription:
-    'Tyndfed - Creative development studio specializing in mobile apps, websites, and digital design.',
+    'Tyndfed - Independent software development studio specializing in websites, web apps, and digital systems.',
   defaultOgImage: BRAND_MARK_SRC,
   siteName: 'Tyndfed',
-  themeColor: '#0a0a0a',
+  themeColor: '#0b0c0a',
   author: 'Tobias Dosdal-Feddersen',
 } as const;
 
 export const ORGANIZATION = {
   jsonLdType: 'Organization' as const,
   name: 'Tyndfed',
-  description: 'Software development & creative services',
+  description: 'Software development, websites, web apps, and digital systems',
   logoPath: BRAND_MARK_SRC,
   addressCountry: 'DK',
   sameAs: [
@@ -40,21 +28,6 @@ export const ORGANIZATION = {
     'https://instagram.com/tobiasdosdal',
   ] as const,
 } as const;
-
-/** External font stylesheet URLs — deduped here so prefetch/preload stay aligned. */
-export const FONT_STYLESHEETS = {
-  satoshi:
-    'https://api.fontshare.com/v2/css?f[]=satoshi@400,500,600,700&display=swap',
-  mono: 'https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Noto+Sans+Mono:wght@400;500&display=swap',
-} as const;
-
-/** Origins we warm-connect to from `<head>`. */
-export const FONT_PRECONNECT = [
-  'https://api.fontshare.com',
-  'https://cdn.fontshare.com',
-  'https://fonts.googleapis.com',
-  'https://fonts.gstatic.com',
-] as const;
 
 export function buildOrganizationJsonLd(siteOrigin: string) {
   const origin = siteOrigin.replace(/\/$/, '');
