@@ -1,206 +1,60 @@
 ---
-import BaseLayout from '~/layouts/BaseLayout.astro';
-import WindowChrome from '~/components/WindowChrome.astro';
-import BackLink from '~/components/BackLink.astro';
-import LegalSection from '~/components/LegalSection.astro';
-import { legalContent } from '~/data/legal';
-import { CANONICAL } from '~/config/site';
+const STORAGE = 'tyndfed-lang';
+const suffix = '/privacy';
 ---
-
-<BaseLayout
-  title="Tyndfed — Privacy & Terms"
-  description="Privacy Policy and Terms of Service for Tyndfed apps and services."
-  canonical={CANONICAL.privacy}
-  htmlLang="da"
->
-  <WindowChrome>
-    <BackLink />
-
-    <section class="legal-hero shell">
-      <p class="eyebrow">
-        <span class="meta-num">N°3</span>
-        <span class="meta-sep">/</span>
-        Legal
-      </p>
-      <header class="legal-header">
-        <h1 class="legal-title">
-          Privacy &amp; Terms
-        </h1>
-        <nav class="lang-switch" aria-label="Select language">
-          <button
-            type="button"
-            class="lang-btn active"
-            data-lang="da"
-            aria-controls="content-da"
-            aria-pressed="true"
-          >
-            Dansk
-          </button>
-          <button
-            type="button"
-            class="lang-btn"
-            data-lang="en"
-            aria-controls="content-en"
-            aria-pressed="false"
-          >
-            English
-          </button>
-        </nav>
-      </header>
-    </section>
-
-    <section class="legal-body shell">
-      <div id="content-da" class="lang-content" data-lang="da" lang="da">
-        <LegalSection document={legalContent.da.privacy} />
-        <hr class="divider" />
-        <LegalSection document={legalContent.da.terms} />
-      </div>
-
-      <div id="content-en" class="lang-content" data-lang="en" lang="en" hidden>
-        <LegalSection document={legalContent.en.privacy} />
-        <hr class="divider" />
-        <LegalSection document={legalContent.en.terms} />
-      </div>
-    </section>
-  </WindowChrome>
-
-  <script>
-    const storageKey = 'tyndfed-lang';
-    const supportedLangs = ['da', 'en'] as const;
-    type Language = (typeof supportedLangs)[number];
-    const supportedLangSet = new Set<Language>(supportedLangs);
-
-    function initLanguageToggle() {
-      const buttons = document.querySelectorAll<HTMLButtonElement>('.lang-btn');
-      const contents = document.querySelectorAll<HTMLElement>('.lang-content');
-      if (buttons.length === 0 || contents.length === 0) return;
-
-      const savedLang = getSavedLanguage();
-      setLanguage(savedLang);
-
-      buttons.forEach((btn) => {
-        btn.addEventListener('click', () => {
-          const lang = btn.getAttribute('data-lang');
-          if (isSupportedLanguage(lang)) {
-            setLanguage(lang);
-            persistLanguage(lang);
-          }
-        });
-      });
-
-      function setLanguage(lang: Language) {
-        document.documentElement.lang = lang;
-        buttons.forEach((btn) => {
-          const isActive = btn.getAttribute('data-lang') === lang;
-          btn.classList.toggle('active', isActive);
-          btn.setAttribute('aria-pressed', String(isActive));
-        });
-        contents.forEach((content) => {
-          const contentLang = content.getAttribute('data-lang');
-          content.hidden = contentLang !== lang;
-        });
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, follow" />
+    <title>Tyndfed — Privacy</title>
+    <link rel="icon" type="image/svg+xml" href="/images/tyndfed.svg" />
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        background: #0b0c0a;
+        color: #b9bcb1;
+        font-family: 'Geist', system-ui, sans-serif;
+        font-size: 15px;
+        padding: 24px;
       }
-
-      function persistLanguage(lang: Language) {
-        try {
-          localStorage.setItem(storageKey, lang);
-        } catch {}
+      p {
+        margin: 0;
+        text-align: center;
       }
-
-      function getSavedLanguage(): Language {
-        try {
-          const saved = localStorage.getItem(storageKey);
-          if (isSupportedLanguage(saved)) return saved;
-        } catch {}
-        return navigator.language?.toLowerCase().startsWith('da') ? 'da' : 'en';
+      a {
+        color: #f7f7f2;
+        text-decoration: none;
+        border-bottom: 1px solid rgba(247, 247, 242, 0.25);
       }
-
-      function isSupportedLanguage(lang: string | null): lang is Language {
-        return typeof lang === 'string' && supportedLangSet.has(lang as Language);
+      a:hover {
+        color: #e8d49b;
+        border-color: #d4b87a;
       }
-    }
-
-    initLanguageToggle();
-  </script>
-</BaseLayout>
-
-<style>
-  .legal-hero {
-    padding-block: 22px 34px;
-    border-bottom: 1px solid var(--rule);
-  }
-
-  .eyebrow {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 14px;
-  }
-
-  .meta-num { color: var(--accent); font-weight: 500; }
-  .meta-sep { color: var(--text-ghost); }
-
-  .legal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: end;
-    gap: 32px;
-    flex-wrap: wrap;
-  }
-
-  .legal-title {
-    font-family: var(--font-display);
-    font-weight: 540;
-    font-variation-settings: normal;
-    font-size: var(--font-display-md);
-    line-height: 1;
-    letter-spacing: 0;
-    color: var(--text-primary);
-    margin: 0;
-  }
-
-  .legal-title em {
-    color: var(--accent-strong);
-  }
-
-  .lang-switch {
-    display: inline-flex;
-    border: 1px solid var(--rule-strong);
-    border-radius: 10px;
-    padding: 4px;
-    gap: 4px;
-  }
-
-  .lang-btn {
-    appearance: none;
-    background: transparent;
-    border: none;
-    cursor: pointer;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    padding: 8px 16px;
-    border-radius: 7px;
-    transition: color var(--duration-fast) ease, background var(--duration-fast) ease;
-  }
-
-  .lang-btn:hover { color: var(--text-primary); }
-
-  .lang-btn.active {
-    color: var(--bg-void);
-    background: var(--accent);
-  }
-
-  .legal-body {
-    padding-block: 28px 32px;
-  }
-
-  .lang-content[hidden] { display: none; }
-
-  .divider {
-    border: none;
-    border-top: 1px solid var(--rule);
-    margin: 56px 0;
-  }
-</style>
+    </style>
+  </head>
+  <body>
+    <p>
+      <a href="/da/privacy">Dansk</a>
+      <span aria-hidden="true"> · </span>
+      <a href="/en/privacy">English</a>
+    </p>
+    <script is:inline define:vars={{ STORAGE, suffix }}>
+      (function () {
+        function pick() {
+          try {
+            var s = localStorage.getItem(STORAGE);
+            if (s === 'da' || s === 'en') return s;
+          } catch (_) {}
+          var nav = navigator.language || '';
+          return nav.toLowerCase().startsWith('da') ? 'da' : 'en';
+        }
+        location.replace('/' + pick() + suffix);
+      })();
+    </script>
+  </body>
+</html>

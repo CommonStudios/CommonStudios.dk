@@ -11,14 +11,19 @@ const projectHrefSchema = z
     'Expected root-relative path or http(s) URL',
   );
 
+const localizedString = z.object({
+  da: z.string().min(1),
+  en: z.string().min(1),
+});
+
 export const projectLinkSchema = z.object({
-  label: z.string().min(1),
+  label: localizedString,
   url: projectHrefSchema,
 });
 
 export const projectSchema = z.object({
   name: z.string().min(1),
-  description: z.string().min(1),
+  description: localizedString,
   icon: z.string().startsWith('/'),
   links: z.array(projectLinkSchema).min(1),
 });

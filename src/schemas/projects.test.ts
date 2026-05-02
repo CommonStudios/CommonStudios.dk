@@ -6,9 +6,9 @@ describe('parseProjects', () => {
     const data = [
       {
         name: 'N',
-        description: 'D',
+        description: { da: 'D', en: 'D' },
         icon: '/i.png',
-        links: [{ label: 'L', url: 'https://a.dk' }],
+        links: [{ label: { da: 'L', en: 'L' }, url: 'https://a.dk' }],
       },
     ];
     expect(parseProjects(data)).toHaveLength(1);
@@ -19,9 +19,9 @@ describe('parseProjects', () => {
       parseProjects([
         {
           name: 'N',
-          description: 'D',
+          description: { da: 'D', en: 'D' },
           icon: 'https://evil.com/i.png',
-          links: [{ label: 'L', url: '/p' }],
+          links: [{ label: { da: 'L', en: 'L' }, url: '/p' }],
         },
       ]),
     ).toThrow();

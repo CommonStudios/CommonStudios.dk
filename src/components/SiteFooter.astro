@@ -1,31 +1,41 @@
 ---
 import { socialLinks } from '~/data/social';
-import { ROUTES } from '~/config/site';
+import type { Locale } from '~/i18n/constants';
+import { DEFAULT_LOCALE } from '~/i18n/constants';
+import { pathForLocale } from '~/i18n/paths';
+import { ui } from '~/i18n/ui';
+
+interface Props {
+  locale?: Locale;
+}
+
+const locale = Astro.props.locale ?? DEFAULT_LOCALE;
+const t = ui(locale);
 ---
 
 <footer class="footer-grid">
   <div class="shell">
     <div class="grid-body">
       <div class="grid-col">
-        <p class="grid-label">Contact</p>
+        <p class="grid-label">{t.footer.contact}</p>
         <a class="grid-email" href="mailto:kontakt@tyndfed.dk">
           kontakt@tyndfed.dk
         </a>
-        <p class="grid-detail">Copenhagen, Denmark</p>
+        <p class="grid-detail">{t.footer.copenhagen}</p>
         <p class="grid-detail">CVR 39125307</p>
       </div>
 
       <div class="grid-col">
-        <p class="grid-label">Navigation</p>
-        <nav aria-label="Footer navigation">
-          <a class="grid-link" href={ROUTES.projects}>Projects</a>
-          <a class="grid-link" href={ROUTES.privacy}>Privacy</a>
+        <p class="grid-label">{t.footer.navigation}</p>
+        <nav aria-label={t.footer.footerNav}>
+          <a class="grid-link" href={pathForLocale(locale, 'projects')}>{t.footer.projects}</a>
+          <a class="grid-link" href={pathForLocale(locale, 'privacy')}>{t.footer.privacy}</a>
         </nav>
       </div>
 
       <div class="grid-col">
-        <p class="grid-label">Social</p>
-        <nav class="grid-social" aria-label="Social media">
+        <p class="grid-label">{t.footer.social}</p>
+        <nav class="grid-social" aria-label={t.footer.socialMedia}>
           {socialLinks.map((link) => (
             <a
               href={link.url}

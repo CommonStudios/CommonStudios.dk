@@ -5,6 +5,7 @@
 export const SITE_ORIGIN = 'https://tyndfed.dk' as const;
 
 export const ROUTES = {
+  /** @deprecated Use `pathForLocale` from `~/i18n/paths` for locale-prefixed links. */
   home: '/',
   projects: '/projects',
   privacy: '/privacy',
@@ -40,18 +41,6 @@ export const ORGANIZATION = {
     'https://instagram.com/tobiasdosdal',
   ] as const,
 } as const;
-
-/** External font stylesheet URLs — deduped here so prefetch/preload stay aligned. */
-export const FONT_STYLESHEETS = {
-  primary:
-    'https://fonts.googleapis.com/css2?family=Geist:wght@400..700&family=Geist+Mono:wght@400..700&display=swap',
-} as const;
-
-/** Origins we warm-connect to from `<head>`. */
-export const FONT_PRECONNECT = [
-  'https://fonts.googleapis.com',
-  'https://fonts.gstatic.com',
-] as const;
 
 export function buildOrganizationJsonLd(siteOrigin: string) {
   const origin = siteOrigin.replace(/\/$/, '');

@@ -1,9 +1,13 @@
 @import "tailwindcss/utilities";
+@import "@fontsource-variable/geist";
+@import "@fontsource-variable/geist-mono";
 
 /* =============================================================
    Tyndfed — Framed terminal tokens
    Neutral near-black, clean ink, restrained acid accent.
    ============================================================= */
+
+/* --- Tailwind theme bridge (utility color names) --- */
 
 @theme {
   --color-void: #0b0c0a;
@@ -18,40 +22,24 @@
   --color-ink-ghost: #3e4338;
   --color-ink-warm: #ffffff;
 
-  --color-gold: #c8ff42;
-  --color-gold-strong: #ddff78;
-  --color-gold-dim: rgba(200, 255, 66, 0.12);
-  --color-gold-glow: rgba(200, 255, 66, 0.2);
+  --color-gold: #d4b87a;
+  --color-gold-strong: #e8d49b;
+  --color-gold-dim: rgba(212, 184, 122, 0.12);
+  --color-gold-glow: rgba(212, 184, 122, 0.2);
   --color-terracotta: #f0f0e8;
   --color-terracotta-dim: rgba(240, 240, 232, 0.1);
   --color-olive: #98a184;
 
   --color-rule: rgba(247, 247, 242, 0.11);
   --color-rule-strong: rgba(247, 247, 242, 0.2);
-  --color-rule-accent: rgba(200, 255, 66, 0.36);
+  --color-rule-accent: rgba(212, 184, 122, 0.36);
 
-  --font-display: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-sans: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-mono: 'Geist Mono', 'SF Mono', 'Fira Code', monospace;
+  --font-display: 'Geist Variable', 'Geist Fallback', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-sans: 'Geist Variable', 'Geist Fallback', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'Geist Mono Variable', 'Geist Mono Fallback', 'SF Mono', 'Fira Code', monospace;
 }
 
-@property --pointer-x {
-  syntax: '<percentage>';
-  inherits: true;
-  initial-value: 50%;
-}
-
-@property --pointer-y {
-  syntax: '<percentage>';
-  inherits: true;
-  initial-value: 30%;
-}
-
-@property --lift {
-  syntax: '<length>';
-  inherits: false;
-  initial-value: 0px;
-}
+/* --- App tokens (:root) --- */
 
 :root {
   /* Surfaces — ui.sh-inspired neutral frame */
@@ -68,11 +56,11 @@
   --text-ghost: #3e4338;
   --text-warm: #ffffff;
 
-  /* Accent */
-  --accent: #c8ff42;
-  --accent-strong: #ddff78;
-  --accent-dim: rgba(200, 255, 66, 0.12);
-  --accent-glow: rgba(200, 255, 66, 0.2);
+  /* Accent — warm editorial gold */
+  --accent: #d4b87a;
+  --accent-strong: #e8d49b;
+  --accent-dim: rgba(212, 184, 122, 0.12);
+  --accent-glow: rgba(212, 184, 122, 0.2);
   --accent-secondary: #f0f0e8;
   --accent-secondary-dim: rgba(240, 240, 232, 0.1);
   --accent-tertiary: #98a184;
@@ -80,7 +68,7 @@
   /* Rules & chrome */
   --rule: rgba(247, 247, 242, 0.11);
   --rule-strong: rgba(247, 247, 242, 0.2);
-  --rule-accent: rgba(200, 255, 66, 0.36);
+  --rule-accent: rgba(212, 184, 122, 0.36);
   --frame-rule: rgba(247, 247, 242, 0.12);
   --frame-rule-soft: rgba(247, 247, 242, 0.055);
   --chrome-border: var(--rule);
@@ -92,14 +80,14 @@
   --interactive-bg-hover: rgba(247, 247, 242, 0.06);
   --interactive-border: rgba(247, 247, 242, 0.12);
   --interactive-border-hover: rgba(247, 247, 242, 0.24);
-  --interactive-border-active: rgba(200, 255, 66, 0.5);
+  --interactive-border-active: rgba(212, 184, 122, 0.5);
   --interactive-shadow: 0 12px 28px -18px rgba(0, 0, 0, 0.7);
   --interactive-shadow-strong: 0 24px 48px -22px rgba(0, 0, 0, 0.78);
 
   /* Legacy compatibility (window-chrome easter-egg toggles) */
   --traffic-close: #f0f0e8;
-  --traffic-minimize: #c8ff42;
-  --traffic-maximize: #6b8b5a;
+  --traffic-minimize: #d4b87a;
+  --traffic-maximize: #98a184;
   --traffic-inactive: #2a2a26;
 
   /* Spacing — editorial scale */
@@ -113,12 +101,9 @@
   --space-4xl: 200px;
 
   /* Typography */
-  --font-display: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-sans: 'Geist', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-mono: 'Geist Mono', 'SF Mono', 'Fira Code', monospace;
-
-  /* Back-compat alias used by some legacy components */
-  --font-body: var(--font-sans);
+  --font-display: 'Geist Variable', 'Geist Fallback', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-sans: 'Geist Variable', 'Geist Fallback', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'Geist Mono Variable', 'Geist Mono Fallback', 'SF Mono', 'Fira Code', monospace;
 
   --font-size-xs: 11px;
   --font-size-sm: 13px;
@@ -128,7 +113,7 @@
   --font-size-2xl: 32px;
   --font-size-3xl: 48px;
 
-  /* Fluid display sizes — for hero & section headlines */
+  /* Fluid display sizes — hero & section headlines */
   --font-display-sm: 48px;
   --font-display-md: 80px;
   --font-display-lg: 112px;
@@ -152,16 +137,18 @@
 
 @supports (color: oklch(0.5 0.1 200)) {
   :root {
-    --accent: oklch(0.9 0.23 128);
-    --accent-strong: oklch(0.94 0.18 126);
-    --accent-dim: oklch(0.9 0.23 128 / 0.12);
-    --accent-glow: oklch(0.9 0.23 128 / 0.2);
+    --accent: oklch(0.79 0.09 80);
+    --accent-strong: oklch(0.87 0.08 82);
+    --accent-dim: oklch(0.79 0.09 80 / 0.12);
+    --accent-glow: oklch(0.79 0.09 80 / 0.2);
     --accent-secondary: oklch(0.95 0.01 95);
-    --accent-tertiary: oklch(0.68 0.035 126);
-    --rule-accent: oklch(0.9 0.23 128 / 0.36);
-    --interactive-border-active: oklch(0.9 0.23 128 / 0.5);
+    --accent-tertiary: oklch(0.68 0.025 120);
+    --rule-accent: oklch(0.79 0.09 80 / 0.36);
+    --interactive-border-active: oklch(0.79 0.09 80 / 0.5);
   }
 }
+
+/* --- Reset --- */
 
 * {
   margin: 0;
@@ -169,12 +156,21 @@
   box-sizing: border-box;
 }
 
+/* --- Document --- */
+
 html {
   background: var(--bg-void);
-  scroll-behavior: smooth;
   width: 100%;
-  /* Editorial touch — slightly tighter horizontal rhythm */
   text-size-adjust: 100%;
+  scrollbar-gutter: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--text-ghost) transparent;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 body {
@@ -194,24 +190,35 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+/* --- Stacking: background mesh, silk, content --- */
+
 .site-background {
   position: fixed;
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  opacity: 0.3;
+}
+
+.site-background-silk {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: 0.26;
 }
 
 .site-background-canvas {
+  position: relative;
+  z-index: 1;
   width: 100%;
   height: 100%;
+  opacity: 0.55;
   background:
-    linear-gradient(rgba(247, 247, 242, 0.018) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(247, 247, 242, 0.018) 1px, transparent 1px),
-    linear-gradient(180deg, rgba(200, 255, 66, 0.055), transparent 28%);
+    linear-gradient(rgba(247, 247, 242, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(247, 247, 242, 0.045) 1px, transparent 1px),
+    linear-gradient(180deg, rgba(247, 247, 242, 0.04), transparent 32%);
   background-size:
-    44px 44px,
-    44px 44px,
+    40px 40px,
+    40px 40px,
     100% 100%;
 }
 
@@ -222,7 +229,7 @@ body {
   display: block;
 }
 
-/* Subtle film grain overlay */
+/* Film grain overlay */
 body::before {
   content: '';
   position: fixed;
@@ -243,9 +250,7 @@ body::before {
   filter: contrast(140%) brightness(108%);
 }
 
-body::after {
-  content: none;
-}
+/* --- Base typography & links --- */
 
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-display);
@@ -276,7 +281,8 @@ button:focus-visible {
   color: var(--bg-void);
 }
 
-/* Scrollbars — quiet */
+/* --- Scrollbars --- */
+
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -295,13 +301,8 @@ button:focus-visible {
   background: var(--text-muted);
 }
 
-/* Legacy modal scroll-region helper (still used by privacy page) */
-.window-scroll-region {
-  scrollbar-width: thin;
-  scrollbar-color: var(--text-ghost) transparent;
-}
+/* --- Layout primitives --- */
 
-/* Reusable layout primitives */
 .shell {
   width: 100%;
   max-width: var(--max-w);
@@ -309,21 +310,7 @@ button:focus-visible {
   padding-inline: var(--shell-pad);
 }
 
-@media (max-width: 900px) {
-  :root {
-    --font-display-sm: 40px;
-    --font-display-md: 56px;
-    --font-display-lg: 72px;
-  }
-}
-
-@media (max-width: 640px) {
-  :root {
-    --font-display-sm: 34px;
-    --font-display-md: 44px;
-    --font-display-lg: 52px;
-  }
-}
+/* --- Small utilities --- */
 
 .eyebrow {
   font-family: var(--font-mono);
@@ -342,42 +329,28 @@ button:focus-visible {
   border-bottom: 1px solid var(--rule);
 }
 
-/* Magnetic link — used by SiteHeader, footer, project rows */
-[data-magnetic] {
-  display: inline-block;
-  will-change: transform;
-  transition: transform 280ms var(--ease-out-expo);
-}
-
-/* Boot fade-in for page content */
+/* Opacity-only boot — avoids layout jump from translate/blur while fonts load */
 @keyframes pageBoot {
   from {
     opacity: 0;
-    transform: translateY(12px);
-    filter: blur(2px);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
-    filter: blur(0);
   }
 }
 
 .page-boot {
-  animation: pageBoot var(--duration-slower) var(--ease-out-expo) both;
+  animation: pageBoot 240ms var(--ease-out-expo) both;
 }
 
-/* Glitch utility (kept for AsciiLogo easter-egg) */
-@keyframes glitch {
-  0%, 100% { transform: translate(0); filter: none; }
-  20% { transform: translate(-2px, 1px); filter: hue-rotate(90deg); }
-  40% { transform: translate(2px, -1px); filter: hue-rotate(-90deg); }
-  60% { transform: translate(-1px, -1px); }
-  80% { transform: translate(1px, 1px); }
-}
+/* --- Responsive tokens --- */
 
-.glitch-hover:hover {
-  animation: glitch 0.3s ease-in-out;
+@media (max-width: 900px) {
+  :root {
+    --font-display-sm: 40px;
+    --font-display-md: 56px;
+    --font-display-lg: 72px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -386,20 +359,38 @@ button:focus-visible {
   }
 }
 
+@media (max-width: 640px) {
+  :root {
+    --font-display-sm: 34px;
+    --font-display-md: 44px;
+    --font-display-lg: 52px;
+  }
+}
+
 @media (max-width: 480px) {
   :root {
     --shell-pad: 16px;
   }
 
-  html, body {
+  html,
+  body {
     overflow-x: hidden;
   }
 }
 
-/* Hide custom cursor on touch / no-hover devices */
-@media (hover: none), (pointer: coarse) {
-  .cursor-dot,
-  .cursor-ring {
-    display: none !important;
+/* --- Reduced motion --- */
+
+@media (prefers-reduced-motion: reduce) {
+  .page-boot {
+    animation: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

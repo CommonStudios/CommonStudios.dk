@@ -5,6 +5,8 @@ import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'astro/config';
 import { SITE_ORIGIN } from './src/config/site';
 
+const siteBase = SITE_ORIGIN.replace(/\/$/, '');
+
 export default defineConfig({
   site: SITE_ORIGIN,
   trailingSlash: 'never',
@@ -18,7 +20,19 @@ export default defineConfig({
         plugins: [() => ({ visitor: {} })],
       },
     }),
-    sitemap(),
+    sitemap({
+      filter: (page) => {
+        const normalized = page.replace(/\/$/, '');
+        if (
+          normalized === siteBase ||
+          normalized === `${siteBase}/privacy` ||
+          normalized === `${siteBase}/projects`
+        ) {
+          return false;
+        }
+        return true;
+      },
+    }),
   ],
   adapter: vercel(),
   output: 'static',
