@@ -309,6 +309,17 @@ const t = ui(locale);
   }
 
   @media (max-width: 640px) {
+    .projects-hero h1 {
+      font-size: clamp(2rem, 11vw, 2.65rem);
+      line-height: 1.08;
+    }
+
+    .projects-lede,
+    .project-desc {
+      font-size: 1rem;
+      line-height: 1.58;
+    }
+
     .projects-hero-inner {
       gap: 1rem;
     }
@@ -340,6 +351,11 @@ const t = ui(locale);
     .project-links {
       gap: 12px 18px;
       margin-top: 14px;
+    }
+
+    .project-link {
+      min-height: 40px;
+      padding: 10px 14px;
     }
   }
 

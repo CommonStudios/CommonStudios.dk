@@ -229,21 +229,35 @@ const t = ui(locale);
 
   @media (max-width: 480px) {
     .site-header-inner {
-      gap: 12px;
+      grid-template-columns: 1fr;
+      gap: 14px;
     }
 
     .brand-mark {
-      height: 28px;
+      height: 26px;
     }
 
     .site-header-end {
-      gap: 10px;
-      flex-wrap: wrap;
-      justify-content: flex-end;
+      width: 100%;
+      gap: 12px;
+      justify-content: space-between;
     }
 
     .site-nav ul {
       gap: 12px;
+    }
+
+    .site-nav-link {
+      padding-block: 9px;
+    }
+
+    .locale-switch {
+      min-width: 6.25rem;
+    }
+
+    .locale-link {
+      min-height: 38px;
+      padding: 8px;
     }
   }
 </style>

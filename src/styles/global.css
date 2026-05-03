@@ -379,6 +379,7 @@ button:focus-visible {
 @media (max-width: 480px) {
   :root {
     --shell-pad: 16px;
+    --font-display-md: 38px;
   }
 
   html,

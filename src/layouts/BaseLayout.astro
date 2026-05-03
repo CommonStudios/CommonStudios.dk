@@ -305,15 +305,22 @@ for (const hint of [...defaultPreloads, ...preloadHints]) {
         min-height: 0;
       }
       .site-frame {
-        --frame-pad: 16px;
-        --frame-gap: 44px;
-        --frame-content-pad: 18px;
+        --frame-pad: 8px;
+        --frame-gap: 30px;
+        --frame-content-pad: 14px;
         position: relative;
         z-index: 1;
         min-height: 100dvh;
         display: grid;
         grid-template-columns: var(--frame-pad) 1px minmax(0, 1fr) 1px var(--frame-pad);
         grid-template-rows: var(--frame-pad) 1px minmax(calc(100dvh - (var(--frame-pad) * 2) - 2px), auto) 1px var(--frame-pad);
+      }
+      @media (min-width: 480px) {
+        .site-frame {
+          --frame-pad: 16px;
+          --frame-gap: 44px;
+          --frame-content-pad: 18px;
+        }
       }
       .site-frame-content {
         grid-column: 3;

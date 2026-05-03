@@ -141,12 +141,35 @@ const t = ui(locale);
   }
 
   @media (max-width: 480px) {
+    .hero {
+      min-height: 100%;
+      gap: 18px;
+    }
+
+    .hero-center {
+      justify-content: center;
+      gap: 1rem;
+    }
+
     .hero-title {
+      font-size: clamp(2rem, 12vw, 2.65rem);
+      line-height: 1.08;
       min-height: 3lh;
+      overflow-wrap: anywhere;
     }
 
     .hero[data-locale='da'] .hero-title {
       min-height: 3lh;
+    }
+
+    .hero-lede {
+      font-size: 1rem;
+      line-height: 1.55;
+    }
+
+    .hero-credit {
+      font-size: 11px;
+      line-height: 1.45;
     }
   }
 
