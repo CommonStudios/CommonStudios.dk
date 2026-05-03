@@ -70,13 +70,13 @@ type UiForLocale = {
 
 const en: UiForLocale = {
   meta: {
-    homeTitle: 'Tyndfed — Independent software development studio',
+    homeTitle: 'Software Development Studio in Copenhagen | Tyndfed',
     homeDescription:
-      'Tyndfed is an independent Copenhagen studio for software development, websites, web apps, and digital systems.',
-    projectsTitle: 'Tyndfed — Projects',
+      'Copenhagen software development studio building websites, web apps, internal tools, and digital systems for clients who care about quality.',
+    projectsTitle: 'Selected Software Projects | Tyndfed',
     projectsDescription:
-      'Tyndfed projects: software, websites, web apps, and digital systems — work built to ship and last.',
-    privacyTitle: 'Tyndfed — Privacy & Terms',
+      'Selected Tyndfed projects across websites, web apps, product interfaces, and digital systems built to ship, load fast, and last.',
+    privacyTitle: 'Privacy & Terms | Tyndfed',
     privacyDescription:
       'Privacy Policy and Terms of Service for Tyndfed apps and services.',
   },
@@ -100,9 +100,9 @@ const en: UiForLocale = {
   },
   home: {
     heroAria: 'Hero',
-    heroTitle: 'Work that reads clearly.',
+    heroTitle: 'Software development studio in Copenhagen.',
     heroTypingLines: [
-      'Work that reads clearly.',
+      'Software development studio in Copenhagen.',
       'Software that ships cleanly.',
       'Web apps with less friction.',
       'Interfaces built to last.',
@@ -117,7 +117,7 @@ const en: UiForLocale = {
   projects: {
     introAria: 'Projects intro',
     eyebrow: 'Tyndfed · Projects',
-    title: 'Built to be used',
+    title: 'Selected software projects',
     lede: 'Websites, web apps, product interfaces, and digital systems — work made to read clearly, load fast, and hold up once it’s in the wild.',
     listAria: 'Project list',
     imageWindowTitle: 'Logo preview',
@@ -146,13 +146,13 @@ const en: UiForLocale = {
 
 const da: UiForLocale = {
   meta: {
-    homeTitle: 'Tyndfed — Uafhængigt studio til softwareudvikling',
+    homeTitle: 'Softwareudvikling i København | Tyndfed',
     homeDescription:
-      'Tyndfed er et uafhængigt Københavns-studio til softwareudvikling, websites, webapps og digitale systemer.',
-    projectsTitle: 'Tyndfed — Projekter',
+      'Københavnsk softwarestudio, der bygger websites, webapps, interne værktøjer og digitale systemer med fokus på kvalitet.',
+    projectsTitle: 'Udvalgte softwareprojekter | Tyndfed',
     projectsDescription:
-      'Udvalgte projekter fra Tyndfed: software, websites, webapps og digitale systemer — bygget til at blive brugt.',
-    privacyTitle: 'Tyndfed — Privatliv & vilkår',
+      'Udvalgte Tyndfed-projekter inden for websites, webapps, produktinterfaces og digitale systemer bygget til at blive brugt.',
+    privacyTitle: 'Privatliv & vilkår | Tyndfed',
     privacyDescription:
       'Privatlivspolitik og servicevilkår for Tyndfeds apps og tjenester.',
   },
@@ -176,9 +176,9 @@ const da: UiForLocale = {
   },
   home: {
     heroAria: 'Forside',
-    heroTitle: 'Arbejde, der står skarpt.',
+    heroTitle: 'Softwareudvikling fra København.',
     heroTypingLines: [
-      'Arbejde, der står skarpt.',
+      'Softwareudvikling fra København.',
       'Software, der leverer.',
       'Webapps uden friktion.',
       'Interfaces bygget til drift.',
@@ -193,7 +193,7 @@ const da: UiForLocale = {
   projects: {
     introAria: 'Projektoversigt',
     eyebrow: 'Tyndfed · Projekter',
-    title: 'Skabt til at blive brugt',
+    title: 'Udvalgte softwareprojekter',
     lede: 'Websites, webapps, produktinterfaces og digitale systemer — arbejde, der er let at læse, hurtigt at indlæse, og som holder, når det er ude.',
     listAria: 'Projektliste',
     imageWindowTitle: 'Logo forhåndsvisning',
