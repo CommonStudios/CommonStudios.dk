@@ -1,6 +1,5 @@
 ---
 import '~/styles/global.css';
-import { ClientRouter } from 'astro:transitions';
 import SiteHeader from '~/components/SiteHeader.astro';
 import SiteFooter from '~/components/SiteFooter.astro';
 import Silk from '~/components/Silk';
@@ -199,7 +198,6 @@ for (const hint of [...defaultPreloads, ...preloadHints]) {
       }
     </style>
 
-    <ClientRouter />
     <script is:inline type="application/ld+json" set:html={JSON.stringify({ ...schema })} />
     {localeContext && (
       <script is:inline define:vars={{ loc: localeContext.locale, key: LOCALE_STORAGE_KEY }}>

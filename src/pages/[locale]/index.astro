@@ -1,6 +1,5 @@
 ---
 import BaseLayout from '~/layouts/BaseLayout.astro';
-import WindowChrome from '~/components/WindowChrome.astro';
 import { SITE_ORIGIN, SEO } from '~/config/site';
 import { LOCALES, isLocale } from '~/i18n/constants';
 import { canonicalUrl, pathForLocale } from '~/i18n/paths';
@@ -29,7 +28,7 @@ const t = ui(locale);
   localeContext={{ locale, pathKey: '' }}
   skipLinkLabel={t.skipToContent}
 >
-  <WindowChrome>
+  <div class="window-shell page-boot" id="main-window">
     <section class="hero shell" aria-label={t.home.heroAria} data-locale={locale}>
       <div class="hero-center">
         <h1
@@ -71,10 +70,15 @@ const t = ui(locale);
         {t.home.heroCreditLead}<span class="hero-credit-name">{SEO.author}</span>{t.home.heroCreditTail}
       </p>
     </section>
-  </WindowChrome>
+  </div>
 </BaseLayout>
 
 <style>
+  .window-shell {
+    position: relative;
+    width: 100%;
+  }
+
   .hero {
     height: 100%;
     display: grid;
