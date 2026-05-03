@@ -1,7 +1,6 @@
 ---
 import BaseLayout from '~/layouts/BaseLayout.astro';
 import WindowChrome from '~/components/WindowChrome.astro';
-import TextType from '~/components/TextType';
 import { SITE_ORIGIN, SEO } from '~/config/site';
 import { LOCALES, isLocale } from '~/i18n/constants';
 import { canonicalUrl, pathForLocale } from '~/i18n/paths';
@@ -37,21 +36,8 @@ const t = ui(locale);
           class="hero-title"
           aria-label={t.home.heroTitle}
         >
-          <TextType
-            client:load
-            as="span"
-            text={[...t.home.heroTypingLines]}
-            typingSpeed={46}
-            pauseDuration={2200}
-            deletingSpeed={26}
-            loop={true}
-            initialDelay={350}
-            showCursor={true}
-            cursorCharacter="|"
-            cursorClassName="ml-0.5 text-[var(--accent)]"
-            startOnVisible={true}
-            className="block w-full max-w-full"
-          />
+          <span class="hero-title-line">{t.home.heroTitle}</span>
+          <span class="hero-title-cursor" aria-hidden="true">|</span>
         </h1>
 
         <p class="hero-lede">
@@ -128,6 +114,27 @@ const t = ui(locale);
     min-height: 2.75lh;
   }
 
+  .hero-title-line {
+    display: inline;
+  }
+
+  .hero-title-cursor {
+    color: var(--accent);
+    display: inline-block;
+    margin-left: 0.125rem;
+    animation: heroCursorBlink 1s var(--ease-smooth) infinite;
+  }
+
+  @keyframes heroCursorBlink {
+    0%, 45% {
+      opacity: 1;
+    }
+
+    55%, 100% {
+      opacity: 0;
+    }
+  }
+
   .hero[data-locale='da'] .hero-title {
     line-height: 1.14;
     min-height: 2.75lh;
@@ -140,6 +147,12 @@ const t = ui(locale);
 
     .hero[data-locale='da'] .hero-title {
       min-height: 3lh;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-title-cursor {
+      animation: none;
     }
   }
 
