@@ -144,13 +144,15 @@ const t = ui(locale);
     font-weight: 520;
     color: var(--text-primary);
     text-wrap: balance;
+    overflow-wrap: normal;
+    word-break: normal;
+    hyphens: none;
+    -webkit-hyphens: none;
     margin: 0;
   }
 
   .projects-hero[data-locale='da'] h1 {
     line-height: 1.14;
-    hyphens: auto;
-    -webkit-hyphens: auto;
   }
 
   .projects-lede {
@@ -183,6 +185,10 @@ const t = ui(locale);
     align-items: start;
     padding: 32px 0;
     border-bottom: 1px solid var(--rule);
+  }
+
+  .project-row:last-child {
+    border-bottom: none;
   }
 
   .project-aside {
@@ -312,6 +318,7 @@ const t = ui(locale);
     .projects-hero h1 {
       font-size: clamp(2rem, 11vw, 2.65rem);
       line-height: 1.08;
+      text-wrap: wrap;
     }
 
     .projects-lede,
