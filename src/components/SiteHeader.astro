@@ -61,7 +61,6 @@ const t = ui(locale);
           class:list={['locale-link', { 'is-active': locale === 'da' }]}
           aria-current={locale === 'da' ? 'page' : undefined}
           lang="da"
-          data-astro-reload
         >
           DA
         </a>
@@ -70,7 +69,6 @@ const t = ui(locale);
           class:list={['locale-link', { 'is-active': locale === 'en' }]}
           aria-current={locale === 'en' ? 'page' : undefined}
           lang="en"
-          data-astro-reload
         >
           EN
         </a>
@@ -224,14 +222,17 @@ const t = ui(locale);
     align-items: stretch;
     padding: 4px;
     gap: 4px;
-    border-radius: 10px;
-    border: 1px solid var(--rule);
-    background: rgba(247, 247, 242, 0.03);
+    border-radius: 8px;
+    border: 1px solid rgba(247, 247, 242, 0.18);
+    background: rgba(0, 0, 0, 0.34);
     font-family: var(--font-mono);
     font-size: 10px;
     letter-spacing: 0.08em;
     flex-shrink: 0;
     min-width: 7.5rem;
+    box-shadow:
+      inset 0 1px 0 rgba(255, 255, 255, 0.04),
+      0 10px 26px -22px rgba(0, 0, 0, 0.9);
   }
 
   .locale-pill {
@@ -240,13 +241,15 @@ const t = ui(locale);
     bottom: 4px;
     left: 4px;
     width: calc(50% - 6px);
-    background: var(--accent);
-    border-radius: 7px;
+    background: var(--text-primary);
+    border-radius: 5px;
     z-index: 0;
     transform: translateX(0);
     transition: transform 0.38s var(--ease-out-expo);
     pointer-events: none;
-    box-shadow: 0 0 0 1px color-mix(in oklch, var(--accent) 35%, transparent);
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.2),
+      0 8px 18px -12px rgba(255, 255, 255, 0.36);
   }
 
   .locale-switch[data-active='en'] .locale-pill {
@@ -267,16 +270,16 @@ const t = ui(locale);
     align-items: center;
     justify-content: center;
     padding: 8px 10px;
-    border-radius: 7px;
-    color: var(--text-muted);
+    border-radius: 5px;
+    color: var(--text-secondary);
     transition: color 0.24s ease;
     border-bottom: none;
   }
 
   .locale-link:focus-visible {
-    outline: 1px solid var(--accent);
+    outline: 1px solid var(--text-primary);
     outline-offset: 2px;
-    border-radius: 7px;
+    border-radius: 5px;
   }
 
   .locale-link:hover {
@@ -358,7 +361,7 @@ const t = ui(locale);
   }
 </style>
 
-<script>
+<script is:inline data-astro-rerun>
   (() => {
     const headers = document.querySelectorAll('[data-site-header]');
 
@@ -368,7 +371,7 @@ const t = ui(locale);
         return;
       }
 
-      const setOpen = (open: boolean) => {
+      const setOpen = (open) => {
         header.dataset.menuOpen = String(open);
         toggle.setAttribute('aria-expanded', String(open));
       };

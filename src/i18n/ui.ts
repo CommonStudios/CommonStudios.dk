@@ -72,7 +72,7 @@ const en: UiForLocale = {
   meta: {
     homeTitle: 'Software Development Studio in Copenhagen | Tyndfed',
     homeDescription:
-      'Copenhagen software development studio building websites, web apps, internal tools, and digital systems for clients who care about quality.',
+      'Copenhagen software studio building fast websites, useful web apps, and internal systems with clear interfaces and durable code.',
     projectsTitle: 'Selected Software Projects | Tyndfed',
     projectsDescription:
       'Selected Tyndfed projects across websites, web apps, product interfaces, and digital systems built to ship, load fast, and last.',
@@ -100,25 +100,25 @@ const en: UiForLocale = {
   },
   home: {
     heroAria: 'Hero',
-    heroTitle: 'Software development studio in Copenhagen.',
+    heroTitle: 'Software built with care in Copenhagen.',
     heroTypingLines: [
-      'Software development studio in Copenhagen.',
-      'Software that ships cleanly.',
-      'Web apps with less friction.',
-      'Interfaces built to last.',
+      'Software built with care in Copenhagen.',
+      'Fast websites with a clear point.',
+      'Web apps people can actually use.',
+      'Internal tools that remove busywork.',
     ],
     heroLede:
-      'Independent software studio for websites, web apps, internal tools, and digital systems — for clients who care how things work, read, and hold up.',
+      'Tyndfed designs and builds websites, web apps, and internal systems for teams that need clean interfaces, reliable delivery, and code that is still understandable later.',
     heroActionsAria: 'Hero actions',
     heroCta: 'View selected work',
     heroCreditLead: 'By ',
-    heroCreditTail: ' — software development and web systems, from Copenhagen.',
+    heroCreditTail: ' — software design and development from Copenhagen.',
   },
   projects: {
     introAria: 'Projects intro',
     eyebrow: 'Tyndfed · Projects',
     title: 'Selected software projects',
-    lede: 'Websites, web apps, product interfaces, and digital systems — work made to read clearly, load fast, and hold up once it’s in the wild.',
+    lede: 'Websites, web apps, product interfaces, and internal systems built to be clear on day one and maintainable after launch.',
     listAria: 'Project list',
     imageWindowTitle: 'Logo preview',
     linksNavSuffix: 'links',
@@ -148,7 +148,7 @@ const da: UiForLocale = {
   meta: {
     homeTitle: 'Softwareudvikling i København | Tyndfed',
     homeDescription:
-      'Københavnsk softwarestudio, der bygger websites, webapps, interne værktøjer og digitale systemer med fokus på kvalitet.',
+      'Københavnsk softwarestudio, der bygger hurtige websites, brugbare webapps og interne systemer med klare interfaces og solid kode.',
     projectsTitle: 'Udvalgte softwareprojekter | Tyndfed',
     projectsDescription:
       'Udvalgte Tyndfed-projekter inden for websites, webapps, produktinterfaces og digitale systemer bygget til at blive brugt.',
@@ -176,25 +176,25 @@ const da: UiForLocale = {
   },
   home: {
     heroAria: 'Forside',
-    heroTitle: 'Softwareudvikling fra København.',
+    heroTitle: 'Software bygget med omtanke i København.',
     heroTypingLines: [
-      'Softwareudvikling fra København.',
-      'Software, der leverer.',
-      'Webapps uden friktion.',
-      'Interfaces bygget til drift.',
+      'Software bygget med omtanke i København.',
+      'Hurtige websites med en klar retning.',
+      'Webapps mennesker faktisk kan bruge.',
+      'Interne værktøjer der fjerner travlhed.',
     ],
     heroLede:
-      'Uafhængigt softwarestudio til websites, webapps, interne værktøjer og digitale systemer — med omtanke for hvordan det virker, læses og holder.',
+      'Tyndfed designer og bygger websites, webapps og interne systemer til teams, der har brug for tydelige interfaces, sikker levering og kode, der stadig er til at forstå senere.',
     heroActionsAria: 'Handlinger',
     heroCta: 'Se udvalgte projekter',
     heroCreditLead: 'Af ',
-    heroCreditTail: ' — softwareudvikling og websystemer fra København.',
+    heroCreditTail: ' — softwaredesign og udvikling fra København.',
   },
   projects: {
     introAria: 'Projektoversigt',
     eyebrow: 'Tyndfed · Projekter',
     title: 'Udvalgte softwareprojekter',
-    lede: 'Websites, webapps, produktinterfaces og digitale systemer — arbejde, der er let at læse, hurtigt at indlæse, og som holder, når det er ude.',
+    lede: 'Websites, webapps, produktinterfaces og interne systemer bygget til at være tydelige fra første dag og til at holde efter lancering.',
     listAria: 'Projektliste',
     imageWindowTitle: 'Logo forhåndsvisning',
     linksNavSuffix: 'henvisninger',
