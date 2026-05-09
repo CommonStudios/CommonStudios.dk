@@ -10,6 +10,19 @@ const suffix = '';
     <meta name="robots" content="noindex, follow" />
     <title>Tyndfed</title>
     <link rel="icon" type="image/svg+xml" href="/images/tyndfed.svg" />
+    <script is:inline define:vars={{ STORAGE, suffix }}>
+      (function () {
+        function pick() {
+          try {
+            var s = localStorage.getItem(STORAGE);
+            if (s === 'da' || s === 'en') return s;
+          } catch (_) {}
+          var nav = navigator.language || '';
+          return nav.toLowerCase().startsWith('da') ? 'da' : 'en';
+        }
+        location.replace('/' + pick() + suffix);
+      })();
+    </script>
     <style>
       body {
         margin: 0;
@@ -38,23 +51,12 @@ const suffix = '';
     </style>
   </head>
   <body>
-    <p>
-      <a href="/da">Dansk</a>
-      <span aria-hidden="true"> · </span>
-      <a href="/en">English</a>
-    </p>
-    <script is:inline define:vars={{ STORAGE, suffix }}>
-      (function () {
-        function pick() {
-          try {
-            var s = localStorage.getItem(STORAGE);
-            if (s === 'da' || s === 'en') return s;
-          } catch (_) {}
-          var nav = navigator.language || '';
-          return nav.toLowerCase().startsWith('da') ? 'da' : 'en';
-        }
-        location.replace('/' + pick() + suffix);
-      })();
-    </script>
+    <noscript>
+      <p>
+        <a href="/da">Dansk</a>
+        <span aria-hidden="true"> · </span>
+        <a href="/en">English</a>
+      </p>
+    </noscript>
   </body>
 </html>
