@@ -1,0 +1,271 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import WindowChrome from '~/components/WindowChrome.astro';
+import { SITE_ORIGIN } from '~/config/site';
+import { LOCALES, isLocale } from '~/i18n/constants';
+import { canonicalUrl } from '~/i18n/paths';
+import { ui } from '~/i18n/ui';
+
+export function getStaticPaths() {
+  return LOCALES.map((locale) => ({ params: { locale } }));
+}
+
+const { locale: raw } = Astro.params;
+if (!isLocale(raw)) {
+  return Astro.redirect('/da/contact');
+}
+const locale = raw;
+const t = ui(locale);
+---
+
+<BaseLayout
+  title={t.meta.contactTitle}
+  description={t.meta.contactDescription}
+  canonical={canonicalUrl(SITE_ORIGIN, locale, 'contact')}
+  htmlLang={locale}
+  localeContext={{ locale, pathKey: 'contact' }}
+  skipLinkLabel={t.skipToContent}
+>
+  <WindowChrome>
+    <section class="contact-shell shell" aria-label={t.contact.introAria} data-locale={locale}>
+      <div class="contact-intro">
+        <p class="contact-eyebrow">{t.contact.eyebrow}</p>
+        <h1>{t.contact.title}</h1>
+        <p class="contact-lede">{t.contact.lede}</p>
+      </div>
+
+      <form
+        class="contact-form"
+        aria-label={t.contact.formAria}
+        action="mailto:kontakt@tyndfed.dk"
+        method="post"
+        enctype="text/plain"
+        data-contact-form
+        data-mailto-subject={t.contact.mailtoSubject}
+      >
+        <label>
+          <span>{t.contact.name}</span>
+          <input name="name" autocomplete="name" required />
+        </label>
+        <label>
+          <span>{t.contact.email}</span>
+          <input name="email" type="email" autocomplete="email" required />
+        </label>
+        <label>
+          <span>{t.contact.projectType}</span>
+          <select name="projectType" required>
+            {t.contact.projectOptions.map((option) => <option value={option}>{option}</option>)}
+          </select>
+        </label>
+        <label>
+          <span>{t.contact.budget}</span>
+          <select name="budget" required>
+            {t.contact.budgetOptions.map((option) => <option value={option}>{option}</option>)}
+          </select>
+        </label>
+        <label class="is-wide">
+          <span>{t.contact.message}</span>
+          <textarea name="message" rows="8" required></textarea>
+        </label>
+        <div class="form-actions">
+          <button type="submit" class="contact-submit">{t.contact.submit}</button>
+          <a class="contact-direct" href="mailto:kontakt@tyndfed.dk">{t.contact.directEmail}</a>
+        </div>
+      </form>
+    </section>
+  </WindowChrome>
+</BaseLayout>
+
+<style>
+  .contact-shell {
+    display: grid;
+    grid-template-columns: minmax(0, 0.85fr) minmax(18rem, 1fr);
+    gap: clamp(2rem, 5vw, 5rem);
+    align-items: start;
+    max-width: min(64rem, 100%);
+    padding-block: 12px 48px;
+  }
+
+  .contact-intro {
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  .contact-eyebrow {
+    font-size: var(--font-size-sm);
+    font-weight: 500;
+    color: var(--text-muted);
+    margin: 0;
+  }
+
+  .contact-intro h1 {
+    font-family: var(--font-display);
+    font-size: clamp(2.25rem, 5.2vw, 4.25rem);
+    line-height: 1.12;
+    font-weight: 520;
+    color: var(--text-primary);
+    text-wrap: balance;
+    margin: 0;
+  }
+
+  .contact-lede {
+    color: var(--text-secondary);
+    font-size: clamp(1rem, 1.25vw, 1.125rem);
+    line-height: 1.65;
+    margin: 0;
+  }
+
+  .contact-form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    padding-top: 6px;
+  }
+
+  .contact-form label {
+    display: grid;
+    gap: 8px;
+    min-width: 0;
+  }
+
+  .contact-form label.is-wide,
+  .form-actions {
+    grid-column: 1 / -1;
+  }
+
+  .contact-form span {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+
+  .contact-form input,
+  .contact-form select,
+  .contact-form textarea {
+    width: 100%;
+    border: 1px solid var(--rule-strong);
+    border-radius: 8px;
+    background: rgba(247, 247, 242, 0.03);
+    color: var(--text-primary);
+    font: inherit;
+    padding: 12px 14px;
+    transition: border-color var(--duration-fast) ease;
+  }
+
+  .contact-form input:hover,
+  .contact-form select:hover,
+  .contact-form textarea:hover {
+    border-color: var(--interactive-border-hover);
+  }
+
+  .contact-form select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    padding-right: 36px;
+    background-image: url("data:image/svg+xml;utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 5' fill='none'%3E%3Cpath d='M.5.5 4 4 7.5.5' stroke='%23b9bcb1' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    background-size: 8px 5px;
+    cursor: pointer;
+  }
+
+  .contact-form select option {
+    background: var(--bg-surface);
+    color: var(--text-primary);
+  }
+
+  .contact-form textarea {
+    resize: vertical;
+    min-height: 11rem;
+  }
+
+  .contact-form input:focus-visible,
+  .contact-form select:focus-visible,
+  .contact-form textarea:focus-visible {
+    outline: 1px solid var(--accent);
+    outline-offset: 2px;
+    border-color: var(--accent);
+  }
+
+  .form-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 14px 22px;
+    margin-top: 4px;
+  }
+
+  .contact-submit {
+    appearance: none;
+    display: inline-block;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0;
+    color: var(--text-primary);
+    background: transparent;
+    border: 1px solid var(--rule-strong);
+    border-radius: 8px;
+    cursor: pointer;
+    padding: 10px 16px;
+    margin: 0;
+    transition:
+      color var(--duration-fast) ease,
+      background var(--duration-fast) ease,
+      border-color var(--duration-fast) ease;
+  }
+
+  .contact-submit:hover {
+    color: var(--bg-void);
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .contact-direct {
+    color: var(--text-secondary);
+    font-size: var(--font-size-sm);
+    line-height: 1.45;
+  }
+
+  .contact-direct:hover {
+    color: var(--accent-strong);
+  }
+
+  @media (max-width: 820px) {
+    .contact-shell {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .contact-form {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  document.querySelectorAll('[data-contact-form]').forEach((form) => {
+    if (!(form instanceof HTMLFormElement)) {
+      return;
+    }
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const data = new FormData(form);
+      const lines = [
+        `Name: ${data.get('name') ?? ''}`,
+        `Email: ${data.get('email') ?? ''}`,
+        `Project type: ${data.get('projectType') ?? ''}`,
+        `Budget: ${data.get('budget') ?? ''}`,
+        '',
+        `${data.get('message') ?? ''}`,
+      ];
+      const subject = encodeURIComponent(form.dataset.mailtoSubject ?? 'Project enquiry from tyndfed.dk');
+      const body = encodeURIComponent(lines.join('\n'));
+      window.location.href = `mailto:kontakt@tyndfed.dk?subject=${subject}&body=${body}`;
+    });
+  });
+</script>

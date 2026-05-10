@@ -6,6 +6,8 @@ type UiForLocale = {
     homeDescription: string;
     projectsTitle: string;
     projectsDescription: string;
+    contactTitle: string;
+    contactDescription: string;
     privacyTitle: string;
     privacyDescription: string;
   };
@@ -47,6 +49,23 @@ type UiForLocale = {
     imageWindowTitle: string;
     linksNavSuffix: string;
   };
+  contact: {
+    introAria: string;
+    eyebrow: string;
+    title: string;
+    lede: string;
+    formAria: string;
+    name: string;
+    email: string;
+    projectType: string;
+    budget: string;
+    message: string;
+    submit: string;
+    directEmail: string;
+    mailtoSubject: string;
+    projectOptions: readonly string[];
+    budgetOptions: readonly string[];
+  };
   privacy: {
     backHome: string;
     eyebrow: string;
@@ -76,9 +95,12 @@ const en: UiForLocale = {
     projectsTitle: 'Selected Software Projects | Tyndfed',
     projectsDescription:
       'Selected Tyndfed projects across websites, web apps, product interfaces, and digital systems built to ship, load fast, and last.',
+    contactTitle: 'Start a Project | Tyndfed',
+    contactDescription:
+      'Get in touch with Tyndfed about a website, web app, internal tool, interface, or identity project.',
     privacyTitle: 'Privacy & Terms | Tyndfed',
     privacyDescription:
-      'Privacy Policy and Terms of Service for Tyndfed apps and services.',
+      'Privacy Policy and Terms of Service for the Tyndfed studio website and client enquiries.',
   },
   skipToContent: 'Skip to content',
   header: {
@@ -123,6 +145,36 @@ const en: UiForLocale = {
     imageWindowTitle: 'Logo preview',
     linksNavSuffix: 'links',
   },
+  contact: {
+    introAria: 'Contact intro',
+    eyebrow: 'Tyndfed · Contact',
+    title: 'Start a project conversation',
+    lede: 'Need a sharper website, a useful web app, or an internal tool that saves time? Send a few details and I will reply with the next practical step.',
+    formAria: 'Contact form',
+    name: 'Name',
+    email: 'Email',
+    projectType: 'Project type',
+    budget: 'Budget',
+    message: 'Message',
+    submit: 'Open email draft',
+    directEmail: 'Prefer your own inbox? Write to kontakt@tyndfed.dk.',
+    mailtoSubject: 'Project enquiry from tyndfed.dk',
+    projectOptions: [
+      'Website',
+      'Web app',
+      'Internal tool',
+      'UI/UX design',
+      'Logo & identity',
+      'Other',
+    ],
+    budgetOptions: [
+      'Under 25,000 DKK',
+      '25,000-50,000 DKK',
+      '50,000-100,000 DKK',
+      '100,000+ DKK',
+      'Not sure yet',
+    ],
+  },
   privacy: {
     backHome: 'Back to home',
     eyebrow: 'Legal',
@@ -152,9 +204,12 @@ const da: UiForLocale = {
     projectsTitle: 'Udvalgte softwareprojekter | Tyndfed',
     projectsDescription:
       'Udvalgte Tyndfed-projekter inden for websites, webapps, produktinterfaces og digitale systemer bygget til at blive brugt.',
+    contactTitle: 'Start et projekt | Tyndfed',
+    contactDescription:
+      'Kontakt Tyndfed om et website, en webapp, et internt værktøj, interface eller identitetsprojekt.',
     privacyTitle: 'Privatliv & vilkår | Tyndfed',
     privacyDescription:
-      'Privatlivspolitik og servicevilkår for Tyndfeds apps og tjenester.',
+      'Privatlivspolitik og vilkår for Tyndfeds studiohjemmeside og kundehenvendelser.',
   },
   skipToContent: 'Spring til indhold',
   header: {
@@ -198,6 +253,37 @@ const da: UiForLocale = {
     listAria: 'Projektliste',
     imageWindowTitle: 'Logo forhåndsvisning',
     linksNavSuffix: 'henvisninger',
+  },
+  contact: {
+    introAria: 'Kontaktintro',
+    eyebrow: 'Tyndfed · Kontakt',
+    title: 'Start en projektsamtale',
+    lede: 'Har du brug for et skarpere website, en brugbar webapp eller et internt værktøj, der sparer tid? Send et par detaljer, så vender jeg tilbage med næste konkrete skridt.',
+    formAria: 'Kontaktformular',
+    name: 'Navn',
+    email: 'Email',
+    projectType: 'Projekttype',
+    budget: 'Budget',
+    message: 'Besked',
+    submit: 'Åbn emailkladde',
+    directEmail:
+      'Foretrækker du din egen indbakke? Skriv til kontakt@tyndfed.dk.',
+    mailtoSubject: 'Projektforespørgsel fra tyndfed.dk',
+    projectOptions: [
+      'Website',
+      'Webapp',
+      'Internt værktøj',
+      'UI/UX-design',
+      'Logo & identitet',
+      'Andet',
+    ],
+    budgetOptions: [
+      'Under 25.000 kr.',
+      '25.000-50.000 kr.',
+      '50.000-100.000 kr.',
+      '100.000+ kr.',
+      'Ikke afklaret endnu',
+    ],
   },
   privacy: {
     backHome: 'Tilbage til forsiden',

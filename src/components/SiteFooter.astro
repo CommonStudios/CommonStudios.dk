@@ -28,6 +28,9 @@ const t = ui(locale);
       <div class="grid-col">
         <p class="grid-label">{t.footer.navigation}</p>
         <nav aria-label={t.footer.footerNav}>
+          <a class="grid-link" href={pathForLocale(locale, 'contact')} data-astro-reload>
+            {t.footer.contact}
+          </a>
           <a class="grid-link" href={pathForLocale(locale, 'projects')} data-astro-reload>
             {t.footer.projects}
           </a>

@@ -81,15 +81,16 @@ const t = ui(locale);
                 {project.links.map((link) => {
                   const label = link.label[locale];
                   return isLogoPreviewLink(project.name, link.label) ? (
-                    <button
-                      type="button"
+                    <a
+                      href={link.url}
                       class="project-link"
                       data-image-window-trigger
                       data-image-window-title={`${project.name} - ${label}`}
                       data-image-window-src={link.url}
+                      download
                     >
                       {label}
-                    </button>
+                    </a>
                   ) : (
                     <a
                       class="project-link"

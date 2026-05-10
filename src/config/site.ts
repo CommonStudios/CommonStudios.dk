@@ -10,18 +10,20 @@ export const BRAND_MARK_SRC = '/images/tyndfed.svg' as const;
 export const SEO = {
   defaultDescription:
     'Tyndfed - Independent software development studio specializing in websites, web apps, and digital systems.',
-  defaultOgImage: BRAND_MARK_SRC,
+  defaultOgImage: '/images/og-image.png',
   siteName: 'Tyndfed',
   themeColor: '#0b0c0a',
   author: 'Tobias Dosdal-Feddersen',
 } as const;
 
 export const ORGANIZATION = {
-  jsonLdType: 'Organization' as const,
+  jsonLdType: ['Organization', 'ProfessionalService'] as const,
   name: 'Tyndfed',
   description: 'Software development, websites, web apps, and digital systems',
   logoPath: BRAND_MARK_SRC,
+  addressLocality: 'Copenhagen',
   addressCountry: 'DK',
+  priceRange: '$$',
   sameAs: [
     'https://github.com/tobiasdosdal',
     'https://www.linkedin.com/in/tobias-dosdal-feddersen/',
@@ -40,8 +42,30 @@ export function buildOrganizationJsonLd(siteOrigin: string) {
     description: ORGANIZATION.description,
     address: {
       '@type': 'PostalAddress',
+      addressLocality: ORGANIZATION.addressLocality,
       addressCountry: ORGANIZATION.addressCountry,
     },
+    priceRange: ORGANIZATION.priceRange,
     sameAs: [...ORGANIZATION.sameAs],
+    areaServed: {
+      '@type': 'City',
+      name: ORGANIZATION.addressLocality,
+    },
+    makesOffer: [
+      {
+        '@type': 'Offer',
+        itemOffered: {
+          '@type': 'Service',
+          name: 'Website design and development',
+        },
+      },
+      {
+        '@type': 'Offer',
+        itemOffered: {
+          '@type': 'Service',
+          name: 'Web application and internal tool development',
+        },
+      },
+    ],
   } as const;
 }

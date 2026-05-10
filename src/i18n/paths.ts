@@ -5,7 +5,7 @@ import type { Locale } from './constants';
  */
 export function pathForLocale(
   locale: Locale,
-  segment: '' | 'projects' | 'privacy',
+  segment: '' | 'projects' | 'privacy' | 'contact',
 ): string {
   if (segment === '') {
     return `/${locale}`;
@@ -16,7 +16,7 @@ export function pathForLocale(
 export function canonicalUrl(
   origin: string,
   locale: Locale,
-  segment: '' | 'projects' | 'privacy',
+  segment: '' | 'projects' | 'privacy' | 'contact',
 ): string {
   const base = origin.replace(/\/$/, '');
   return `${base}${pathForLocale(locale, segment)}`;

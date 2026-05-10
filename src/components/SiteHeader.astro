@@ -5,7 +5,7 @@ import { DEFAULT_LOCALE } from '~/i18n/constants';
 import { pathForLocale } from '~/i18n/paths';
 import { ui } from '~/i18n/ui';
 
-type Segment = '' | 'projects' | 'privacy';
+type Segment = '' | 'projects' | 'privacy' | 'contact';
 
 interface Props {
   locale?: Locale;
@@ -49,7 +49,13 @@ const t = ui(locale);
             </a>
           </li>
           <li>
-            <a class="site-nav-link" href="mailto:kontakt@tyndfed.dk">{t.header.contact}</a>
+            <a
+              href={pathForLocale(locale, 'contact')}
+              class:list={['site-nav-link', { 'is-current': segment === 'contact' }]}
+              aria-current={segment === 'contact' ? 'page' : undefined}
+            >
+              {t.header.contact}
+            </a>
           </li>
         </ul>
       </nav>

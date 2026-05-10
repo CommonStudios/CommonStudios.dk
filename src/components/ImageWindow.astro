@@ -143,7 +143,7 @@ const { defaultTitle = 'Image preview', closeLabel = 'Close image preview' } = A
   }
 </style>
 
-<script>
+<script is:inline data-astro-rerun>
   const imageWindow = document.querySelector('[data-image-window]');
   const lifecycle = new AbortController();
   const { signal } = lifecycle;
@@ -153,13 +153,13 @@ const { defaultTitle = 'Image preview', closeLabel = 'Close image preview' } = A
   });
 
   if (imageWindow instanceof HTMLDialogElement) {
-    let dialogFocusReturn: HTMLElement | null = null;
+    let dialogFocusReturn = null;
 
     const windowTitle = imageWindow.querySelector('[data-image-window-title]');
     const windowImage = imageWindow.querySelector('[data-image-window-image]');
     const closeButton = imageWindow.querySelector('[data-image-window-close]');
 
-    const openImageWindow = (trigger: Element) => {
+    const openImageWindow = (trigger) => {
       if (!(windowImage instanceof HTMLImageElement)) {
         return;
       }
