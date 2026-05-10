@@ -20,85 +20,89 @@ export const legalContent: Record<Language, LegalContent> = {
   en: {
     privacy: {
       title: 'Privacy Policy',
-      updated: 'Last Updated: December 21, 2025',
+      updated: 'Last updated: May 10, 2026',
       sections: [
         {
-          heading: 'Introduction',
-          text: 'Tyndfed ("we", "us", or "our") is a Copenhagen software studio. This policy explains how we collect, use, and protect personal data when you visit tyndfed.dk or contact us about a project.',
+          heading: 'Who We Are',
+          text: 'Tyndfed is a Copenhagen software studio operated by Tobias Dosdal-Feddersen. This policy explains how personal data is handled when you visit tyndfed.dk or contact us about potential work.',
         },
         {
-          heading: 'Information We Collect',
-          text: 'We collect information you choose to send, such as your name, email address, project type, budget range, and message. Basic technical information may be processed by our hosting provider to deliver and secure the website.',
+          heading: 'Data You Send',
+          text: 'When you use the contact form or send an email, we may receive your name, email address, project type, budget range, message, and any other details you choose to include.',
         },
         {
-          heading: 'How We Use Your Information',
-          text: 'We use your information to reply to enquiries, discuss potential work, prepare proposals, maintain business records, and comply with legal obligations.',
+          heading: 'Technical Data',
+          text: 'The website is hosted by third-party infrastructure providers that may process basic technical data such as IP address, browser information, requested pages, timestamps, and security logs. This is used to deliver, monitor, and protect the website.',
         },
         {
-          heading: 'Data Sharing',
-          text: 'We do not sell personal data. We may share data with service providers that help operate the website, email, and hosting, or with authorities when required by law.',
+          heading: 'How We Use Data',
+          text: 'We use personal data to reply to enquiries, discuss possible projects, prepare proposals, manage client communication, maintain business records, secure the website, and meet legal or accounting obligations.',
         },
         {
-          heading: 'Data Retention',
-          text: 'We keep enquiry and client correspondence only as long as needed for the business relationship, bookkeeping, legal requirements, or legitimate follow-up.',
+          heading: 'Cookies and Analytics',
+          text: 'Tyndfed.dk does not use advertising trackers. If privacy-friendly analytics are added later, this page will be updated with the provider, purpose, and any cookie details before or when that tracking is introduced.',
+        },
+        {
+          heading: 'Sharing',
+          text: 'We do not sell personal data. Data may be processed by service providers used for hosting, email, security, bookkeeping, or project delivery. Data may also be disclosed if required by law.',
+        },
+        {
+          heading: 'Retention',
+          text: 'Enquiries that do not become projects are kept only as long as needed for follow-up. Client and business records may be kept longer where required for contracts, bookkeeping, tax, legal claims, or legitimate business documentation.',
         },
         {
           heading: 'Security',
-          text: 'We use reasonable technical and organizational measures to protect personal data. No internet transmission or storage system can be guaranteed to be completely secure.',
+          text: 'Reasonable technical and organizational measures are used to protect personal data. No website, email system, or internet transmission can be guaranteed to be completely secure.',
         },
         {
-          heading: 'Your Rights (GDPR)',
-          text: 'Under EU/EEA law, you have the right to: access your personal data; correct inaccurate data; request deletion; restrict processing; data portability; and withdraw consent. Contact us to exercise these rights.',
+          heading: 'Your Rights',
+          text: 'If EU or Danish data protection law applies, you may have the right to access, correct, delete, restrict, or object to processing of your personal data, and to request data portability. You may also complain to the Danish Data Protection Agency.',
         },
         {
-          heading: 'Cookies & Analytics',
-          text: 'The website does not use advertising trackers. If privacy-friendly analytics are added later, this policy will be updated with the provider and purpose.',
-        },
-        {
-          heading: "Children's Privacy",
-          text: 'Our services are not directed at children under 13. We do not knowingly collect data from children. If you believe we have collected such data, please contact us immediately.',
-        },
-        {
-          heading: 'Changes to This Policy',
-          text: 'We may update this policy when the website, providers, or legal requirements change. The latest version is published on this page.',
+          heading: 'Updates',
+          text: 'This policy may be updated when the website, providers, services, or legal requirements change. The latest version is always published on this page.',
         },
         {
           heading: 'Contact',
-          text: 'Questions about this policy? Contact us at kontakt@tyndfed.dk or write to: Tyndfed, Denmark (CVR: 39125307).',
+          text: 'Questions about privacy can be sent to kontakt@tyndfed.dk. Business details: Tyndfed, Denmark, CVR 39125307.',
         },
       ],
     },
     terms: {
-      title: 'Terms of Service',
-      updated: 'Last Updated: December 21, 2025',
+      title: 'Terms',
+      updated: 'Last updated: May 10, 2026',
       sections: [
         {
-          heading: 'Acceptance',
-          text: 'By using tyndfed.dk, you agree to these terms. Separate written agreements govern paid client work.',
+          heading: 'Website Use',
+          text: 'These terms apply to use of tyndfed.dk. The website presents Tyndfed, selected work, and ways to get in touch. It is provided for general information only.',
         },
         {
           heading: 'Website Content',
-          text: 'Text, design, code, images, logos, and other materials on this website belong to Tyndfed or their respective owners unless otherwise stated. You may not copy or reuse them without permission.',
+          text: 'Text, design, code, images, logos, and other materials on this website belong to Tyndfed or their respective owners unless stated otherwise. You may not copy, reproduce, or reuse them without permission, except where allowed by law.',
         },
         {
           heading: 'Enquiries',
-          text: 'Submitting an enquiry does not create a client relationship or guarantee availability. Project scope, pricing, timeline, rights, and delivery terms are agreed separately in writing.',
+          text: 'Sending a message or project enquiry does not create a client relationship, guarantee availability, or reserve time. Any project starts only when scope, timeline, price, responsibilities, and terms are agreed in writing.',
+        },
+        {
+          heading: 'Client Work',
+          text: 'Paid work is governed by a separate written agreement, proposal, statement of work, or contract. If there is a conflict between these website terms and a signed client agreement, the client agreement controls for that project.',
         },
         {
           heading: 'External Links',
-          text: 'This website links to external project and social media sites. Tyndfed is not responsible for the content, availability, or privacy practices of those third-party sites.',
+          text: 'This website may link to client projects, social profiles, or other third-party websites. Tyndfed is not responsible for external content, availability, security, or privacy practices.',
         },
         {
-          heading: 'Disclaimer of Warranties',
-          text: 'This website is provided "AS IS" and "AS AVAILABLE". We aim to keep information accurate, but we do not guarantee that the website will be uninterrupted, error-free, or complete.',
+          heading: 'No Warranty',
+          text: 'The website is provided as is and as available. We try to keep information accurate and useful, but we do not guarantee that the website will always be available, complete, current, or error-free.',
         },
         {
-          heading: 'Limitation of Liability',
-          text: 'To the maximum extent permitted by law, Tyndfed is not liable for losses arising from use of this website or reliance on its content.',
+          heading: 'Liability',
+          text: 'To the extent permitted by law, Tyndfed is not liable for losses caused by use of this website, inability to access it, or reliance on information published here.',
         },
         {
           heading: 'Governing Law',
-          text: 'These terms are governed by Danish law. Disputes shall be resolved in the courts of Denmark. If you are an EU consumer, you may also use the EU Online Dispute Resolution platform.',
+          text: 'These terms are governed by Danish law. Disputes related to the website are handled by the Danish courts unless mandatory law requires another venue.',
         },
         {
           heading: 'Contact',
@@ -110,85 +114,89 @@ export const legalContent: Record<Language, LegalContent> = {
   da: {
     privacy: {
       title: 'Privatlivspolitik',
-      updated: 'Senest opdateret: 21. december 2025',
+      updated: 'Senest opdateret: 10. maj 2026',
       sections: [
         {
-          heading: 'Introduktion',
-          text: 'Tyndfed ("vi", "os" eller "vores") er et softwarestudio i København. Denne politik forklarer, hvordan vi indsamler, bruger og beskytter personoplysninger, når du besøger tyndfed.dk eller kontakter os om et projekt.',
+          heading: 'Hvem vi er',
+          text: 'Tyndfed er et softwarestudio i København drevet af Tobias Dosdal-Feddersen. Denne politik forklarer, hvordan personoplysninger behandles, når du besøger tyndfed.dk eller kontakter os om muligt samarbejde.',
         },
         {
-          heading: 'Oplysninger vi indsamler',
-          text: 'Vi indsamler oplysninger, du selv sender, såsom navn, emailadresse, projekttype, budgetramme og besked. Basale tekniske oplysninger kan behandles af vores hostingudbyder for at levere og beskytte hjemmesiden.',
+          heading: 'Data du sender',
+          text: 'Når du bruger kontaktformularen eller sender en email, kan vi modtage dit navn, din emailadresse, projekttype, budgetramme, besked og andre oplysninger, du selv vælger at sende.',
         },
         {
-          heading: 'Hvordan vi bruger dine oplysninger',
-          text: 'Vi bruger dine oplysninger til at besvare henvendelser, drøfte muligt samarbejde, udarbejde tilbud, føre forretningsarkiv og overholde juridiske forpligtelser.',
+          heading: 'Tekniske data',
+          text: 'Hjemmesiden hostes hos eksterne infrastrukturleverandører, som kan behandle basale tekniske data såsom IP-adresse, browseroplysninger, viste sider, tidspunkter og sikkerhedslogs. Det bruges til at levere, overvåge og beskytte hjemmesiden.',
         },
         {
-          heading: 'Datadeling',
-          text: 'Vi sælger ikke personoplysninger. Vi kan dele data med leverandører, der hjælper med hjemmeside, email og hosting, eller med myndigheder når loven kræver det.',
+          heading: 'Hvordan vi bruger data',
+          text: 'Vi bruger personoplysninger til at besvare henvendelser, drøfte mulige projekter, udarbejde tilbud, håndtere kundekommunikation, føre forretningsarkiv, beskytte hjemmesiden og opfylde juridiske eller regnskabsmæssige forpligtelser.',
         },
         {
-          heading: 'Dataopbevaring',
-          text: 'Vi gemmer henvendelser og kundekorrespondance så længe det er nødvendigt for samarbejdet, bogføring, juridiske krav eller legitim opfølgning.',
+          heading: 'Cookies og analyse',
+          text: 'Tyndfed.dk bruger ikke reklamesporing. Hvis der senere tilføjes privatlivsvenlig analyse, opdateres denne side med leverandør, formål og eventuelle cookieoplysninger før eller samtidig med, at sporingen indføres.',
+        },
+        {
+          heading: 'Deling',
+          text: 'Vi sælger ikke personoplysninger. Data kan behandles af leverandører, der bruges til hosting, email, sikkerhed, bogføring eller projektlevering. Data kan også videregives, hvis loven kræver det.',
+        },
+        {
+          heading: 'Opbevaring',
+          text: 'Henvendelser, der ikke bliver til projekter, gemmes kun så længe det er nødvendigt for opfølgning. Kunde- og forretningsmateriale kan gemmes længere, hvor det er nødvendigt for kontrakter, bogføring, skat, retskrav eller legitim forretningsdokumentation.',
         },
         {
           heading: 'Sikkerhed',
-          text: 'Vi bruger rimelige tekniske og organisatoriske foranstaltninger til at beskytte personoplysninger. Ingen internettransmission eller lagring kan garanteres fuldstændig sikker.',
+          text: 'Der bruges rimelige tekniske og organisatoriske foranstaltninger til at beskytte personoplysninger. Ingen hjemmeside, emailsystem eller internettransmission kan garanteres fuldstændig sikker.',
         },
         {
-          heading: 'Dine rettigheder (GDPR)',
-          text: 'Under EU/EØS-lovgivning har du ret til: indsigt i dine personoplysninger; berigtigelse af urigtige data; anmodning om sletning; begrænsning af behandling; dataportabilitet; og tilbagetrækning af samtykke. Kontakt os for at udøve disse rettigheder.',
+          heading: 'Dine rettigheder',
+          text: 'Hvis EU- eller dansk databeskyttelsesret gælder, kan du have ret til indsigt, rettelse, sletning, begrænsning, indsigelse mod behandling og dataportabilitet. Du kan også klage til Datatilsynet.',
         },
         {
-          heading: 'Cookies & Analyse',
-          text: 'Hjemmesiden bruger ikke reklamesporing. Hvis der senere tilføjes privatlivsvenlig analyse, opdateres denne politik med leverandør og formål.',
-        },
-        {
-          heading: 'Børns privatliv',
-          text: 'Vores tjenester er ikke rettet mod børn under 13 år. Vi indsamler ikke bevidst data fra børn. Hvis du mener, vi har indsamlet sådanne data, kontakt os straks.',
-        },
-        {
-          heading: 'Ændringer til denne politik',
-          text: 'Vi kan opdatere denne politik, når hjemmesiden, leverandører eller lovkrav ændrer sig. Den seneste version findes på denne side.',
+          heading: 'Opdateringer',
+          text: 'Denne politik kan opdateres, når hjemmesiden, leverandører, ydelser eller lovkrav ændrer sig. Den nyeste version offentliggøres altid på denne side.',
         },
         {
           heading: 'Kontakt',
-          text: 'Spørgsmål om denne politik? Kontakt os på kontakt@tyndfed.dk eller skriv til: Tyndfed, Danmark (CVR: 39125307).',
+          text: 'Spørgsmål om privatliv kan sendes til kontakt@tyndfed.dk. Virksomhedsoplysninger: Tyndfed, Danmark, CVR 39125307.',
         },
       ],
     },
     terms: {
-      title: 'Servicevilkår',
-      updated: 'Senest opdateret: 21. december 2025',
+      title: 'Vilkår',
+      updated: 'Senest opdateret: 10. maj 2026',
       sections: [
         {
-          heading: 'Accept',
-          text: 'Ved at bruge tyndfed.dk accepterer du disse vilkår. Betalt kundearbejde reguleres af separate skriftlige aftaler.',
+          heading: 'Brug af hjemmesiden',
+          text: 'Disse vilkår gælder for brug af tyndfed.dk. Hjemmesiden præsenterer Tyndfed, udvalgt arbejde og kontaktmuligheder. Den stilles til rådighed som generel information.',
         },
         {
           heading: 'Hjemmesidens indhold',
-          text: 'Tekst, design, kode, billeder, logoer og andet materiale på hjemmesiden tilhører Tyndfed eller de respektive ejere, medmindre andet er angivet. Du må ikke kopiere eller genbruge materialet uden tilladelse.',
+          text: 'Tekst, design, kode, billeder, logoer og andet materiale på hjemmesiden tilhører Tyndfed eller de respektive ejere, medmindre andet er angivet. Du må ikke kopiere, reproducere eller genbruge materialet uden tilladelse, bortset fra hvor loven tillader det.',
         },
         {
           heading: 'Henvendelser',
-          text: 'En henvendelse opretter ikke et kundeforhold og garanterer ikke ledig kapacitet. Projektomfang, pris, tidsplan, rettigheder og leveringsvilkår aftales særskilt skriftligt.',
+          text: 'En besked eller projektforespørgsel opretter ikke et kundeforhold, garanterer ikke ledig kapacitet og reserverer ikke tid. Et projekt starter først, når omfang, tidsplan, pris, ansvar og vilkår er aftalt skriftligt.',
+        },
+        {
+          heading: 'Kundearbejde',
+          text: 'Betalt arbejde reguleres af en separat skriftlig aftale, tilbud, opgavebeskrivelse eller kontrakt. Hvis der er konflikt mellem disse hjemmesidevilkår og en underskrevet kundeaftale, gælder kundeaftalen for det pågældende projekt.',
         },
         {
           heading: 'Eksterne links',
-          text: 'Hjemmesiden linker til eksterne projekt- og sociale medier-sider. Tyndfed er ikke ansvarlig for indhold, tilgængelighed eller privatlivspraksis på disse tredjepartssider.',
+          text: 'Hjemmesiden kan linke til kundeprojekter, sociale profiler eller andre tredjepartshjemmesider. Tyndfed er ikke ansvarlig for eksternt indhold, tilgængelighed, sikkerhed eller privatlivspraksis.',
         },
         {
-          heading: 'Ansvarsfraskrivelse',
-          text: 'Hjemmesiden leveres "som den er" og "som tilgængelig". Vi forsøger at holde oplysninger korrekte, men garanterer ikke, at hjemmesiden er uafbrudt, fejlfri eller komplet.',
+          heading: 'Ingen garanti',
+          text: 'Hjemmesiden stilles til rådighed som den er og som tilgængelig. Vi forsøger at holde oplysninger korrekte og brugbare, men garanterer ikke, at hjemmesiden altid er tilgængelig, komplet, aktuel eller fejlfri.',
         },
         {
-          heading: 'Ansvarsbegrænsning',
-          text: 'I det omfang loven tillader, er Tyndfed ikke ansvarlig for tab, der opstår ved brug af hjemmesiden eller tillid til dens indhold.',
+          heading: 'Ansvar',
+          text: 'I det omfang loven tillader det, er Tyndfed ikke ansvarlig for tab, der skyldes brug af hjemmesiden, manglende adgang til hjemmesiden eller tillid til oplysninger offentliggjort her.',
         },
         {
           heading: 'Gældende lov',
-          text: "Disse vilkår er underlagt dansk lovgivning. Tvister skal afgøres ved danske domstole. Hvis du er EU-forbruger, kan du også bruge EU's online tvistløsningsplatform.",
+          text: 'Disse vilkår er underlagt dansk ret. Tvister om hjemmesiden behandles ved danske domstole, medmindre ufravigelig lovgivning kræver et andet værneting.',
         },
         {
           heading: 'Kontakt',
