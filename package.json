@@ -17,7 +17,7 @@
   "dependencies": {
     "@astrojs/react": "^5.0.0",
     "@astrojs/sitemap": "^3.7.1",
-    "@astrojs/vercel": "^10.0.0",
+    "@astrojs/vercel": "^10.0.7",
     "@fontsource-variable/geist": "^5.2.8",
     "@fontsource-variable/geist-mono": "^5.2.7",
     "@react-three/fiber": "^9.6.1",
@@ -27,18 +27,28 @@
     "zod": "^3.24.2"
   },
   "devDependencies": {
-    "@astrojs/check": "^0.9.7",
+    "@astrojs/check": "^0.9.9",
     "@biomejs/biome": "^2.2.4",
     "@tailwindcss/vite": "^4.2.4",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.0.0",
     "@types/three": "^0.184.0",
     "@vercel/speed-insights": "^2.0.0",
-    "astro": "^6.0.4",
+    "astro": "^6.3.5",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "tailwindcss": "^4.2.4",
     "typescript": "^5.7.2",
+    "vite": "^7.3.3",
     "vitest": "^3.2.4"
+  },
+  "overrides": {
+    "brace-expansion": "5.0.6",
+    "devalue": "5.8.1",
+    "fast-uri": "3.1.2",
+    "lodash": "4.18.0",
+    "path-to-regexp": "6.3.0",
+    "postcss": "8.5.10",
+    "yaml": "2.8.3"
   }
 }
