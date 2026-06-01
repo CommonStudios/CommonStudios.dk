@@ -210,12 +210,11 @@ body {
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  ::view-transition-old(root) {
-    animation: none;
-  }
-
+  /* View-transition snapshots default to white; pin them to the void background. */
+  ::view-transition-old(root),
   ::view-transition-new(root) {
     animation: none;
+    background-color: var(--bg-void);
   }
 
   ::view-transition-old(page-content) {
@@ -230,13 +229,11 @@ body {
 @keyframes pageExit {
   from {
     opacity: 1;
-    filter: blur(0);
     transform: translateY(0);
   }
 
   to {
     opacity: 0;
-    filter: blur(2px);
     transform: translateY(-6px);
   }
 }
@@ -244,13 +241,11 @@ body {
 @keyframes pageEnter {
   from {
     opacity: 0;
-    filter: blur(2px);
     transform: translateY(8px);
   }
 
   to {
     opacity: 1;
-    filter: blur(0);
     transform: translateY(0);
   }
 }
