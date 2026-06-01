@@ -4,6 +4,7 @@ dist/
 .vercel/
 .astro/
 .claude/
+.codex-screenshots/
 .playwright-mcp/
 .DS_Store
 *.log

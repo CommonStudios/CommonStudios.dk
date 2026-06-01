@@ -4,12 +4,23 @@ import vercel from '@astrojs/vercel';
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'astro/config';
 import { SITE_ORIGIN } from './src/config/site';
+import { DEFAULT_LOCALE, LOCALES } from './src/i18n/constants';
 
 const siteBase = SITE_ORIGIN.replace(/\/$/, '');
 
 export default defineConfig({
   site: SITE_ORIGIN,
   trailingSlash: 'never',
+  // First-class locale routing. `src/pages/index.astro` (and the other root stubs)
+  // own the language-detecting redirect, so we don't use `redirectToDefaultLocale`.
+  i18n: {
+    locales: [...LOCALES],
+    defaultLocale: DEFAULT_LOCALE,
+    routing: {
+      prefixDefaultLocale: true,
+      redirectToDefaultLocale: false,
+    },
+  },
   integrations: [
     // @vitejs/plugin-react drops its `transform` hook when Babel is unnecessary (perf). Vite can
     // still iterate a stale transform list after that, causing intermittent
@@ -21,6 +32,10 @@ export default defineConfig({
       },
     }),
     sitemap({
+      i18n: {
+        defaultLocale: DEFAULT_LOCALE,
+        locales: { da: 'da', en: 'en' },
+      },
       filter: (page) => {
         const normalized = page.replace(/\/$/, '');
         if (

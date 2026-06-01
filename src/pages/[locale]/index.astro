@@ -24,7 +24,6 @@ const heroTypingLines = JSON.stringify(t.home.heroTypingLines);
   canonical={canonicalUrl(SITE_ORIGIN, locale, '')}
   hideFooter
   noScroll
-  showSilkBackground
   htmlLang={locale}
   localeContext={{ locale, pathKey: '' }}
   skipLinkLabel={t.skipToContent}
@@ -35,16 +34,17 @@ const heroTypingLines = JSON.stringify(t.home.heroTypingLines);
         <h1
           class="hero-title"
           aria-label={t.home.heroTitle}
+          data-reveal
         >
           <span class="hero-title-line">{t.home.heroTitle}</span>
           <span class="hero-title-cursor" aria-hidden="true">|</span>
         </h1>
 
-        <p class="hero-lede">
+        <p class="hero-lede" data-reveal>
           {t.home.heroLede}
         </p>
 
-        <nav class="hero-actions" aria-label={t.home.heroActionsAria}>
+        <nav class="hero-actions" aria-label={t.home.heroActionsAria} data-reveal>
           <a href={pathForLocale(locale, 'projects')} class="hero-link">
             <span>{t.home.heroCta}</span>
             <svg
@@ -67,7 +67,7 @@ const heroTypingLines = JSON.stringify(t.home.heroTypingLines);
         </nav>
       </div>
 
-      <p class="hero-credit">
+      <p class="hero-credit" data-reveal>
         {t.home.heroCreditLead}<span class="hero-credit-name">{SEO.author}</span>{t.home.heroCreditTail}
       </p>
     </section>
@@ -271,10 +271,13 @@ const heroTypingLines = JSON.stringify(t.home.heroTypingLines);
     text-transform: none;
     letter-spacing: 0;
     color: var(--text-primary);
-    padding: 8px 0 6px;
-    border-bottom: 1px solid var(--rule-strong);
+    padding: 9px 13px;
+    border: 1px solid var(--rule-strong);
+    border-radius: 8px;
+    background: rgba(247, 247, 242, 0.035);
     transition:
       color var(--duration-fast) ease,
+      background var(--duration-fast) ease,
       border-color var(--duration-fast) ease;
   }
 
@@ -284,7 +287,8 @@ const heroTypingLines = JSON.stringify(t.home.heroTypingLines);
   }
 
   .hero-link:hover {
-    color: var(--accent-strong);
+    color: var(--bg-void);
+    background: var(--accent);
     border-color: var(--accent);
   }
 
@@ -316,10 +320,17 @@ const heroTypingLines = JSON.stringify(t.home.heroTypingLines);
 
     .hero-center {
       gap: 1.25rem;
+      max-width: min(100%, 20rem);
+    }
+
+    .hero-title {
+      font-size: clamp(2rem, 10vw, 2.45rem);
+      overflow-wrap: anywhere;
     }
 
     .hero-credit {
       padding-top: 16px;
+      max-width: min(100%, 20rem);
     }
   }
 </style>

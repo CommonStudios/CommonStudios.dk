@@ -1,0 +1,1 @@
+We want the simplest change possible - but the right change, not patches on patches. We don't care about migration. Code readability matters most, and we're happy to make bigger changes to achieve it.

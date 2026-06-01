@@ -29,13 +29,14 @@ const t = ui(locale);
   <WindowChrome>
     <section class="contact-shell shell" aria-label={t.contact.introAria} data-locale={locale}>
       <div class="contact-intro">
-        <p class="contact-eyebrow">{t.contact.eyebrow}</p>
-        <h1>{t.contact.title}</h1>
-        <p class="contact-lede">{t.contact.lede}</p>
+        <p class="contact-eyebrow" data-reveal>{t.contact.eyebrow}</p>
+        <h1 data-reveal-text>{t.contact.title}</h1>
+        <p class="contact-lede" data-reveal>{t.contact.lede}</p>
       </div>
 
       <form
         class="contact-form"
+        data-reveal
         aria-label={t.contact.formAria}
         action="mailto:kontakt@tyndfed.dk"
         method="post"
@@ -51,16 +52,10 @@ const t = ui(locale);
           <span>{t.contact.email}</span>
           <input name="email" type="email" autocomplete="email" required />
         </label>
-        <label>
+        <label class="is-wide">
           <span>{t.contact.projectType}</span>
           <select name="projectType" required>
             {t.contact.projectOptions.map((option) => <option value={option}>{option}</option>)}
-          </select>
-        </label>
-        <label>
-          <span>{t.contact.budget}</span>
-          <select name="budget" required>
-            {t.contact.budgetOptions.map((option) => <option value={option}>{option}</option>)}
           </select>
         </label>
         <label class="is-wide">
@@ -204,9 +199,9 @@ const t = ui(locale);
     font-size: 11px;
     text-transform: uppercase;
     letter-spacing: 0;
-    color: var(--text-primary);
-    background: transparent;
-    border: 1px solid var(--rule-strong);
+    color: var(--bg-void);
+    background: var(--accent);
+    border: 1px solid var(--accent);
     border-radius: 8px;
     cursor: pointer;
     padding: 10px 16px;
@@ -219,8 +214,8 @@ const t = ui(locale);
 
   .contact-submit:hover {
     color: var(--bg-void);
-    background: var(--accent);
-    border-color: var(--accent);
+    background: var(--accent-strong);
+    border-color: var(--accent-strong);
   }
 
   .contact-direct {
@@ -259,7 +254,6 @@ const t = ui(locale);
         `Name: ${data.get('name') ?? ''}`,
         `Email: ${data.get('email') ?? ''}`,
         `Project type: ${data.get('projectType') ?? ''}`,
-        `Budget: ${data.get('budget') ?? ''}`,
         '',
         `${data.get('message') ?? ''}`,
       ];

@@ -4,7 +4,7 @@ import { ClientRouter } from 'astro:transitions';
 import SiteHeader from '~/components/SiteHeader.astro';
 import SiteFooter from '~/components/SiteFooter.astro';
 import Silk from '~/components/Silk';
-import geistLatinUrl from '@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url';
+import interLatinUrl from '@fontsource-variable/inter/files/inter-latin-opsz-normal.woff2?url';
 import geistMonoLatinUrl from '@fontsource-variable/geist-mono/files/geist-mono-latin-wght-normal.woff2?url';
 import {
   SITE_ORIGIN,
@@ -42,8 +42,6 @@ interface Props {
   hideFooter?: boolean;
   /** Lock the page to the viewport (no scroll, full-bleed one-pager). */
   noScroll?: boolean;
-  /** Render the animated WebGL silk background. Keep opt-in because it is GPU-heavy. */
-  showSilkBackground?: boolean;
   /** Persist locale and emit hreflang when set (locale-prefixed pages). */
   localeContext?: { locale: Locale; pathKey: LocalePathKey };
   /** Translated skip link label (pass from `ui(locale).skipToContent`). */
@@ -61,7 +59,6 @@ const {
   hideHeader = false,
   hideFooter = false,
   noScroll = false,
-  showSilkBackground = false,
   localeContext,
   skipLinkLabel = 'Skip to content',
 } = Astro.props;
@@ -83,7 +80,7 @@ const defaultPreloads: PreloadHint[] = [
     fetchPriority: 'high',
   },
   {
-    href: geistLatinUrl,
+    href: interLatinUrl,
     as: 'font',
     type: 'font/woff2',
     crossOrigin: 'anonymous',
@@ -163,16 +160,16 @@ for (const hint of [...defaultPreloads, ...preloadHints]) {
 
     <!--
       Critical CSS — prevents flash, matches global tokens.
-      Self-hosted Geist Variable loads via fontsource (imported in global.css).
+      Self-hosted Inter Variable loads via fontsource (imported in global.css).
       The metric-adjusted fallback below covers the brief moment before the
       variable woff2 is parsed, so layout doesn't shift on swap.
     -->
     <style is:inline>
       @font-face {
-        font-family: 'Geist Fallback';
+        font-family: 'Inter Fallback';
         src: local('Arial');
-        size-adjust: 105%;
-        ascent-override: 92%;
+        size-adjust: 107%;
+        ascent-override: 90%;
         descent-override: 22%;
         line-gap-override: 0%;
       }
@@ -192,14 +189,20 @@ for (const hint of [...defaultPreloads, ...preloadHints]) {
       body {
         min-height: 100vh;
         color: #f7f7f2;
-        font-family: 'Geist Variable', 'Geist Fallback', -apple-system, BlinkMacSystemFont, sans-serif;
-        font-size: 15px;
-        -webkit-font-smoothing: antialiased;
-        -moz-osx-font-smoothing: grayscale;
+        font-family: 'InterVariable', 'Inter Fallback', -apple-system, BlinkMacSystemFont, sans-serif;
+        font-size: 16px;
+        font-weight: 430;
+        font-feature-settings: "cv02", "cv03", "cv04", "cv11", "ss01", "ss03";
+        font-optical-sizing: auto;
       }
     </style>
 
     <ClientRouter fallback="animate" />
+    <script is:inline>
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        document.documentElement.classList.add('reveal-ready');
+      }
+    </script>
     <script is:inline type="application/ld+json" set:html={JSON.stringify({ ...schema })} />
     {localeContext && (
       <script is:inline define:vars={{ loc: localeContext.locale, key: LOCALE_STORAGE_KEY }}>
@@ -210,19 +213,18 @@ for (const hint of [...defaultPreloads, ...preloadHints]) {
     )}
   </head>
   <body class:list={[{ 'no-scroll': noScroll }]}>
-    <div class="site-background" aria-hidden="true">
-      {showSilkBackground && (
-        <div class="site-background-silk">
-          <Silk
-            client:media="(prefers-reduced-motion: no-preference)"
-            speed={4}
-            scale={1.08}
-            color="#2d2923"
-            noiseIntensity={1}
-            rotation={0}
-          />
-        </div>
-      )}
+    <div class="site-background" aria-hidden="true" transition:persist="site-background">
+      <div class="site-background-silk">
+        <Silk
+          client:media="(prefers-reduced-motion: no-preference)"
+          transition:persist="site-background-silk"
+          speed={4}
+          scale={1.08}
+          color="#2d2923"
+          noiseIntensity={1}
+          rotation={0}
+        />
+      </div>
       <div class="site-background-canvas" />
     </div>
 
@@ -246,7 +248,7 @@ for (const hint of [...defaultPreloads, ...preloadHints]) {
           />
         )}
 
-        <main id="main" class="frame-main">
+        <main id="main" class="frame-main" transition:name="page-content">
           <slot />
         </main>
 
@@ -309,6 +311,7 @@ for (const hint of [...defaultPreloads, ...preloadHints]) {
         --frame-gap: 30px;
         --frame-content-pad: 14px;
         position: relative;
+        isolation: isolate;
         z-index: 1;
         min-height: 100dvh;
         display: grid;
@@ -422,5 +425,10 @@ for (const hint of [...defaultPreloads, ...preloadHints]) {
         transform: translateY(0);
       }
     </style>
+
+    <script>
+      import { initReveals } from '~/scripts/reveal';
+      document.addEventListener('astro:page-load', initReveals);
+    </script>
   </body>
 </html>

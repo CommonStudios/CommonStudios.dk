@@ -1,0 +1,85 @@
+---
+/**
+ * Language-detecting entry point. Picks a locale from `localStorage` then the
+ * browser language and client-redirects to the locale-prefixed route. Used by the
+ * unprefixed root pages (`/`, `/projects`, `/contact`, `/privacy`); `noscript`
+ * users get explicit links.
+ */
+import { DEFAULT_LOCALE, LOCALE_STORAGE_KEY, LOCALES } from '~/i18n/constants';
+
+type Segment = '' | 'projects' | 'privacy' | 'contact';
+
+interface Props {
+  segment?: Segment;
+}
+
+const TITLES: Record<Segment, string> = {
+  '': 'Tyndfed',
+  projects: 'Tyndfed — Projects',
+  privacy: 'Tyndfed — Privacy',
+  contact: 'Tyndfed — Contact',
+};
+
+const segment = Astro.props.segment ?? '';
+const suffix = segment === '' ? '' : `/${segment}`;
+const title = TITLES[segment];
+---
+
+<!doctype html>
+<html lang={DEFAULT_LOCALE}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, follow" />
+    <title>{title}</title>
+    <link rel="icon" type="image/svg+xml" href="/images/tyndfed.svg" />
+    <script is:inline define:vars={{ STORAGE: LOCALE_STORAGE_KEY, suffix, locales: LOCALES }}>
+      (function () {
+        function pick() {
+          try {
+            var stored = localStorage.getItem(STORAGE);
+            if (locales.indexOf(stored) !== -1) return stored;
+          } catch (_) {}
+          var nav = (navigator.language || '').toLowerCase();
+          return nav.startsWith('da') ? 'da' : 'en';
+        }
+        location.replace('/' + pick() + suffix);
+      })();
+    </script>
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        background: #0b0c0a;
+        color: #b9bcb1;
+        font-family: 'Geist', system-ui, sans-serif;
+        font-size: 15px;
+        padding: 24px;
+      }
+      p {
+        margin: 0;
+        text-align: center;
+      }
+      a {
+        color: #f7f7f2;
+        text-decoration: none;
+        border-bottom: 1px solid rgba(247, 247, 242, 0.25);
+      }
+      a:hover {
+        color: #e8d49b;
+        border-color: #d4b87a;
+      }
+    </style>
+  </head>
+  <body>
+    <noscript>
+      <p>
+        <a href={`/da${suffix}`}>Dansk</a>
+        <span aria-hidden="true"> · </span>
+        <a href={`/en${suffix}`}>English</a>
+      </p>
+    </noscript>
+  </body>
+</html>

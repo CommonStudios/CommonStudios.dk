@@ -58,13 +58,11 @@ type UiForLocale = {
     name: string;
     email: string;
     projectType: string;
-    budget: string;
     message: string;
     submit: string;
     directEmail: string;
     mailtoSubject: string;
     projectOptions: readonly string[];
-    budgetOptions: readonly string[];
   };
   privacy: {
     backHome: string;
@@ -154,7 +152,6 @@ const en: UiForLocale = {
     name: 'Name',
     email: 'Email',
     projectType: 'Project type',
-    budget: 'Budget',
     message: 'Message',
     submit: 'Open email draft',
     directEmail: 'Prefer your own inbox? Write to kontakt@tyndfed.dk.',
@@ -166,13 +163,6 @@ const en: UiForLocale = {
       'UI/UX design',
       'Logo & identity',
       'Other',
-    ],
-    budgetOptions: [
-      'Under 25,000 DKK',
-      '25,000-50,000 DKK',
-      '50,000-100,000 DKK',
-      '100,000+ DKK',
-      'Not sure yet',
     ],
   },
   privacy: {
@@ -263,7 +253,6 @@ const da: UiForLocale = {
     name: 'Navn',
     email: 'Email',
     projectType: 'Projekttype',
-    budget: 'Budget',
     message: 'Besked',
     submit: 'Åbn emailkladde',
     directEmail:
@@ -276,13 +265,6 @@ const da: UiForLocale = {
       'UI/UX-design',
       'Logo & identitet',
       'Andet',
-    ],
-    budgetOptions: [
-      'Under 25.000 kr.',
-      '25.000-50.000 kr.',
-      '50.000-100.000 kr.',
-      '100.000+ kr.',
-      'Ikke afklaret endnu',
     ],
   },
   privacy: {

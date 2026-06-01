@@ -42,13 +42,11 @@ const t = ui(locale);
       class="projects-hero shell"
       aria-label={t.projects.introAria}
       data-locale={locale}
-      data-reveal
-      data-reveal-delay="0"
     >
       <div class="projects-hero-inner">
-        <p class="projects-eyebrow">{t.projects.eyebrow}</p>
-        <h1>{t.projects.title}</h1>
-        <p class="projects-lede">
+        <p class="projects-eyebrow" data-reveal data-reveal-from="top">{t.projects.eyebrow}</p>
+        <h1 data-reveal-text data-reveal-from="top">{t.projects.title}</h1>
+        <p class="projects-lede" data-reveal data-reveal-from="top">
           {t.projects.lede}
         </p>
       </div>
@@ -58,7 +56,7 @@ const t = ui(locale);
       {projects.map((project, index) => {
         const tags = project.links.map((link) => link.label[locale]).join(' · ');
         return (
-          <article class="project-row" data-reveal data-reveal-delay={String(index * 60)}>
+          <article class="project-row" data-reveal data-reveal-from="top">
             <div class="project-aside">
               <img
                 src={project.icon}
@@ -184,12 +182,19 @@ const t = ui(locale);
     grid-template-columns: 56px minmax(0, 1fr);
     gap: 28px;
     align-items: start;
-    padding: 32px 0;
+    padding: 32px 14px;
+    margin-inline: -14px;
     border-bottom: 1px solid var(--rule);
+    border-radius: 8px;
+    transition: background var(--duration-fast) ease;
   }
 
   .project-row:last-child {
     border-bottom: none;
+  }
+
+  .project-row:hover {
+    background: rgba(247, 247, 242, 0.025);
   }
 
   .project-aside {
@@ -222,24 +227,6 @@ const t = ui(locale);
     border: none;
     filter: grayscale(0.86) saturate(0.38) contrast(1.12) brightness(0.96);
     transition: none;
-  }
-
-  [data-reveal] {
-    opacity: 1;
-    transform: none;
-    filter: none;
-    transition:
-      opacity 560ms var(--ease-out-expo),
-      transform 560ms var(--ease-out-expo),
-      filter 560ms var(--ease-out-expo);
-    transition-delay: var(--reveal-delay, 0ms);
-    will-change: opacity, transform, filter;
-  }
-
-  [data-reveal].is-visible {
-    opacity: 1;
-    transform: translateY(0);
-    filter: blur(0);
   }
 
   .project-main {
@@ -340,6 +327,7 @@ const t = ui(locale);
       grid-template-columns: 44px minmax(0, 1fr);
       gap: 12px;
       padding: 24px 0;
+      margin-inline: 0;
     }
 
     .project-aside {
@@ -367,39 +355,4 @@ const t = ui(locale);
     }
   }
 
-  @media (prefers-reduced-motion: reduce) {
-    [data-reveal] {
-      opacity: 1;
-      transform: none;
-      filter: none;
-      transition: none;
-    }
-  }
 </style>
-
-<script is:inline>
-  const revealItems = Array.from(document.querySelectorAll('[data-reveal]'));
-  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-  if (prefersReduced || revealItems.length === 0) {
-    revealItems.forEach((el) => el.classList.add('is-visible'));
-  } else {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        for (const entry of entries) {
-          if (!entry.isIntersecting) continue;
-          const el = entry.target;
-          if (!(el instanceof HTMLElement)) continue;
-          const delayValue = Number(el.dataset.revealDelay ?? '0');
-          const delayMs = Number.isFinite(delayValue) ? Math.max(0, delayValue) : 0;
-          el.style.setProperty('--reveal-delay', `${delayMs}ms`);
-          el.classList.add('is-visible');
-          observer.unobserve(el);
-        }
-      },
-      { threshold: 0.12, rootMargin: '0px 0px -8% 0px' },
-    );
-
-    revealItems.forEach((el) => observer.observe(el));
-  }
-</script>

@@ -28,7 +28,7 @@ export const legalContent: Record<Language, LegalContent> = {
         },
         {
           heading: 'Data You Send',
-          text: 'When you use the contact form or send an email, we may receive your name, email address, project type, budget range, message, and any other details you choose to include.',
+          text: 'When you use the contact form or send an email, we may receive your name, email address, project type, message, and any other details you choose to include.',
         },
         {
           heading: 'Technical Data',
@@ -122,7 +122,7 @@ export const legalContent: Record<Language, LegalContent> = {
         },
         {
           heading: 'Data du sender',
-          text: 'Når du bruger kontaktformularen eller sender en email, kan vi modtage dit navn, din emailadresse, projekttype, budgetramme, besked og andre oplysninger, du selv vælger at sende.',
+          text: 'Når du bruger kontaktformularen eller sender en email, kan vi modtage dit navn, din emailadresse, projekttype, besked og andre oplysninger, du selv vælger at sende.',
         },
         {
           heading: 'Tekniske data',
