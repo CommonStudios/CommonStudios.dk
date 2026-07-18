@@ -11,6 +11,15 @@ export type { Project, ProjectLink };
  */
 const PROJECTS_SEED = [
   {
+    name: 'VagtPilot',
+    description: {
+      da: 'Vagtplansystem, der samler vagtplan, teamchat, tidsregistrering og løntimer ét sted for danske arbejdspladser med skiftende arbejdstider.',
+      en: 'Workforce scheduling platform that brings shift planning, team chat, time tracking and payroll hours together for Danish workplaces with changing schedules.',
+    },
+    icon: '/images/project-icons/vagtpilot-icon.svg',
+    links: [{ label: { da: 'Web', en: 'Web' }, url: 'https://vagtpilot.dk' }],
+  },
+  {
     name: 'Andelsbasen',
     description: {
       da: 'Dataplatform med Danmarks mest komplette oversigt over andelsboligforeninger. Information om ventelister, priser, boligantal og kontaktoplysninger for 12.000+ foreninger.',
