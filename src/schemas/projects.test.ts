@@ -1,27 +1,32 @@
 import { describe, expect, it } from 'vitest';
 import { parseProjects } from '~/schemas/projects';
 
+const base = {
+  name: 'N',
+  description: { da: 'D', en: 'D' },
+  url: 'https://a.dk',
+};
+
 describe('parseProjects', () => {
   it('accepts valid seed shape', () => {
-    const data = [
-      {
-        name: 'N',
-        description: { da: 'D', en: 'D' },
-        icon: '/i.png',
-        links: [{ label: { da: 'L', en: 'L' }, url: 'https://a.dk' }],
-      },
-    ];
-    expect(parseProjects(data)).toHaveLength(1);
+    expect(parseProjects([base])).toHaveLength(1);
   });
 
-  it('rejects external icon', () => {
+  it('rejects non-http project url', () => {
+    expect(() => parseProjects([{ ...base, url: 'a.dk' }])).toThrow();
+  });
+
+  it('requires previews to use local assets', () => {
     expect(() =>
       parseProjects([
         {
-          name: 'N',
-          description: { da: 'D', en: 'D' },
-          icon: 'https://evil.com/i.png',
-          links: [{ label: { da: 'L', en: 'L' }, url: '/p' }],
+          ...base,
+          preview: {
+            src: 'https://example.com/logo.png',
+            width: 10,
+            height: 10,
+            alt: { da: 'A', en: 'A' },
+          },
         },
       ]),
     ).toThrow();

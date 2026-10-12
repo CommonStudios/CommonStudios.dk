@@ -1,7 +1,4 @@
-import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
-import vercel from '@astrojs/vercel';
-import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'astro/config';
 import { SITE_ORIGIN } from './src/config/site';
 import { DEFAULT_LOCALE, LOCALES } from './src/i18n/constants';
@@ -11,8 +8,8 @@ const siteBase = SITE_ORIGIN.replace(/\/$/, '');
 export default defineConfig({
   site: SITE_ORIGIN,
   trailingSlash: 'never',
-  // First-class locale routing. `src/pages/index.astro` (and the other root stubs)
-  // own the language-detecting redirect, so we don't use `redirectToDefaultLocale`.
+  // First-class locale routing. Unprefixed paths are redirected by the worker
+  // (`worker/redirects.ts`), with `LocaleRedirect.astro` as the static fallback.
   i18n: {
     locales: [...LOCALES],
     defaultLocale: DEFAULT_LOCALE,
@@ -22,15 +19,6 @@ export default defineConfig({
     },
   },
   integrations: [
-    // @vitejs/plugin-react drops its `transform` hook when Babel is unnecessary (perf). Vite can
-    // still iterate a stale transform list after that, causing intermittent
-    // "Cannot read properties of undefined (reading 'call')" (vitejs/vite#21162, withastro/astro#14868).
-    // A no-op Babel plugin keeps `canSkipBabel` false so the hook is never removed.
-    react({
-      babel: {
-        plugins: [() => ({ visitor: {} })],
-      },
-    }),
     sitemap({
       i18n: {
         defaultLocale: DEFAULT_LOCALE,
@@ -38,33 +26,25 @@ export default defineConfig({
       },
       filter: (page) => {
         const normalized = page.replace(/\/$/, '');
-        if (
-          normalized === siteBase ||
-          normalized === `${siteBase}/privacy` ||
-          normalized === `${siteBase}/projects`
-        ) {
-          return false;
-        }
-        return true;
+        // Unprefixed redirect stubs are not real pages.
+        return normalized !== siteBase && normalized !== `${siteBase}/privacy`;
       },
     }),
   ],
-  adapter: vercel(),
   output: 'static',
 
   compressHTML: true,
 
   vite: {
-    plugins: [tailwindcss()],
     resolve: {
       alias: {
         '~': '/src',
       },
     },
-    /** Avoid dev HMR / transform runs when deploy artifacts change under `.vercel/` or `dist/`. */
+    /** Avoid dev HMR / transform runs when deploy artifacts change under `dist/`. */
     server: {
       watch: {
-        ignored: ['**/.vercel/**', '**/dist/**'],
+        ignored: ['**/dist/**'],
       },
     },
   },

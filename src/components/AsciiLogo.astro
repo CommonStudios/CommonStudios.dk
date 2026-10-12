@@ -1,0 +1,181 @@
+---
+/**
+ * The CommonStudios wordmark drawn in ASCII, with a scan line that crosses it.
+ * The art comes from `scripts/ascii-wordmark.py` (regenerate it when the logo
+ * changes). The final frame is rendered at build time, so the logo is complete
+ * without JavaScript; the script only animates it.
+ */
+import art from '~/assets/commonstudios-wordmark.json';
+
+interface Props {
+  label: string;
+}
+
+const { label } = Astro.props;
+const layouts = [
+  { name: 'wide', lines: art.wide },
+  { name: 'stacked', lines: art.stacked },
+];
+---
+
+<div class="ascii-logo" role="img" aria-label={label}>
+  {layouts.map(({ name, lines }) => (
+    <pre
+      class={`ascii-${name}`}
+      aria-hidden="true"
+      style={`--cols: ${Math.max(...lines.map((line) => line.length))}`}
+      data-ascii-art>{lines.join('\n')}</pre>
+  ))}
+</div>
+
+<script>
+  // A scan line crosses the wordmark now and then (after ascii.rest's logo
+  // pieces): its head scrambles the art into noise, its trail glows.
+  const NOISE = '#$%&*+<=>?@[]{}';
+  const PASS_MS = 3600; // one sweep, left to right
+  const NOISE_MS = 110; // how often the scrambled characters change
+  const REST_MS = 7000; // between sweeps
+  const FIRST_MS = 500; // before the first sweep
+  const HEAD = 4; // columns the line scrambles
+  const TRAIL = 28; // columns of afterglow behind it, fading back to ink
+  const TRAIL_STEPS = 6; // colour steps in the fade (.scan-1 … .scan-6)
+  const SLANT = 2; // columns the line leans per row
+
+  // Cheap stable noise per cell and moment, so the scramble flickers but doesn't strobe.
+  const hash = (x: number, y: number, k: number) => {
+    let h = Math.imul(x, 73856093) ^ Math.imul(y, 19349663) ^ Math.imul(k, 83492791);
+    h = Math.imul(h ^ (h >>> 13), 1274126177);
+    return (h ^ (h >>> 16)) >>> 0;
+  };
+  const escape = (text: string) =>
+    text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  for (const pre of reduceMotion ? [] : document.querySelectorAll<HTMLPreElement>('[data-ascii-art]')) {
+    const art = (pre.textContent ?? '').split('\n');
+    const resting = pre.innerHTML;
+    const span = Math.max(...art.map((line) => line.length)) + HEAD + TRAIL + art.length * SLANT;
+    let visible = false;
+    let cycleStart = performance.now() + FIRST_MS - PASS_MS - REST_MS;
+    let atRest = true;
+
+    // Gentle ease in and out (sine): peaks at ~1.6x the average speed, so it never rushes.
+    const ease = (t: number) => (1 - Math.cos(Math.PI * t)) / 2;
+
+    const draw = (progress: number, frame: number) => {
+      const head = -HEAD + ease(progress) * span;
+      pre.innerHTML = art
+        .map((line, y) => {
+          let out = '';
+          let run = '';
+          let runStep = 0;
+          // Group neighbouring cells of the same colour step into one span.
+          const flush = () => {
+            if (run) {
+              out += runStep ? `<span class="scan-${runStep}">${escape(run)}</span>` : escape(run);
+              run = '';
+            }
+          };
+          [...line].forEach((ch, x) => {
+            const d = head - (x + y * SLANT); // columns since the line passed this cell
+            let step = 0;
+            let shown = ch;
+            if (ch !== ' ' && d >= 0 && d < HEAD + TRAIL) {
+              if (d < HEAD) {
+                step = 1;
+                const h = hash(x, y, frame);
+                if (h % 4) {
+                  shown = NOISE[(h >>> 2) % NOISE.length];
+                }
+              } else {
+                step = 1 + Math.ceil(((d - HEAD) / TRAIL) * (TRAIL_STEPS - 1));
+              }
+            }
+            if (step !== runStep) {
+              flush();
+              runStep = step;
+            }
+            run += shown;
+          });
+          flush();
+          return out;
+        })
+        .join('\n');
+    };
+
+    const tick = (now: number) => {
+      if (!visible || document.hidden) {
+        return;
+      }
+      requestAnimationFrame(tick);
+      if (now - cycleStart >= PASS_MS + REST_MS) {
+        cycleStart = now;
+      }
+      const t = now - cycleStart;
+      if (t < PASS_MS) {
+        atRest = false;
+        draw(t / PASS_MS, Math.floor(now / NOISE_MS));
+      } else if (!atRest) {
+        atRest = true;
+        pre.innerHTML = resting;
+      }
+    };
+
+    // Only animate the layout that is displayed, and only while it is in view.
+    new IntersectionObserver(([entry]) => {
+      const wasVisible = visible;
+      visible = entry.isIntersecting && pre.offsetParent !== null;
+      if (visible && !wasVisible) {
+        requestAnimationFrame(tick);
+      }
+    }).observe(pre);
+
+    document.addEventListener('visibilitychange', () => {
+      if (!document.hidden && visible) {
+        requestAnimationFrame(tick);
+      }
+    });
+  }
+</script>
+
+<style>
+  .ascii-logo {
+    container-type: inline-size;
+    color: var(--paper);
+  }
+
+  pre {
+    margin: 0;
+    /* Monospace glyphs are ~0.6em wide: size the text so every column fits. */
+    font-size: calc(100cqi / (var(--cols) * 0.6));
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
+    line-height: 1.2;
+    letter-spacing: 0;
+    white-space: pre;
+    font-variant-ligatures: none;
+    user-select: none;
+  }
+
+  /* Scan colours: the head in full patina, the trail fading back to ink. */
+  pre :global(.scan-1) { color: var(--patina); }
+  pre :global(.scan-2) { color: color-mix(in oklab, var(--patina) 85%, var(--paper)); }
+  pre :global(.scan-3) { color: color-mix(in oklab, var(--patina) 68%, var(--paper)); }
+  pre :global(.scan-4) { color: color-mix(in oklab, var(--patina) 50%, var(--paper)); }
+  pre :global(.scan-5) { color: color-mix(in oklab, var(--patina) 32%, var(--paper)); }
+  pre :global(.scan-6) { color: color-mix(in oklab, var(--patina) 15%, var(--paper)); }
+
+  .ascii-stacked {
+    display: none;
+  }
+
+  @container (max-width: 34rem) {
+    .ascii-wide {
+      display: none;
+    }
+
+    .ascii-stacked {
+      display: block;
+    }
+  }
+</style>

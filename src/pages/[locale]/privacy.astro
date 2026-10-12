@@ -1,13 +1,8 @@
 ---
 import BaseLayout from '~/layouts/BaseLayout.astro';
-import WindowChrome from '~/components/WindowChrome.astro';
-import BackLink from '~/components/BackLink.astro';
 import LegalSection from '~/components/LegalSection.astro';
 import { legalContent } from '~/data/legal';
-import { SITE_ORIGIN } from '~/config/site';
 import { LOCALES, isLocale } from '~/i18n/constants';
-import type { Locale } from '~/i18n/constants';
-import { canonicalUrl, pathForLocale } from '~/i18n/paths';
 import { ui } from '~/i18n/ui';
 
 export function getStaticPaths() {
@@ -18,7 +13,7 @@ const { locale: raw } = Astro.params;
 if (!isLocale(raw)) {
   return Astro.redirect('/da/privacy');
 }
-const locale: Locale = raw;
+const locale = raw;
 const t = ui(locale);
 const legal = legalContent[locale];
 ---
@@ -26,92 +21,24 @@ const legal = legalContent[locale];
 <BaseLayout
   title={t.meta.privacyTitle}
   description={t.meta.privacyDescription}
-  canonical={canonicalUrl(SITE_ORIGIN, locale, 'privacy')}
-  htmlLang={locale}
-  localeContext={{ locale, pathKey: 'privacy' }}
-  skipLinkLabel={t.skipToContent}
+  locale={locale}
+  segment="privacy"
 >
-  <WindowChrome>
-    <BackLink href={pathForLocale(locale, '')} label={t.privacy.backHome} />
-
-    <section class="legal-hero shell">
-      <p class="eyebrow">
-        <span class="meta-num">{t.privacy.docMarker}</span>
-        <span class="meta-sep">/</span>
-        {t.privacy.eyebrow}
-      </p>
-      <header class="legal-header">
-        <h1 class="legal-title">
-          {t.privacy.title}
-        </h1>
-      </header>
-    </section>
-
-    <section class="legal-body shell" aria-label={t.privacy.sectionAria}>
-      <LegalSection document={legal.privacy} />
-      <hr class="divider" />
-      <LegalSection document={legal.terms} />
-    </section>
-  </WindowChrome>
+  <div class="legal wrap">
+    <h1>{t.privacy.title}</h1>
+    <LegalSection document={legal.privacy} />
+    <LegalSection document={legal.terms} />
+  </div>
 </BaseLayout>
 
 <style>
-  .legal-hero {
-    padding-block: 22px 34px;
-    border-bottom: 1px solid var(--rule);
+  .legal {
+    padding-block: clamp(3rem, 8vw, 6rem);
   }
 
-  .eyebrow {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 14px;
-  }
-
-  .meta-num { color: var(--text-secondary); font-weight: 500; }
-  .meta-sep { color: var(--text-ghost); }
-
-  .legal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: end;
-    gap: 32px;
-    flex-wrap: wrap;
-  }
-
-  .legal-title {
-    font-family: var(--font-display);
-    font-weight: 540;
-    font-variation-settings: normal;
-    font-size: var(--font-display-md);
-    line-height: 1;
-    letter-spacing: 0;
-    color: var(--text-primary);
-    margin: 0;
-  }
-
-  .legal-body {
-    padding-block: 28px 32px;
-  }
-
-  .divider {
-    border: none;
-    border-top: 1px solid var(--rule);
-    margin: 56px 0;
-  }
-
-  @media (max-width: 480px) {
-    .legal-hero {
-      padding-block: 14px 26px;
-    }
-
-    .legal-title {
-      font-size: var(--font-display-md);
-      line-height: 1.04;
-    }
-
-    .legal-body {
-      padding-block: 22px 28px;
-    }
+  h1 {
+    font-size: var(--step-2);
+    letter-spacing: -0.02em;
+    margin-bottom: clamp(2.5rem, 6vw, 4.5rem);
   }
 </style>

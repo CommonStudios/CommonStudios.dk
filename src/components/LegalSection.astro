@@ -9,16 +9,16 @@ const { document } = Astro.props;
 ---
 
 <section class="legal-section">
-  <header class="ls-head">
+  <header>
     <h2>{document.title}</h2>
     <p class="updated">{document.updated}</p>
   </header>
-  <div class="ls-body">
+  <div class="body">
     {document.sections.map((section) => (
-      <article class="ls-block">
+      <div>
         <h3>{section.heading}</h3>
         <p>{section.text}</p>
-      </article>
+      </div>
     ))}
   </div>
 </section>
@@ -26,92 +26,43 @@ const { document } = Astro.props;
 <style>
   .legal-section {
     display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: 48px;
-    padding-bottom: 24px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 2fr);
+    gap: 1.5rem 3rem;
+    padding-block: 1.75rem 4rem;
+    border-top: 1px solid var(--seam);
   }
 
-  .ls-head {
-    position: sticky;
-    top: 100px;
-    align-self: start;
-    border-top: 1px solid var(--rule-strong);
-    padding-top: 16px;
-  }
-
-  .ls-head h2 {
-    font-family: var(--font-display);
-    font-weight: 520;
-    font-variation-settings: normal;
-    font-size: 36px;
-    line-height: 1;
-    letter-spacing: 0;
-    color: var(--text-primary);
-    margin: 0;
+  h2 {
+    font-size: var(--step-1);
+    letter-spacing: -0.01em;
   }
 
   .updated {
-    margin-top: 12px;
-    font-family: var(--font-mono);
-    font-size: 11px;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
+    margin-top: 0.5rem;
+    color: var(--lichen);
+    font-size: var(--step--1);
   }
 
-  .updated::before {
-    content: '';
-    width: 6px;
-    height: 6px;
-    border-radius: 2px;
-    background: var(--accent);
+  .body {
+    display: grid;
+    gap: 1.75rem;
   }
 
-  .ls-body {
-    display: flex;
-    flex-direction: column;
-    gap: 28px;
-    border-top: 1px solid var(--rule-strong);
-    padding-top: 16px;
+  h3 {
+    font-size: var(--step-0);
+    font-weight: 600;
+    line-height: 1.4;
   }
 
-  .ls-block h3 {
-    font-family: var(--font-display);
-    font-weight: 560;
-    font-variation-settings: normal;
-    font-size: 20px;
-    line-height: 1.2;
-    letter-spacing: 0;
-    color: var(--text-primary);
-    margin-bottom: 8px;
+  .body p {
+    max-width: var(--measure);
+    margin-top: 0.25rem;
+    color: var(--lichen);
   }
 
-  .ls-block p {
-    font-family: var(--font-sans);
-    font-size: 15px;
-    line-height: 1.65;
-    color: var(--text-secondary);
-    max-width: 70ch;
-  }
-
-  @media (max-width: 768px) {
+  @media (max-width: 52rem) {
     .legal-section {
       grid-template-columns: 1fr;
-      gap: 24px;
-    }
-    .ls-head {
-      position: static;
-    }
-
-    .ls-head h2 {
-      font-size: 30px;
-    }
-
-    .ls-block p {
-      font-size: 16px;
-      line-height: 1.6;
     }
   }
 </style>

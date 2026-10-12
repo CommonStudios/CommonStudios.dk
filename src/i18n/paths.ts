@@ -1,12 +1,11 @@
 import type { Locale } from './constants';
 
+export type PageSegment = '' | 'privacy';
+
 /**
  * `trailingSlash: 'never'` — no trailing slash on index.
  */
-export function pathForLocale(
-  locale: Locale,
-  segment: '' | 'projects' | 'privacy' | 'contact',
-): string {
+export function pathForLocale(locale: Locale, segment: PageSegment): string {
   if (segment === '') {
     return `/${locale}`;
   }
@@ -16,7 +15,7 @@ export function pathForLocale(
 export function canonicalUrl(
   origin: string,
   locale: Locale,
-  segment: '' | 'projects' | 'privacy' | 'contact',
+  segment: PageSegment,
 ): string {
   const base = origin.replace(/\/$/, '');
   return `${base}${pathForLocale(locale, segment)}`;

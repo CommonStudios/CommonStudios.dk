@@ -4,44 +4,37 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Tyndfed is a portfolio website built with Astro, React 19 (for interactive islands), and TypeScript. It uses static site generation and deploys to Vercel.
+CommonStudios is the bilingual (da/en) portfolio site for Tobias Dosdal-Feddersen's studio, built with Astro and TypeScript. Static output, served by a Cloudflare Worker with static assets.
 
 ## Commands
 
 ```bash
-bun install          # Install dependencies
-bun dev              # Start dev server (port 4321)
-bun run build        # Build for production
-bun run preview      # Preview production build locally
+npm install          # Install dependencies
+npm run dev          # Start dev server (port 4321)
+npm run build        # Build for production
+npm run verify       # astro check + biome + vitest + build
 ```
 
 ## Architecture
 
-**Stack:** Astro 6 + React 19 (islands) + TypeScript + Vercel adapter
+**Pages:** `src/pages/[locale]/index.astro` is the whole site (intro, work, services, contact). `src/pages/[locale]/privacy.astro` holds the legal text. `404.astro` is bilingual. Unprefixed `/` and `/privacy` render `LocaleRedirect.astro` as a fallback only.
 
-**Routing:** File-based routing in `src/pages/`. The `404.astro` file is the error page.
+**Worker:** `worker/redirects.ts` handles redirects: `/` and `/privacy` go to the visitor's language (`lang` cookie, then Accept-Language, then da), and the old `/projects` and `/contact` pages 301 to `#work` and `#contact`.
 
-**Key Files:**
-- `src/layouts/BaseLayout.astro` - Root HTML layout with meta tags, fonts, JSON-LD
-- `src/components/WindowChrome.astro` - macOS-style window wrapper (pure Astro, 0 JS)
-- `src/components/AsciiLogo.tsx` - React island with glitch animation (`client:idle` on home)
+**Content:** Projects live in `src/data/projects.ts` (validated by Zod). All UI copy is in `src/i18n/ui.ts`.
 
-**Key Patterns:**
-- Astro components for static content (WindowChrome, pages)
-- React islands only for interactive components (AsciiLogo with `client:idle` on home)
-- SEO/meta tags handled via props in BaseLayout.astro
-- Vanilla JS for simple interactivity (language toggle on privacy page)
+**SEO:** Built in `BaseLayout.astro`: canonical, hreflang, OG tags, and a JSON-LD `@graph` from `buildJsonLd` in `src/config/site.ts`. The sitemap comes from `@astrojs/sitemap`.
 
 **Styling:**
-- Astro scoped styles in `.astro` files
-- CSS modules only for React components (e.g., `AsciiLogo.module.css`)
-- `src/styles/global.css` for global styles (variables, reset, body)
-- Use kebab-case for class names in Astro components
-- Dark theme only - CSS variables defined in `:root`
+- Tokens in `src/styles/global.css` (the "Patina" palette: oxide, slate, seam, paper, lichen, patina)
+- One typeface: Schibsted Grotesk
+- Astro scoped styles; kebab-case class names
+- Dark theme only
+- No Tailwind, no client framework; only small scripts (copy-email button, language cookie, ASCII wordmark scan)
+
+**ASCII wordmark:** `src/components/AsciiLogo.astro` renders `src/assets/commonstudios-wordmark.json`, generated from `src/assets/commonstudios-wordmark.png` by `python3 scripts/ascii-wordmark.py` (needs Pillow, macOS fonts). Regenerate after changing the logo image.
 
 **Path Aliases:** `~/` maps to `src/`
-
-**Engineering:** See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for config layers, Zod content validation, and CI. Root scripts: `lint`, `test`, `verify`.
 
 ## Design Review Workflow
 
@@ -53,7 +46,6 @@ Use `/design-review` command for comprehensive UI/UX review of front-end changes
 - When accessibility or responsiveness testing is needed
 
 **Design resources:**
-- `.claude/design-principles.md` - Design tokens, patterns, and checklist
 - `src/styles/global.css` - CSS variables and global styles
 
 **Review process uses Playwright MCP to:**
