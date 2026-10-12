@@ -1,4 +1,4 @@
-# Tyndfed
+# CommonStudios
 
 Portfolio website built with Astro.
 
@@ -23,7 +23,14 @@ bun run check
 
 ## Deploy
 
-Push to GitHub - Vercel auto-deploys.
+Build and deploy the site and edge redirects to Cloudflare Workers:
+
+```bash
+npm run deploy:cloudflare
+```
+
+`commonstudios.dk` is canonical. Requests to `www.commonstudios.dk`, `tyndfed.dk`,
+and `www.tyndfed.dk` are permanently redirected to the matching path on the canonical domain.
 
 ## Docker Image (GitHub Actions)
 

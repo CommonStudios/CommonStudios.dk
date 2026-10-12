@@ -1,8 +1,8 @@
 ---
 import BaseLayout from '~/layouts/BaseLayout.astro';
-import { SITE_ORIGIN, SEO } from '~/config/site';
+import { CONTACT } from '~/config/site';
+import { projects } from '~/data/projects';
 import { LOCALES, isLocale } from '~/i18n/constants';
-import { canonicalUrl, pathForLocale } from '~/i18n/paths';
 import { ui } from '~/i18n/ui';
 
 export function getStaticPaths() {
@@ -15,322 +15,306 @@ if (!isLocale(raw)) {
 }
 const locale = raw;
 const t = ui(locale);
-const heroTypingLines = JSON.stringify(t.home.heroTypingLines);
+const hostname = (url: string) => new URL(url).hostname.replace(/^www\./, '');
 ---
 
 <BaseLayout
   title={t.meta.homeTitle}
   description={t.meta.homeDescription}
-  canonical={canonicalUrl(SITE_ORIGIN, locale, '')}
-  hideFooter
-  noScroll
-  htmlLang={locale}
-  localeContext={{ locale, pathKey: '' }}
-  skipLinkLabel={t.skipToContent}
+  locale={locale}
+  segment=""
+  asciiBrand
 >
-  <div class="window-shell page-boot" id="main-window">
-    <section class="hero shell" aria-label={t.home.heroAria} data-locale={locale}>
-      <div class="hero-center">
-        <h1
-          class="hero-title"
-          aria-label={t.home.heroTitle}
-          data-reveal
-        >
-          <span class="hero-title-line">{t.home.heroTitle}</span>
-          <span class="hero-title-cursor" aria-hidden="true">|</span>
-        </h1>
+  <section class="intro wrap">
+    <h1>{t.home.title}</h1>
+    <p>{t.home.intro}</p>
+  </section>
 
-        <p class="hero-lede" data-reveal>
-          {t.home.heroLede}
-        </p>
-
-        <nav class="hero-actions" aria-label={t.home.heroActionsAria} data-reveal>
-          <a href={pathForLocale(locale, 'projects')} class="hero-link">
-            <span>{t.home.heroCta}</span>
-            <svg
-              class="hero-link-arrow"
-              width="14"
-              height="14"
-              viewBox="0 0 14 14"
-              fill="none"
-              aria-hidden="true"
-            >
-              <path
-                d="M2 7h10m0 0L7.5 2.5M12 7l-4.5 4.5"
-                stroke="currentColor"
-                stroke-width="1.5"
-                stroke-linecap="round"
-                stroke-linejoin="round"
+  <section id="work" class="section wrap" aria-labelledby="work-heading">
+    <h2 id="work-heading" class="section-heading">{t.home.workHeading}</h2>
+    <ul class="work" role="list">
+      {projects.map((project) => (
+        <li class="work-item">
+          <h3 class="work-name">
+            <a href={project.url} rel="noopener" target="_blank">{project.name}</a>
+          </h3>
+          <div class="work-body">
+            {project.icon && (
+              <img
+                class="work-icon"
+                src={project.icon}
+                width="48"
+                height="48"
+                alt=""
+                loading="lazy"
+                decoding="async"
               />
-            </svg>
-          </a>
-        </nav>
-      </div>
+            )}
+            <p>{project.description[locale]}</p>
+            {project.preview && (
+              <img
+                class="work-preview"
+                src={project.preview.src}
+                width={project.preview.width}
+                height={project.preview.height}
+                alt={project.preview.alt[locale]}
+                loading="lazy"
+                decoding="async"
+              />
+            )}
+            <p class="work-host" aria-hidden="true">{hostname(project.url)}</p>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </section>
 
-      <p class="hero-credit" data-reveal>
-        {t.home.heroCreditLead}<span class="hero-credit-name">{SEO.author}</span>{t.home.heroCreditTail}
-      </p>
-    </section>
-  </div>
+  <section class="section wrap" aria-labelledby="services-heading">
+    <h2 id="services-heading" class="section-heading">{t.home.servicesHeading}</h2>
+    <ul class="services" role="list">
+      {t.home.services.map((service) => (
+        <li>
+          <h3>{service.title}</h3>
+          <p>{service.text}</p>
+        </li>
+      ))}
+    </ul>
+  </section>
 
-  <script is:inline data-astro-rerun define:vars={{ lines: heroTypingLines }}>
-    (() => {
-      const lineEl = document.querySelector('.hero-title-line');
-      if (!(lineEl instanceof HTMLElement)) {
-        return;
-      }
-
-      const phrases = JSON.parse(lines);
-      if (!Array.isArray(phrases) || phrases.length < 2) {
-        return;
-      }
-
-      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (prefersReducedMotion) {
-        lineEl.textContent = phrases[0];
-        return;
-      }
-
-      let phraseIndex = 0;
-      let charIndex = phrases[0].length;
-      let deleting = false;
-      let timeoutId = 0;
-
-      const tick = () => {
-        const phrase = phrases[phraseIndex];
-        lineEl.textContent = phrase.slice(0, charIndex);
-
-        if (!deleting && charIndex === phrase.length) {
-          deleting = true;
-          timeoutId = window.setTimeout(tick, 1800);
-          return;
-        }
-
-        if (deleting && charIndex === 0) {
-          deleting = false;
-          phraseIndex = (phraseIndex + 1) % phrases.length;
-          timeoutId = window.setTimeout(tick, 220);
-          return;
-        }
-
-        charIndex += deleting ? -1 : 1;
-        timeoutId = window.setTimeout(tick, deleting ? 32 : 54);
-      };
-
-      timeoutId = window.setTimeout(tick, 900);
-
-      document.addEventListener('visibilitychange', () => {
-        window.clearTimeout(timeoutId);
-        if (!document.hidden) {
-          timeoutId = window.setTimeout(tick, 160);
-        }
-      });
-    })();
-  </script>
+  <section id="contact" class="section contact wrap" aria-labelledby="contact-heading">
+    <h2 id="contact-heading" class="section-heading">{t.home.contactHeading}</h2>
+    <p class="contact-text">{t.home.contactText}</p>
+    <div class="contact-actions">
+      <a class="contact-email" href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
+      <button
+        type="button"
+        class="copy"
+        aria-live="polite"
+        data-copy={CONTACT.email}
+        data-copied-label={t.home.copiedEmail}
+      >
+        {t.home.copyEmail}
+      </button>
+    </div>
+  </section>
 </BaseLayout>
 
+<script>
+  for (const button of document.querySelectorAll<HTMLButtonElement>('[data-copy]')) {
+    const idleLabel = button.textContent ?? '';
+    let resetTimer = 0;
+
+    button.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(button.dataset.copy ?? '');
+      } catch {
+        // Clipboard blocked: the mailto link next to the button still works.
+        return;
+      }
+      button.textContent = button.dataset.copiedLabel ?? idleLabel;
+      button.dataset.state = 'copied';
+      window.clearTimeout(resetTimer);
+      resetTimer = window.setTimeout(() => {
+        button.textContent = idleLabel;
+        delete button.dataset.state;
+      }, 2000);
+    });
+  }
+</script>
+
 <style>
-  .window-shell {
+  .intro {
+    padding-block: clamp(2.5rem, 6vw, 4.5rem) clamp(4rem, 10vw, 8rem);
+  }
+
+  h1 {
+    max-width: 20ch;
+    font-size: var(--step-2);
+    letter-spacing: -0.02em;
+  }
+
+  .intro p {
+    max-width: var(--measure);
+    margin-top: 1.5rem;
+    color: var(--lichen);
+  }
+
+  .section {
+    padding-bottom: clamp(4rem, 10vw, 8rem);
+  }
+
+  .section-heading {
+    font-size: var(--step-0);
+    font-weight: 500;
+    color: var(--lichen);
+    padding-bottom: 1rem;
+  }
+
+  /* --- Work: the one loud element. Names set large, rows fully clickable. --- */
+
+  .work-item {
     position: relative;
-    width: 100%;
-  }
-
-  .hero {
-    height: 100%;
     display: grid;
-    grid-template-rows: 1fr auto;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: 1rem 3rem;
     align-items: start;
-    gap: 24px;
-    text-align: left;
+    padding-block: 1.75rem 2.25rem;
+    border-top: 1px solid var(--seam);
   }
 
-  .hero-center {
-    align-self: stretch;
+  .work-item:last-child {
+    border-bottom: 1px solid var(--seam);
+  }
+
+  .work-name {
+    font-size: var(--step-3);
+    font-weight: 600;
+    line-height: 0.95;
+    letter-spacing: -0.045em;
+  }
+
+  .work-name a {
+    text-decoration: none;
+    transition: color var(--fast) var(--ease);
+  }
+
+  /* Stretch the name link over the whole row. */
+  .work-name a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  .work-item:hover .work-name a {
+    color: var(--patina);
+  }
+
+  .work-name a:focus-visible {
+    outline: none;
+  }
+
+  .work-name a:focus-visible::after {
+    outline: 2px solid var(--patina);
+    outline-offset: -2px;
+  }
+
+  .work-body {
+    max-width: var(--measure);
+    padding-top: 0.5rem;
+    color: var(--lichen);
+  }
+
+  .work-icon {
+    width: 48px;
+    height: 48px;
+    margin-bottom: 1.25rem;
+    border-radius: 11px;
+    /* Separates dark-ground icons from the page without a visible box. */
+    box-shadow: 0 0 0 1px var(--seam-strong);
+  }
+
+  .work-preview {
+    width: min(16rem, 100%);
+    margin-top: 1.5rem;
+  }
+
+  .work-host {
+    margin-top: 1rem;
+    color: var(--paper);
+  }
+
+  /* --- Services --- */
+
+  .services {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+    gap: 2.5rem 3rem;
+    padding-top: 1.75rem;
+    border-top: 1px solid var(--seam);
+    list-style: none;
+  }
+
+  .services h3 {
+    font-size: var(--step-1);
+    letter-spacing: -0.01em;
+  }
+
+  .services p {
+    max-width: var(--measure);
+    margin-top: 0.75rem;
+    color: var(--lichen);
+  }
+
+  /* --- Contact --- */
+
+  .contact .section-heading {
+    font-size: var(--step-2);
+    color: var(--paper);
+    letter-spacing: -0.02em;
+    padding-bottom: 0;
+  }
+
+  .contact-text {
+    max-width: var(--measure);
+    margin-top: 1rem;
+    color: var(--lichen);
+  }
+
+  .contact-actions {
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 1.5rem;
-    align-items: flex-start;
-    max-width: min(44rem, 100%);
-    padding-left: 0;
-  }
-
-  .hero-title {
-    font-family: var(--font-display);
-    font-size: clamp(2.25rem, 5.2vw, 4.25rem);
-    line-height: 1.12;
-    letter-spacing: -0.03em;
-    font-weight: 520;
-    color: var(--text-primary);
-    width: 100%;
-    max-width: 100%;
-    text-wrap: wrap;
-    overflow-wrap: normal;
-    word-break: normal;
-    /* No text-wrap: balance or hyphens — they reflow each keystroke and look jumpy */
-    hyphens: none;
-    -webkit-hyphens: none;
-    /* Fallback before the island measures all hero lines */
-    min-height: 2.75lh;
-  }
-
-  .hero-title-line {
-    display: inline;
-  }
-
-  .hero-title-cursor {
-    color: var(--accent);
-    display: inline-block;
-    margin-left: 0.125rem;
-    animation: heroCursorBlink 1s var(--ease-smooth) infinite;
-  }
-
-  @keyframes heroCursorBlink {
-    0%, 45% {
-      opacity: 1;
-    }
-
-    55%, 100% {
-      opacity: 0;
-    }
-  }
-
-  .hero[data-locale='da'] .hero-title {
-    line-height: 1.14;
-    min-height: 2.75lh;
-  }
-
-  @media (max-width: 480px) {
-    .hero {
-      min-height: 100%;
-      gap: 18px;
-    }
-
-    .hero-center {
-      justify-content: center;
-      gap: 1rem;
-    }
-
-    .hero-title {
-      font-size: clamp(2rem, 12vw, 2.65rem);
-      line-height: 1.08;
-      min-height: 3lh;
-      overflow-wrap: anywhere;
-    }
-
-    .hero[data-locale='da'] .hero-title {
-      min-height: 3lh;
-    }
-
-    .hero-lede {
-      font-size: 1rem;
-      line-height: 1.55;
-    }
-
-    .hero-credit {
-      font-size: 11px;
-      line-height: 1.45;
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .hero-title-cursor {
-      animation: none;
-    }
-  }
-
-  .hero-lede {
-    max-width: 42rem;
-    color: var(--text-secondary);
-    font-family: var(--font-sans);
-    font-size: clamp(1rem, 1.25vw, 1.125rem);
-    line-height: 1.65;
-    font-weight: 400;
-  }
-
-  .hero[data-locale='da'] .hero-lede {
-    line-height: 1.72;
-  }
-
-  .hero-actions {
-    display: flex;
-    align-items: center;
-    gap: 18px;
     flex-wrap: wrap;
-    margin-top: 0.25rem;
-  }
-
-  .hero-link {
-    display: inline-flex;
     align-items: center;
-    gap: 10px;
-    min-height: 40px;
-    font-family: var(--font-sans);
-    font-size: var(--font-size-sm);
+    gap: 1rem 1.5rem;
+    margin-top: 2.5rem;
+  }
+
+  .contact-email {
+    font-size: var(--step-2);
     font-weight: 500;
-    text-transform: none;
-    letter-spacing: 0;
-    color: var(--text-primary);
-    padding: 9px 13px;
-    border: 1px solid var(--rule-strong);
-    border-radius: 8px;
-    background: rgba(247, 247, 242, 0.035);
+    letter-spacing: -0.02em;
+    overflow-wrap: anywhere;
+    text-decoration-color: var(--seam-strong);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.18em;
+  }
+
+  .contact-email:hover {
+    text-decoration-color: currentColor;
+  }
+
+  .copy {
+    min-height: 44px;
+    padding: 0 1.1rem;
+    border: 1px solid var(--seam-strong);
+    border-radius: 999px;
+    background: none;
+    color: var(--paper);
+    font: inherit;
+    font-size: var(--step--1);
+    cursor: pointer;
     transition:
-      color var(--duration-fast) ease,
-      background var(--duration-fast) ease,
-      border-color var(--duration-fast) ease;
+      border-color var(--fast) var(--ease),
+      color var(--fast) var(--ease);
   }
 
-  .hero-link-arrow {
-    flex-shrink: 0;
-    transition: transform var(--duration-normal) var(--ease-out-expo);
+  .copy:hover {
+    border-color: var(--patina);
+    color: var(--patina);
   }
 
-  .hero-link:hover {
-    color: var(--bg-void);
-    background: var(--accent);
-    border-color: var(--accent);
+  .copy[data-state='copied'] {
+    border-color: var(--patina);
+    background: var(--patina);
+    color: var(--oxide);
   }
 
-  .hero-link:hover .hero-link-arrow {
-    transform: translateX(3px);
-  }
-
-  .hero-credit {
-    align-self: end;
-    padding-top: 24px;
-    font-family: var(--font-mono);
-    font-size: 12px;
-    font-weight: 500;
-    text-transform: none;
-    color: var(--text-muted);
-    letter-spacing: 0.02em;
-    line-height: 1.5;
-    max-width: 36rem;
-  }
-
-  .hero-credit-name {
-    color: var(--text-secondary);
-  }
-
-  @media (max-width: 700px) {
-    .hero {
-      gap: 22px;
+  @media (max-width: 52rem) {
+    .work-item {
+      grid-template-columns: 1fr;
     }
 
-    .hero-center {
-      gap: 1.25rem;
-      max-width: min(100%, 20rem);
-    }
-
-    .hero-title {
-      font-size: clamp(2rem, 10vw, 2.45rem);
-      overflow-wrap: anywhere;
-    }
-
-    .hero-credit {
-      padding-top: 16px;
-      max-width: min(100%, 20rem);
+    .work-body {
+      padding-top: 0;
     }
   }
 </style>

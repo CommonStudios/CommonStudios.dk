@@ -1,14 +1,11 @@
 import { z } from 'zod';
 
-const projectHrefSchema = z
+const externalHrefSchema = z
   .string()
   .min(1)
   .refine(
-    (value) =>
-      value.startsWith('/') ||
-      value.startsWith('https://') ||
-      value.startsWith('http://'),
-    'Expected root-relative path or http(s) URL',
+    (value) => value.startsWith('https://') || value.startsWith('http://'),
+    'Expected http(s) URL',
   );
 
 const localizedString = z.object({
@@ -16,21 +13,25 @@ const localizedString = z.object({
   en: z.string().min(1),
 });
 
-export const projectLinkSchema = z.object({
-  label: localizedString,
-  url: projectHrefSchema,
+/** Inline image shown in the work list (e.g. a logo). Local assets only. */
+const previewSchema = z.object({
+  src: z.string().startsWith('/'),
+  width: z.number().int().positive(),
+  height: z.number().int().positive(),
+  alt: localizedString,
 });
 
-export const projectSchema = z.object({
+const projectSchema = z.object({
   name: z.string().min(1),
   description: localizedString,
-  icon: z.string().startsWith('/'),
-  links: z.array(projectLinkSchema).min(1),
+  url: externalHrefSchema,
+  /** Square app icon / brand mark, shown small next to the description. */
+  icon: z.string().startsWith('/').optional(),
+  preview: previewSchema.optional(),
 });
 
-export const projectsSchema = z.array(projectSchema).min(1);
+const projectsSchema = z.array(projectSchema).min(1);
 
-export type ProjectLink = z.infer<typeof projectLinkSchema>;
 export type Project = z.infer<typeof projectSchema>;
 
 export function parseProjects(input: unknown): Project[] {

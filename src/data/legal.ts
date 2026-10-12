@@ -1,4 +1,4 @@
-export interface LegalSection {
+interface LegalSection {
   heading: string;
   text: string;
 }
@@ -20,15 +20,15 @@ export const legalContent: Record<Language, LegalContent> = {
   en: {
     privacy: {
       title: 'Privacy Policy',
-      updated: 'Last updated: May 10, 2026',
+      updated: 'Last updated: October 12, 2026',
       sections: [
         {
           heading: 'Who We Are',
-          text: 'Tyndfed is a Copenhagen software studio operated by Tobias Dosdal-Feddersen. This policy explains how personal data is handled when you visit tyndfed.dk or contact us about potential work.',
+          text: 'CommonStudios is a Copenhagen software studio operated by Tobias Dosdal-Feddersen. This policy explains how personal data is handled when you visit commonstudios.dk or contact us about potential work.',
         },
         {
           heading: 'Data You Send',
-          text: 'When you use the contact form or send an email, we may receive your name, email address, project type, message, and any other details you choose to include.',
+          text: 'When you send an email, we receive your name, email address, message, and any other details you choose to include.',
         },
         {
           heading: 'Technical Data',
@@ -40,7 +40,7 @@ export const legalContent: Record<Language, LegalContent> = {
         },
         {
           heading: 'Cookies and Analytics',
-          text: 'Tyndfed.dk does not use advertising trackers. If privacy-friendly analytics are added later, this page will be updated with the provider, purpose, and any cookie details before or when that tracking is introduced.',
+          text: 'commonstudios.dk does not use analytics or advertising trackers. If you switch language, the site stores one cookie named “lang” for one year so it can open in your chosen language next time. It contains only “da” or “en”. If analytics are added later, this page will be updated with the provider, purpose, and any cookie details before tracking starts.',
         },
         {
           heading: 'Sharing',
@@ -64,7 +64,7 @@ export const legalContent: Record<Language, LegalContent> = {
         },
         {
           heading: 'Contact',
-          text: 'Questions about privacy can be sent to kontakt@tyndfed.dk. Business details: Tyndfed, Denmark, CVR 39125307.',
+          text: 'Questions about privacy can be sent to kontakt@tobiasdosdal.dk. Business details: CommonStudios, Denmark, CVR 39125307.',
         },
       ],
     },
@@ -74,11 +74,11 @@ export const legalContent: Record<Language, LegalContent> = {
       sections: [
         {
           heading: 'Website Use',
-          text: 'These terms apply to use of tyndfed.dk. The website presents Tyndfed, selected work, and ways to get in touch. It is provided for general information only.',
+          text: 'These terms apply to use of commonstudios.dk. The website presents CommonStudios, selected work, and ways to get in touch. It is provided for general information only.',
         },
         {
           heading: 'Website Content',
-          text: 'Text, design, code, images, logos, and other materials on this website belong to Tyndfed or their respective owners unless stated otherwise. You may not copy, reproduce, or reuse them without permission, except where allowed by law.',
+          text: 'Text, design, code, images, logos, and other materials on this website belong to CommonStudios or their respective owners unless stated otherwise. You may not copy, reproduce, or reuse them without permission, except where allowed by law.',
         },
         {
           heading: 'Enquiries',
@@ -90,7 +90,7 @@ export const legalContent: Record<Language, LegalContent> = {
         },
         {
           heading: 'External Links',
-          text: 'This website may link to client projects, social profiles, or other third-party websites. Tyndfed is not responsible for external content, availability, security, or privacy practices.',
+          text: 'This website may link to client projects, social profiles, or other third-party websites. CommonStudios is not responsible for external content, availability, security, or privacy practices.',
         },
         {
           heading: 'No Warranty',
@@ -98,7 +98,7 @@ export const legalContent: Record<Language, LegalContent> = {
         },
         {
           heading: 'Liability',
-          text: 'To the extent permitted by law, Tyndfed is not liable for losses caused by use of this website, inability to access it, or reliance on information published here.',
+          text: 'To the extent permitted by law, CommonStudios is not liable for losses caused by use of this website, inability to access it, or reliance on information published here.',
         },
         {
           heading: 'Governing Law',
@@ -106,7 +106,7 @@ export const legalContent: Record<Language, LegalContent> = {
         },
         {
           heading: 'Contact',
-          text: 'For questions about these terms, contact kontakt@tyndfed.dk.',
+          text: 'For questions about these terms, contact kontakt@tobiasdosdal.dk.',
         },
       ],
     },
@@ -114,15 +114,15 @@ export const legalContent: Record<Language, LegalContent> = {
   da: {
     privacy: {
       title: 'Privatlivspolitik',
-      updated: 'Senest opdateret: 10. maj 2026',
+      updated: 'Senest opdateret: 12. oktober 2026',
       sections: [
         {
           heading: 'Hvem vi er',
-          text: 'Tyndfed er et softwarestudio i København drevet af Tobias Dosdal-Feddersen. Denne politik forklarer, hvordan personoplysninger behandles, når du besøger tyndfed.dk eller kontakter os om muligt samarbejde.',
+          text: 'CommonStudios er et softwarestudio i København drevet af Tobias Dosdal-Feddersen. Denne politik forklarer, hvordan personoplysninger behandles, når du besøger commonstudios.dk eller kontakter os om muligt samarbejde.',
         },
         {
           heading: 'Data du sender',
-          text: 'Når du bruger kontaktformularen eller sender en email, kan vi modtage dit navn, din emailadresse, projekttype, besked og andre oplysninger, du selv vælger at sende.',
+          text: 'Når du sender en email, modtager vi dit navn, din emailadresse, din besked og andre oplysninger, du selv vælger at sende.',
         },
         {
           heading: 'Tekniske data',
@@ -134,7 +134,7 @@ export const legalContent: Record<Language, LegalContent> = {
         },
         {
           heading: 'Cookies og analyse',
-          text: 'Tyndfed.dk bruger ikke reklamesporing. Hvis der senere tilføjes privatlivsvenlig analyse, opdateres denne side med leverandør, formål og eventuelle cookieoplysninger før eller samtidig med, at sporingen indføres.',
+          text: 'commonstudios.dk bruger hverken analyse eller reklamesporing. Hvis du skifter sprog, gemmer siden én cookie ved navn “lang” i et år, så siden åbner på dit valgte sprog næste gang. Den indeholder kun “da” eller “en”. Hvis der senere tilføjes analyse, opdateres denne side med leverandør, formål og eventuelle cookieoplysninger, før sporingen starter.',
         },
         {
           heading: 'Deling',
@@ -158,7 +158,7 @@ export const legalContent: Record<Language, LegalContent> = {
         },
         {
           heading: 'Kontakt',
-          text: 'Spørgsmål om privatliv kan sendes til kontakt@tyndfed.dk. Virksomhedsoplysninger: Tyndfed, Danmark, CVR 39125307.',
+          text: 'Spørgsmål om privatliv kan sendes til kontakt@tobiasdosdal.dk. Virksomhedsoplysninger: CommonStudios, Danmark, CVR 39125307.',
         },
       ],
     },
@@ -168,11 +168,11 @@ export const legalContent: Record<Language, LegalContent> = {
       sections: [
         {
           heading: 'Brug af hjemmesiden',
-          text: 'Disse vilkår gælder for brug af tyndfed.dk. Hjemmesiden præsenterer Tyndfed, udvalgt arbejde og kontaktmuligheder. Den stilles til rådighed som generel information.',
+          text: 'Disse vilkår gælder for brug af commonstudios.dk. Hjemmesiden præsenterer CommonStudios, udvalgt arbejde og kontaktmuligheder. Den stilles til rådighed som generel information.',
         },
         {
           heading: 'Hjemmesidens indhold',
-          text: 'Tekst, design, kode, billeder, logoer og andet materiale på hjemmesiden tilhører Tyndfed eller de respektive ejere, medmindre andet er angivet. Du må ikke kopiere, reproducere eller genbruge materialet uden tilladelse, bortset fra hvor loven tillader det.',
+          text: 'Tekst, design, kode, billeder, logoer og andet materiale på hjemmesiden tilhører CommonStudios eller de respektive ejere, medmindre andet er angivet. Du må ikke kopiere, reproducere eller genbruge materialet uden tilladelse, bortset fra hvor loven tillader det.',
         },
         {
           heading: 'Henvendelser',
@@ -184,7 +184,7 @@ export const legalContent: Record<Language, LegalContent> = {
         },
         {
           heading: 'Eksterne links',
-          text: 'Hjemmesiden kan linke til kundeprojekter, sociale profiler eller andre tredjepartshjemmesider. Tyndfed er ikke ansvarlig for eksternt indhold, tilgængelighed, sikkerhed eller privatlivspraksis.',
+          text: 'Hjemmesiden kan linke til kundeprojekter, sociale profiler eller andre tredjepartshjemmesider. CommonStudios er ikke ansvarlig for eksternt indhold, tilgængelighed, sikkerhed eller privatlivspraksis.',
         },
         {
           heading: 'Ingen garanti',
@@ -192,7 +192,7 @@ export const legalContent: Record<Language, LegalContent> = {
         },
         {
           heading: 'Ansvar',
-          text: 'I det omfang loven tillader det, er Tyndfed ikke ansvarlig for tab, der skyldes brug af hjemmesiden, manglende adgang til hjemmesiden eller tillid til oplysninger offentliggjort her.',
+          text: 'I det omfang loven tillader det, er CommonStudios ikke ansvarlig for tab, der skyldes brug af hjemmesiden, manglende adgang til hjemmesiden eller tillid til oplysninger offentliggjort her.',
         },
         {
           heading: 'Gældende lov',
@@ -200,7 +200,7 @@ export const legalContent: Record<Language, LegalContent> = {
         },
         {
           heading: 'Kontakt',
-          text: 'Spørgsmål om disse vilkår? Kontakt kontakt@tyndfed.dk.',
+          text: 'Spørgsmål om disse vilkår? Kontakt kontakt@tobiasdosdal.dk.',
         },
       ],
     },

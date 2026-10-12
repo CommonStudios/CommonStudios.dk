@@ -1,0 +1,31 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "commonstudios",
+  "main": "./worker/index.ts",
+  "compatibility_date": "2026-08-02",
+  "routes": [
+    {
+      "pattern": "commonstudios.dk/*",
+      "zone_name": "commonstudios.dk"
+    },
+    {
+      "pattern": "www.commonstudios.dk/*",
+      "zone_name": "commonstudios.dk"
+    },
+    {
+      "pattern": "tyndfed.dk/*",
+      "zone_name": "tyndfed.dk"
+    },
+    {
+      "pattern": "www.tyndfed.dk/*",
+      "zone_name": "tyndfed.dk"
+    }
+  ],
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    "run_worker_first": true,
+    "html_handling": "drop-trailing-slash",
+    "not_found_handling": "404-page"
+  }
+}

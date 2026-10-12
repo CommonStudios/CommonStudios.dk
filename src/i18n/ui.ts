@@ -1,290 +1,173 @@
 import type { Locale } from './constants';
 
+type Service = { title: string; text: string };
+
 type UiForLocale = {
   meta: {
     homeTitle: string;
     homeDescription: string;
-    projectsTitle: string;
-    projectsDescription: string;
-    contactTitle: string;
-    contactDescription: string;
     privacyTitle: string;
     privacyDescription: string;
   };
   skipToContent: string;
-  header: {
-    brandAria: string;
-    projects: string;
+  nav: {
+    label: string;
+    home: string;
+    work: string;
     contact: string;
-    navPrimary: string;
-    chooseLanguage: string;
-  };
-  footer: {
-    contact: string;
-    navigation: string;
-    social: string;
-    projects: string;
-    privacy: string;
-    copenhagen: string;
-    footerNav: string;
-    socialMedia: string;
+    /** Name of the *other* language, written in that language. */
+    otherLanguage: string;
   };
   home: {
-    heroAria: string;
-    heroTitle: string;
-    /** Lines cycled by the hero typewriter (first matches heroTitle for SEO copy). */
-    heroTypingLines: readonly string[];
-    heroLede: string;
-    heroActionsAria: string;
-    heroCta: string;
-    heroCreditLead: string;
-    heroCreditTail: string;
-  };
-  projects: {
-    introAria: string;
-    eyebrow: string;
     title: string;
-    lede: string;
-    listAria: string;
-    imageWindowTitle: string;
-    linksNavSuffix: string;
+    intro: string;
+    workHeading: string;
+    servicesHeading: string;
+    services: readonly Service[];
+    contactHeading: string;
+    contactText: string;
+    copyEmail: string;
+    copiedEmail: string;
   };
-  contact: {
-    introAria: string;
-    eyebrow: string;
-    title: string;
-    lede: string;
-    formAria: string;
-    name: string;
-    email: string;
-    projectType: string;
-    message: string;
-    submit: string;
-    directEmail: string;
-    mailtoSubject: string;
-    projectOptions: readonly string[];
+  footer: {
+    location: string;
+    privacy: string;
+    social: string;
   };
   privacy: {
-    backHome: string;
-    eyebrow: string;
-    docMarker: string;
     title: string;
-    sectionAria: string;
   };
   notFound: {
     title: string;
-    eyebrow: string;
-    headline1: string;
-    headline2: string;
-    lede: string;
-    ctaHome: string;
-    ctaWork: string;
-  };
-  common: {
-    closeImagePreview: string;
+    heading: string;
+    text: string;
+    home: string;
   };
 };
 
 const en: UiForLocale = {
   meta: {
-    homeTitle: 'Software Development Studio in Copenhagen | Tyndfed',
+    homeTitle: 'Web development and AI solutions in Copenhagen | CommonStudios',
     homeDescription:
-      'Copenhagen software studio building fast websites, useful web apps, and internal systems with clear interfaces and durable code.',
-    projectsTitle: 'Selected Software Projects | Tyndfed',
-    projectsDescription:
-      'Selected Tyndfed projects across websites, web apps, product interfaces, and digital systems built to ship, load fast, and last.',
-    contactTitle: 'Start a Project | Tyndfed',
-    contactDescription:
-      'Get in touch with Tyndfed about a website, web app, internal tool, interface, or identity project.',
-    privacyTitle: 'Privacy & Terms | Tyndfed',
+      'CommonStudios builds websites, web apps and AI solutions for businesses. A Copenhagen software studio focused on quality, performance and long-term maintenance.',
+    privacyTitle: 'Privacy and terms | CommonStudios',
     privacyDescription:
-      'Privacy Policy and Terms of Service for the Tyndfed studio website and client enquiries.',
+      'How CommonStudios handles personal data from this website and client enquiries, and the terms for using the site.',
   },
   skipToContent: 'Skip to content',
-  header: {
-    brandAria: 'Tyndfed — back to home',
-    projects: 'Projects',
+  nav: {
+    label: 'Main',
+    home: 'CommonStudios, front page',
+    work: 'Work',
     contact: 'Contact',
-    navPrimary: 'Primary',
-    chooseLanguage: 'Language',
-  },
-  footer: {
-    contact: 'Contact',
-    navigation: 'Navigation',
-    social: 'Social',
-    projects: 'Projects',
-    privacy: 'Privacy',
-    copenhagen: 'Copenhagen, Denmark',
-    footerNav: 'Footer navigation',
-    socialMedia: 'Social media',
+    otherLanguage: 'Dansk',
   },
   home: {
-    heroAria: 'Hero',
-    heroTitle: 'Software built with care in Copenhagen.',
-    heroTypingLines: [
-      'Software built with care in Copenhagen.',
-      'Fast websites with a clear point.',
-      'Web apps people can actually use.',
-      'Internal tools that remove busywork.',
+    title: 'We build websites, web apps and AI solutions for businesses.',
+    intro:
+      'CommonStudios is a software studio in Copenhagen. We help businesses build digital products and put AI to work where it makes a difference: in customer service, internal workflows and the products your customers use.',
+    workHeading: 'Selected work',
+    servicesHeading: 'Services',
+    services: [
+      {
+        title: 'Websites',
+        text: 'Fast, well-designed websites that are easy to find on Google and in AI search tools like ChatGPT.',
+      },
+      {
+        title: 'Web apps',
+        text: 'Custom web applications and platforms, from the first prototype to operation and further development.',
+      },
+      {
+        title: 'AI solutions',
+        text: 'Language models integrated into your products and workflows, such as assistants, document processing and automated handling of enquiries.',
+      },
+      {
+        title: 'Internal tools',
+        text: 'Systems that automate manual processes and bring your data together, so your team spends less time on routine work.',
+      },
     ],
-    heroLede:
-      'Tyndfed designs and builds websites, web apps, and internal systems for teams that need clean interfaces, reliable delivery, and code that is still understandable later.',
-    heroActionsAria: 'Hero actions',
-    heroCta: 'View selected work',
-    heroCreditLead: 'By ',
-    heroCreditTail: ' — software design and development from Copenhagen.',
+    contactHeading: 'Have a project in mind?',
+    contactText:
+      'Tell us briefly about your needs and timeline, and we’ll get back to you with a suggested next step.',
+    copyEmail: 'Copy address',
+    copiedEmail: 'Copied',
   },
-  projects: {
-    introAria: 'Projects intro',
-    eyebrow: 'Tyndfed · Projects',
-    title: 'Selected software projects',
-    lede: 'Websites, web apps, product interfaces, and internal systems built to be clear on day one and maintainable after launch.',
-    listAria: 'Project list',
-    imageWindowTitle: 'Logo preview',
-    linksNavSuffix: 'links',
-  },
-  contact: {
-    introAria: 'Contact intro',
-    eyebrow: 'Tyndfed · Contact',
-    title: 'Start a project conversation',
-    lede: 'Need a sharper website, a useful web app, or an internal tool that saves time? Send a few details and I will reply with the next practical step.',
-    formAria: 'Contact form',
-    name: 'Name',
-    email: 'Email',
-    projectType: 'Project type',
-    message: 'Message',
-    submit: 'Open email draft',
-    directEmail: 'Prefer your own inbox? Write to kontakt@tyndfed.dk.',
-    mailtoSubject: 'Project enquiry from tyndfed.dk',
-    projectOptions: [
-      'Website',
-      'Web app',
-      'Internal tool',
-      'UI/UX design',
-      'Logo & identity',
-      'Other',
-    ],
+  footer: {
+    location: 'Copenhagen, Denmark',
+    privacy: 'Privacy and terms',
+    social: 'Elsewhere',
   },
   privacy: {
-    backHome: 'Back to home',
-    eyebrow: 'Legal',
-    docMarker: 'N°3',
-    title: 'Privacy & Terms',
-    sectionAria: 'Legal content',
+    title: 'Privacy and terms',
   },
   notFound: {
-    title: '404 — Page not found · Tyndfed',
-    eyebrow: '404 — Page not found',
-    headline1: 'Lost in',
-    headline2: 'transit.',
-    lede: "The page you were looking for doesn't exist, has moved, or never made it past the cutting room floor.",
-    ctaHome: 'Back to home',
-    ctaWork: 'See selected work',
-  },
-  common: {
-    closeImagePreview: 'Close image preview',
+    title: 'Page not found | CommonStudios',
+    heading: 'This page doesn’t exist.',
+    text: 'It may have moved, or the link has a typo.',
+    home: 'Go to the front page',
   },
 };
 
 const da: UiForLocale = {
   meta: {
-    homeTitle: 'Softwareudvikling i København | Tyndfed',
+    homeTitle: 'Webudvikling og AI-løsninger i København | CommonStudios',
     homeDescription:
-      'Københavnsk softwarestudio, der bygger hurtige websites, brugbare webapps og interne systemer med klare interfaces og solid kode.',
-    projectsTitle: 'Udvalgte softwareprojekter | Tyndfed',
-    projectsDescription:
-      'Udvalgte Tyndfed-projekter inden for websites, webapps, produktinterfaces og digitale systemer bygget til at blive brugt.',
-    contactTitle: 'Start et projekt | Tyndfed',
-    contactDescription:
-      'Kontakt Tyndfed om et website, en webapp, et internt værktøj, interface eller identitetsprojekt.',
-    privacyTitle: 'Privatliv & vilkår | Tyndfed',
+      'CommonStudios udvikler websites, webapps og AI-løsninger til virksomheder. Et softwarestudie i København med fokus på kvalitet, hastighed og langsigtet drift.',
+    privacyTitle: 'Privatliv og vilkår | CommonStudios',
     privacyDescription:
-      'Privatlivspolitik og vilkår for Tyndfeds studiohjemmeside og kundehenvendelser.',
+      'Sådan behandler CommonStudios personoplysninger fra hjemmesiden og kundehenvendelser, og vilkårene for at bruge siden.',
   },
   skipToContent: 'Spring til indhold',
-  header: {
-    brandAria: 'Tyndfed — tilbage til forsiden',
-    projects: 'Projekter',
+  nav: {
+    label: 'Hovedmenu',
+    home: 'CommonStudios, forsiden',
+    work: 'Projekter',
     contact: 'Kontakt',
-    navPrimary: 'Primær',
-    chooseLanguage: 'Sprog',
-  },
-  footer: {
-    contact: 'Kontakt',
-    navigation: 'Navigation',
-    social: 'Socialt',
-    projects: 'Projekter',
-    privacy: 'Privatliv',
-    copenhagen: 'København, Danmark',
-    footerNav: 'Footer-navigation',
-    socialMedia: 'Sociale medier',
+    otherLanguage: 'English',
   },
   home: {
-    heroAria: 'Forside',
-    heroTitle: 'Software bygget med omtanke i København.',
-    heroTypingLines: [
-      'Software bygget med omtanke i København.',
-      'Hurtige websites med en klar retning.',
-      'Webapps mennesker faktisk kan bruge.',
-      'Interne værktøjer der fjerner travlhed.',
+    title: 'Vi udvikler websites, webapps og AI-løsninger til virksomheder.',
+    intro:
+      'CommonStudios er et softwarestudie i København. Vi hjælper virksomheder med at bygge digitale produkter og tage AI i brug, hvor det gør en forskel: i kundeservice, i interne arbejdsgange og i de produkter, jeres kunder bruger.',
+    workHeading: 'Udvalgte projekter',
+    servicesHeading: 'Ydelser',
+    services: [
+      {
+        title: 'Websites',
+        text: 'Hurtige, veldesignede websites, der er nemme at finde på Google og i AI-søgninger som ChatGPT.',
+      },
+      {
+        title: 'Webapps',
+        text: 'Skræddersyede webapplikationer og platforme, fra første prototype til drift og videreudvikling.',
+      },
+      {
+        title: 'AI-løsninger',
+        text: 'Sprogmodeller integreret i jeres produkter og arbejdsgange, fx assistenter, dokumenthåndtering og automatisk behandling af henvendelser.',
+      },
+      {
+        title: 'Interne værktøjer',
+        text: 'Systemer, der automatiserer manuelle processer og samler jeres data, så teamet bruger mindre tid på rutineopgaver.',
+      },
     ],
-    heroLede:
-      'Tyndfed designer og bygger websites, webapps og interne systemer til teams, der har brug for tydelige interfaces, sikker levering og kode, der stadig er til at forstå senere.',
-    heroActionsAria: 'Handlinger',
-    heroCta: 'Se udvalgte projekter',
-    heroCreditLead: 'Af ',
-    heroCreditTail: ' — softwaredesign og udvikling fra København.',
+    contactHeading: 'Har I et projekt?',
+    contactText:
+      'Fortæl kort om jeres behov og tidsramme, så vender vi tilbage med et forslag til næste skridt.',
+    copyEmail: 'Kopiér adresse',
+    copiedEmail: 'Kopieret',
   },
-  projects: {
-    introAria: 'Projektoversigt',
-    eyebrow: 'Tyndfed · Projekter',
-    title: 'Udvalgte softwareprojekter',
-    lede: 'Websites, webapps, produktinterfaces og interne systemer bygget til at være tydelige fra første dag og til at holde efter lancering.',
-    listAria: 'Projektliste',
-    imageWindowTitle: 'Logo forhåndsvisning',
-    linksNavSuffix: 'henvisninger',
-  },
-  contact: {
-    introAria: 'Kontaktintro',
-    eyebrow: 'Tyndfed · Kontakt',
-    title: 'Start en projektsamtale',
-    lede: 'Har du brug for et skarpere website, en brugbar webapp eller et internt værktøj, der sparer tid? Send et par detaljer, så vender jeg tilbage med næste konkrete skridt.',
-    formAria: 'Kontaktformular',
-    name: 'Navn',
-    email: 'Email',
-    projectType: 'Projekttype',
-    message: 'Besked',
-    submit: 'Åbn emailkladde',
-    directEmail:
-      'Foretrækker du din egen indbakke? Skriv til kontakt@tyndfed.dk.',
-    mailtoSubject: 'Projektforespørgsel fra tyndfed.dk',
-    projectOptions: [
-      'Website',
-      'Webapp',
-      'Internt værktøj',
-      'UI/UX-design',
-      'Logo & identitet',
-      'Andet',
-    ],
+  footer: {
+    location: 'København, Danmark',
+    privacy: 'Privatliv og vilkår',
+    social: 'Andre steder',
   },
   privacy: {
-    backHome: 'Tilbage til forsiden',
-    eyebrow: 'Jura',
-    docMarker: 'N°3',
-    title: 'Privatliv & vilkår',
-    sectionAria: 'Juridisk indhold',
+    title: 'Privatliv og vilkår',
   },
   notFound: {
-    title: '404 — Siden findes ikke · Tyndfed',
-    eyebrow: '404 — Siden findes ikke',
-    headline1: 'Væk i',
-    headline2: 'systemet.',
-    lede: 'Siden findes ikke, er flyttet, eller nåede aldrig ud over idéstadiet.',
-    ctaHome: 'Tilbage til forsiden',
-    ctaWork: 'Se udvalgte projekter',
-  },
-  common: {
-    closeImagePreview: 'Luk forhåndsvisning',
+    title: 'Siden findes ikke | CommonStudios',
+    heading: 'Siden findes ikke.',
+    text: 'Den er måske flyttet, eller der er en tastefejl i linket.',
+    home: 'Gå til forsiden',
   },
 };
 

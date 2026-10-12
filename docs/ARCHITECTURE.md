@@ -1,4 +1,4 @@
-# Tyndfed — architecture notes
+# CommonStudios — architecture notes
 
 Small static site, **over-engineered on purpose** to show how a senior front-end engineer structures edge cases, content safety, and build hygiene without shipping a second application to users.
 
@@ -9,13 +9,13 @@ Small static site, **over-engineered on purpose** to show how a senior front-end
 | `src/config/site.ts` | Deploy URL, canonical URLs, SEO defaults, JSON-LD inputs, font URLs. Astro `site` reads the same origin to avoid config drift. |
 | `src/schemas/` | Zod parsers — **fail the build** when content shape is wrong. |
 | `src/data/` | Seeds only; exports are always parsed. |
-| `src/constants/` | UI rules that are not “data” (e.g. which project link opens the lightbox). |
-| `src/lib/` | Pure utilities (`urls`, `invariant`, `assertNever`). |
+| `src/lib/` | Pure utilities (`urls`). |
+| `worker/` | Edge redirects: canonical host, language negotiation, merged-page 301s. |
 
 ## Runtime vs build
 
 - **Astro + static output**: all validation that imports Zod runs at **build time** only. No Zod in the browser bundle for pages that only use static data.
-- **Islands** (React): keep heavy client logic isolated; config is not imported into `ColorBends` / GSAP paths.
+- **No client framework.** The only scripts are the copy-email button and the language cookie.
 
 ## Tooling
 
@@ -26,7 +26,7 @@ Small static site, **over-engineered on purpose** to show how a senior front-end
 ## Adding a project
 
 1. Append to `PROJECTS_SEED` in `src/data/projects.ts`.
-2. Run `bun run build` — Zod will reject bad URLs (e.g. non-`/`-prefixed icons) or empty labels.
+2. Run `npm run build` — Zod will reject bad URLs (e.g. non-`/`-prefixed icons) or empty labels.
 
 ## CI
 
@@ -34,8 +34,6 @@ GitHub Actions runs install → check → lint → test → build on push/PR so 
 
 ## Performance (high level)
 
-- **Resource hints:** `preconnect` to font CDNs, `dns-prefetch` for Vercel vitals, `preload` for the brand SVG and (on `/projects`) the first two card icons with `fetchpriority="high"`.
-- **Fonts:** JetBrains / Noto mono stylesheet stays render-blocking (matches critical CSS); Satoshi is loaded **non-blocking** (`media="print"` → `all` after load) to shorten the critical path; `noscript` fallback keeps fonts without JS.
-- **Navigation:** `prefetch.defaultStrategy: 'viewport'` plus `data-astro-prefetch` on in-app links (hero CTA, back link) warms HTML for view transitions.
-- **Third party:** Speed Insights uses `client:idle` so main-thread work defers to idle.
-- **Edge:** HTML routes get `stale-while-revalidate` on Vercel; hashed assets under `/_astro/` stay long-cache immutable.
+- **Fonts:** One self-hosted variable woff2 (Schibsted Grotesk, latin), preloaded, with a metric-matched Arial fallback.
+- **No background imagery or motion.** The page is text plus one lazy-loaded logo.
+- **Edge:** Cloudflare Workers serves the static build and handles redirects before asset lookup.

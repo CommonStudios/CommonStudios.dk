@@ -8,9 +8,7 @@ describe('absoluteUrl', () => {
   });
 
   it('normalizes missing leading slash', () => {
-    expect(absoluteUrl('projects', SITE_ORIGIN)).toBe(
-      `${SITE_ORIGIN}/projects`,
-    );
+    expect(absoluteUrl('privacy', SITE_ORIGIN)).toBe(`${SITE_ORIGIN}/privacy`);
   });
 
   it('strips trailing slash on origin', () => {
