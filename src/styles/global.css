@@ -40,18 +40,18 @@
 }
 
 /* =============================================================
-   CommonStudios — Patina
-   Dark ground tinted toward oxidised copper (the green spires of
-   Copenhagen). One family, one accent, used only for interaction.
+   CommonStudios — Patina on graphite
+   Neutral near-black ground. The oxidised-copper green (the spires of
+   Copenhagen) survives only as the accent, used for interaction.
    ============================================================= */
 
 :root {
-  --oxide: #0d1513;
-  --slate: #16211e;
-  --seam: #22302b;
-  --seam-strong: #33463f;
-  --paper: #e8ede8;
-  --lichen: #94a49d;
+  --oxide: #111312;
+  --slate: #181b1a;
+  --seam: #262a28;
+  --seam-strong: #3a3f3c;
+  --paper: #eceeec;
+  --lichen: #979c99;
   --patina: #78c2a6;
 
   --font: 'Nordwand Mono', 'Nordwand Fallback', ui-monospace, monospace;
