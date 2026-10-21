@@ -25,8 +25,10 @@ const projectSchema = z.object({
   name: z.string().min(1),
   description: localizedString,
   url: externalHrefSchema,
-  /** Square app icon / brand mark, shown small next to the description. */
-  icon: z.string().startsWith('/').optional(),
+  /** Our own product, or work made for a client. */
+  kind: z.enum(['product', 'client']),
+  /** Short label for the kind of work, e.g. "Web app" or "Logo". */
+  discipline: localizedString,
   preview: previewSchema.optional(),
 });
 

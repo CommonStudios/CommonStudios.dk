@@ -25,7 +25,7 @@ export const SEO = {
     'CommonStudios builds websites, web apps and AI solutions for businesses from Copenhagen.',
   defaultOgImage: '/images/og-image.png',
   siteName: 'CommonStudios',
-  themeColor: '#0d1513',
+  themeColor: '#111312',
   author: 'Tobias Dosdal-Feddersen',
 } as const;
 

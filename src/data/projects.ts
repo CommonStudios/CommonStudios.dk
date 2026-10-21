@@ -13,7 +13,8 @@ const PROJECTS_SEED = [
       en: 'Workforce scheduling platform that brings shift planning, team chat, time tracking and payroll hours together for Danish workplaces with changing schedules.',
     },
     url: 'https://monoplan.dk',
-    icon: '/images/project-icons/monoplan-icon-dark.svg',
+    kind: 'product',
+    discipline: { da: 'Webapp', en: 'Web app' },
   },
   {
     name: 'Andelsbasen',
@@ -22,7 +23,8 @@ const PROJECTS_SEED = [
       en: 'Data platform with Denmark’s most complete index of housing co-ops. Waitlists, prices, unit counts and contact details for more than 11,000 associations.',
     },
     url: 'https://andelsbasen.dk',
-    icon: '/images/project-icons/andelsbasen-mark.svg',
+    kind: 'product',
+    discipline: { da: 'Dataplatform', en: 'Data platform' },
   },
   {
     name: 'EXS Nordic',
@@ -31,6 +33,8 @@ const PROJECTS_SEED = [
       en: 'Logo for a Danish coffee company with customers across the Nordics.',
     },
     url: 'https://exsnordic.com',
+    kind: 'client',
+    discipline: { da: 'Logo', en: 'Logo' },
     preview: {
       src: '/images/exsnordic-logo-1200.png',
       width: 1200,
