@@ -5,6 +5,8 @@ const base = {
   name: 'N',
   description: { da: 'D', en: 'D' },
   url: 'https://a.dk',
+  kind: 'product',
+  discipline: { da: 'D', en: 'D' },
 };
 
 describe('parseProjects', () => {
@@ -14,6 +16,10 @@ describe('parseProjects', () => {
 
   it('rejects non-http project url', () => {
     expect(() => parseProjects([{ ...base, url: 'a.dk' }])).toThrow();
+  });
+
+  it('rejects an unknown project kind', () => {
+    expect(() => parseProjects([{ ...base, kind: 'partner' }])).toThrow();
   });
 
   it('requires previews to use local assets', () => {

@@ -32,24 +32,33 @@ const hostname = (url: string) => new URL(url).hostname.replace(/^www\./, '');
 
   <section id="work" class="section wrap" aria-labelledby="work-heading">
     <h2 id="work-heading" class="section-heading">{t.home.workHeading}</h2>
+    <div class="index-head" aria-hidden="true">
+      <span>{t.home.workColumns.project}</span>
+      <span>{t.home.workColumns.kind}</span>
+      <span>{t.home.workColumns.discipline}</span>
+      <span>{t.home.workColumns.site}</span>
+    </div>
     <ul class="work" role="list">
       {projects.map((project) => (
         <li class="work-item">
           <h3 class="work-name">
             <a href={project.url} rel="noopener" target="_blank">{project.name}</a>
           </h3>
+          <dl class="work-meta">
+            <div>
+              <dt class="visually-hidden">{t.home.workColumns.kind}</dt>
+              <dd>{t.home.projectKinds[project.kind]}</dd>
+            </div>
+            <div>
+              <dt class="visually-hidden">{t.home.workColumns.discipline}</dt>
+              <dd>{project.discipline[locale]}</dd>
+            </div>
+            <div class="work-site">
+              <dt class="visually-hidden">{t.home.workColumns.site}</dt>
+              <dd>{hostname(project.url)}<span aria-hidden="true"> ↗</span></dd>
+            </div>
+          </dl>
           <div class="work-body">
-            {project.icon && (
-              <img
-                class="work-icon"
-                src={project.icon}
-                width="48"
-                height="48"
-                alt=""
-                loading="lazy"
-                decoding="async"
-              />
-            )}
             <p>{project.description[locale]}</p>
             {project.preview && (
               <img
@@ -62,7 +71,6 @@ const hostname = (url: string) => new URL(url).hostname.replace(/^www\./, '');
                 decoding="async"
               />
             )}
-            <p class="work-host" aria-hidden="true">{hostname(project.url)}</p>
           </div>
         </li>
       ))}
@@ -111,6 +119,8 @@ const hostname = (url: string) => new URL(url).hostname.replace(/^www\./, '');
         // Clipboard blocked: the mailto link next to the button still works.
         return;
       }
+      // Hold the idle width so the shorter "copied" label doesn't shrink the button.
+      button.style.minWidth = `${button.offsetWidth}px`;
       button.textContent = button.dataset.copiedLabel ?? idleLabel;
       button.dataset.state = 'copied';
       window.clearTimeout(resetTimer);
@@ -124,53 +134,70 @@ const hostname = (url: string) => new URL(url).hostname.replace(/^www\./, '');
 
 <style>
   .intro {
-    padding-block: clamp(2.5rem, 6vw, 4.5rem) clamp(4rem, 10vw, 8rem);
+    padding-block: clamp(3.5rem, 8vw, 6.5rem) clamp(6rem, 14vw, 11rem);
   }
 
   h1 {
-    max-width: 20ch;
-    font-size: var(--step-2);
+    max-width: 18ch;
+    font-size: clamp(2.1rem, 1.2rem + 3.6vw, 4.5rem);
+    line-height: 1.05;
     letter-spacing: -0.02em;
   }
 
   .intro p {
     max-width: var(--measure);
-    margin-top: 1.5rem;
+    margin-top: 2rem;
     color: var(--lichen);
   }
 
   .section {
-    padding-bottom: clamp(4rem, 10vw, 8rem);
+    padding-bottom: clamp(6rem, 14vw, 11rem);
   }
 
   .section-heading {
     font-size: var(--step-0);
     font-weight: 500;
     color: var(--lichen);
-    padding-bottom: 1rem;
+    padding-bottom: 1.5rem;
   }
 
-  /* --- Work: the one loud element. Names set large, rows fully clickable. --- */
+  /* --- Work: an index set like film credits. The name is the one loud
+     element; type, discipline and site run in quiet columns beside it. --- */
+
+  .index-head,
+  .work-item {
+    display: grid;
+    grid-template-columns: minmax(0, 6fr) repeat(3, minmax(0, 2fr));
+    column-gap: 2rem;
+  }
+
+  .index-head {
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--seam);
+    color: var(--lichen);
+    font-size: var(--step--1);
+  }
 
   .work-item {
     position: relative;
-    display: grid;
-    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-    gap: 1rem 3rem;
+    row-gap: 1.5rem;
     align-items: start;
-    padding-block: 1.75rem 2.25rem;
-    border-top: 1px solid var(--seam);
-  }
-
-  .work-item:last-child {
+    padding-block: clamp(2.5rem, 5vw, 4rem);
     border-bottom: 1px solid var(--seam);
   }
 
+  .work {
+    container-type: inline-size;
+  }
+
   .work-name {
-    font-size: var(--step-3);
+    grid-row: span 2;
+    /* Capped by the list width so the longest name (Andelsbasen) stays inside its column. */
+    font-size: min(var(--step-3), 6.6cqi);
     font-weight: 600;
     line-height: 0.95;
-    letter-spacing: -0.045em;
+    /* Monospace advances are fixed, so tighter tracking crowds wide letters like m and w. */
+    letter-spacing: -0.02em;
   }
 
   .work-name a {
@@ -198,38 +225,42 @@ const hostname = (url: string) => new URL(url).hostname.replace(/^www\./, '');
     outline-offset: -2px;
   }
 
-  .work-body {
-    max-width: var(--measure);
-    padding-top: 0.5rem;
-    color: var(--lichen);
+  .work-meta {
+    grid-column: 2 / -1;
+    display: grid;
+    grid-template-columns: subgrid;
+    /* Sit on the name's cap height rather than its line box. */
+    padding-top: 0.35em;
+    font-size: var(--step--1);
   }
 
-  .work-icon {
-    width: 48px;
-    height: 48px;
-    margin-bottom: 1.25rem;
-    border-radius: 11px;
-    /* Separates dark-ground icons from the page without a visible box. */
-    box-shadow: 0 0 0 1px var(--seam-strong);
+  .work-site {
+    transition: color var(--fast) var(--ease);
+  }
+
+  .work-item:hover .work-site {
+    color: var(--patina);
+  }
+
+  .work-body {
+    grid-column: 2 / -1;
+    max-width: var(--measure);
+    color: var(--lichen);
   }
 
   .work-preview {
     width: min(16rem, 100%);
-    margin-top: 1.5rem;
-  }
-
-  .work-host {
-    margin-top: 1rem;
-    color: var(--paper);
+    margin-top: 2rem;
   }
 
   /* --- Services --- */
 
   .services {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
-    gap: 2.5rem 3rem;
-    padding-top: 1.75rem;
+    /* At most two columns: four cramped columns read as a list of fragments. */
+    grid-template-columns: repeat(auto-fit, minmax(max(15rem, calc((100% - 5rem) / 2)), 1fr));
+    gap: clamp(3rem, 6vw, 4.5rem) 5rem;
+    padding-top: clamp(2.5rem, 5vw, 3.5rem);
     border-top: 1px solid var(--seam);
     list-style: none;
   }
@@ -241,7 +272,7 @@ const hostname = (url: string) => new URL(url).hostname.replace(/^www\./, '');
 
   .services p {
     max-width: var(--measure);
-    margin-top: 0.75rem;
+    margin-top: 1rem;
     color: var(--lichen);
   }
 
@@ -256,7 +287,7 @@ const hostname = (url: string) => new URL(url).hostname.replace(/^www\./, '');
 
   .contact-text {
     max-width: var(--measure);
-    margin-top: 1rem;
+    margin-top: 1.5rem;
     color: var(--lichen);
   }
 
@@ -264,12 +295,13 @@ const hostname = (url: string) => new URL(url).hostname.replace(/^www\./, '');
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 1rem 1.5rem;
-    margin-top: 2.5rem;
+    gap: 1.25rem 2rem;
+    margin-top: 3.5rem;
   }
 
   .contact-email {
-    font-size: var(--step-2);
+    /* Monospace runs wide; shrink on narrow screens so the address stays on one line. */
+    font-size: min(var(--step-2), 6vw);
     font-weight: 500;
     letter-spacing: -0.02em;
     overflow-wrap: anywhere;
@@ -309,12 +341,39 @@ const hostname = (url: string) => new URL(url).hostname.replace(/^www\./, '');
   }
 
   @media (max-width: 52rem) {
+    .index-head {
+      display: none;
+    }
+
+    .work {
+      border-top: 1px solid var(--seam);
+    }
+
     .work-item {
       grid-template-columns: 1fr;
     }
 
-    .work-body {
+    .work-name {
+      grid-row: auto;
+      font-size: var(--step-3);
+    }
+
+    .work-meta {
+      grid-column: auto;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.25rem 1.5rem;
       padding-top: 0;
+      color: var(--lichen);
+    }
+
+    .work-site {
+      flex-basis: 100%;
+      color: var(--paper);
+    }
+
+    .work-body {
+      grid-column: auto;
     }
   }
 </style>

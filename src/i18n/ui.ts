@@ -22,6 +22,14 @@ type UiForLocale = {
     title: string;
     intro: string;
     workHeading: string;
+    /** Column labels for the work index, in display order. */
+    workColumns: {
+      project: string;
+      kind: string;
+      discipline: string;
+      site: string;
+    };
+    projectKinds: { product: string; client: string };
     servicesHeading: string;
     services: readonly Service[];
     contactHeading: string;
@@ -63,10 +71,17 @@ const en: UiForLocale = {
     otherLanguage: 'Dansk',
   },
   home: {
-    title: 'We build websites, web apps and AI solutions for businesses.',
+    title: 'We build software for our clients and for ourselves.',
     intro:
-      'CommonStudios is a software studio in Copenhagen. We help businesses build digital products and put AI to work where it makes a difference: in customer service, internal workflows and the products your customers use.',
+      'CommonStudios is a software studio in Copenhagen. We build websites, web apps and AI solutions for businesses, and we run products of our own.',
     workHeading: 'Selected work',
+    workColumns: {
+      project: 'Project',
+      kind: 'Type',
+      discipline: 'Discipline',
+      site: 'Site',
+    },
+    projectKinds: { product: 'Own product', client: 'Client' },
     servicesHeading: 'Services',
     services: [
       {
@@ -126,10 +141,17 @@ const da: UiForLocale = {
     otherLanguage: 'English',
   },
   home: {
-    title: 'Vi udvikler websites, webapps og AI-løsninger til virksomheder.',
+    title: 'Vi bygger software til vores kunder og til os selv.',
     intro:
-      'CommonStudios er et softwarestudie i København. Vi hjælper virksomheder med at bygge digitale produkter og tage AI i brug, hvor det gør en forskel: i kundeservice, i interne arbejdsgange og i de produkter, jeres kunder bruger.',
+      'CommonStudios er et softwarestudie i København. Vi udvikler websites, webapps og AI-løsninger til virksomheder, og vi driver vores egne produkter.',
     workHeading: 'Udvalgte projekter',
+    workColumns: {
+      project: 'Projekt',
+      kind: 'Type',
+      discipline: 'Disciplin',
+      site: 'Website',
+    },
+    projectKinds: { product: 'Eget produkt', client: 'Kunde' },
     servicesHeading: 'Ydelser',
     services: [
       {

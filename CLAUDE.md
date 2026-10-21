@@ -27,7 +27,7 @@ npm run verify       # astro check + biome + vitest + build
 
 **Styling:**
 - Tokens in `src/styles/global.css` (the "Patina" palette: oxide, slate, seam, paper, lichen, patina)
-- One typeface: Schibsted Grotesk
+- One typeface: Nordwand Mono (self-hosted woff2 in `src/assets/fonts/`, OFL, from github.com/tywr/Nordwand-Mono)
 - Astro scoped styles; kebab-case class names
 - Dark theme only
 - No Tailwind, no client framework; only small scripts (copy-email button, language cookie, ASCII wordmark scan)
