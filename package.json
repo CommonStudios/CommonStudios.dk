@@ -16,17 +16,17 @@
     "verify": "astro check && biome check . && vitest run && astro build"
   },
   "dependencies": {
-    "@astrojs/sitemap": "^3.7.1",
+    "@astrojs/sitemap": "^3.7.4",
     "zod": "^3.24.2"
   },
   "devDependencies": {
-    "@astrojs/check": "^0.9.9",
-    "@biomejs/biome": "^2.2.4",
-    "astro": "^7.3.5",
+    "@astrojs/check": "^0.9.10",
+    "@biomejs/biome": "^2.5.15",
+    "astro": "^7.4.0",
     "typescript": "^5.7.2",
     "vite": "^8.3.1",
-    "vitest": "^5.0.2",
-    "wrangler": "^4.142.0"
+    "vitest": "^5.0.5",
+    "wrangler": "^4.151.1"
   },
   "overrides": {
     "path-to-regexp": "6.3.0"
