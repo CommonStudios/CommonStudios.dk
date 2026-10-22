@@ -61,12 +61,19 @@ const home = pathForLocale(locale, '');
   }
 
   .cloud-sea {
+    position: relative;
     flex-basis: 100%;
     min-width: 0;
+    aspect-ratio: 3 / 1;
+    overflow: hidden;
     margin-top: clamp(1.5rem, 4vw, 3rem);
+    mask-image: linear-gradient(transparent, black 8%, black 92%, transparent);
   }
 
   ascii-art {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
     display: block;
     width: 100%;
     aspect-ratio: 2 / 1;
