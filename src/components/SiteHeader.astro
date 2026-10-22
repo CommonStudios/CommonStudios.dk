@@ -1,5 +1,4 @@
 ---
-import AsciiLogo from '~/components/AsciiLogo.astro';
 import { LOCALE_COOKIE, type Locale } from '~/i18n/constants';
 import { type PageSegment, pathForLocale } from '~/i18n/paths';
 import { ui } from '~/i18n/ui';
@@ -8,17 +7,17 @@ interface Props {
   locale: Locale;
   /** Current page; `undefined` on pages without a translated twin (404). */
   segment?: PageSegment;
-  asciiBrand?: boolean;
+  cloudSea?: boolean;
 }
 
-const { locale, segment, asciiBrand = false } = Astro.props;
+const { locale, segment, cloudSea = false } = Astro.props;
 const t = ui(locale);
 const otherLocale: Locale = locale === 'da' ? 'en' : 'da';
 const home = pathForLocale(locale, '');
 ---
 
-<header class:list={['site-header', 'wrap', { 'has-ascii': asciiBrand }]}>
-  {!asciiBrand && <a href={home} class="wordmark" aria-label={t.nav.home}>CommonStudios</a>}
+<header class="site-header wrap">
+  <a href={home} class="wordmark" aria-label={t.nav.home}>CommonStudios</a>
 
   <nav class="site-nav" aria-label={t.nav.label}>
     <a href={`${home}#work`}>{t.nav.work}</a>
@@ -35,10 +34,11 @@ const home = pathForLocale(locale, '');
     )}
   </nav>
 
-  {asciiBrand && (
-    <a href={home} class="ascii-brand" aria-label={t.nav.home}>
-      <AsciiLogo label="CommonStudios" />
-    </a>
+  {cloudSea && (
+    <div class="cloud-sea" aria-hidden="true">
+      <script is:inline type="module" src="https://ascii.rest/ascii.js"></script>
+      <ascii-art src="/ascii/cloud-sea.js"></ascii-art>
+    </div>
   )}
 </header>
 
@@ -60,24 +60,17 @@ const home = pathForLocale(locale, '');
     padding-block: 2rem;
   }
 
-  /* Home: nav on top, the ascii wordmark across the full width below it.
-     Block layout, not flex: the wordmark sizes its text from its own width,
-     which flexbox measures as zero. */
-  .site-header.has-ascii {
+  .cloud-sea {
+    flex-basis: 100%;
+    min-width: 0;
+    margin-top: clamp(1.5rem, 4vw, 3rem);
+  }
+
+  ascii-art {
     display: block;
-  }
-
-  .site-header.has-ascii .site-nav {
-    justify-content: flex-end;
-    margin-bottom: clamp(2.5rem, 6vw, 4.5rem);
-  }
-
-  .ascii-brand {
-    text-decoration: none;
-  }
-
-  .ascii-brand:hover {
-    color: inherit;
+    width: 100%;
+    aspect-ratio: 2 / 1;
+    background: var(--oxide);
   }
 
   .wordmark {
@@ -85,6 +78,12 @@ const home = pathForLocale(locale, '');
     font-weight: 700;
     letter-spacing: -0.02em;
     text-decoration: none;
+  }
+
+  @media (max-width: 40rem) {
+    .wordmark {
+      font-size: var(--step-0);
+    }
   }
 
   .site-nav {

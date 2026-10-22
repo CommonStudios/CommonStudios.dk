@@ -27,8 +27,8 @@ interface Props {
   segment?: PageSegment;
   noindex?: boolean;
   ogImage?: string;
-  /** Show the animated ascii wordmark in the header (home page). */
-  asciiBrand?: boolean;
+  /** Show the animated cloud sea below the header (home page). */
+  cloudSea?: boolean;
 }
 
 const {
@@ -38,7 +38,7 @@ const {
   segment,
   noindex = false,
   ogImage = SEO.defaultOgImage,
-  asciiBrand = false,
+  cloudSea = false,
 } = Astro.props;
 
 const origin = (Astro.site?.toString() ?? SITE_ORIGIN).replace(/\/$/, '');
@@ -94,11 +94,11 @@ const t = ui(locale);
   </head>
   <body>
     <a href="#main" class="skip-link">{t.skipToContent}</a>
-    <SiteHeader locale={locale} segment={segment} asciiBrand={asciiBrand} />
+    <SiteHeader locale={locale} segment={segment} cloudSea={cloudSea} />
     <main id="main">
       <slot />
     </main>
-    <SiteFooter locale={locale} cloudSea={segment === ''} />
+    <SiteFooter locale={locale} />
   </body>
 </html>
 
