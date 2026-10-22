@@ -6,9 +6,10 @@ import { ui } from '~/i18n/ui';
 
 interface Props {
   locale: Locale;
+  cloudSea?: boolean;
 }
 
-const { locale } = Astro.props;
+const { locale, cloudSea = false } = Astro.props;
 const t = ui(locale);
 const social = [
   { name: 'LinkedIn', url: SOCIAL_URLS.linkedin },
@@ -28,6 +29,12 @@ const social = [
     ))}
   </nav>
   <a href={pathForLocale(locale, 'privacy')}>{t.footer.privacy}</a>
+  {cloudSea && (
+    <div class="cloud-sea" aria-hidden="true">
+      <script is:inline type="module" src="https://ascii.rest/ascii.js"></script>
+      <ascii-art src="/ascii/cloud-sea.js"></ascii-art>
+    </div>
+  )}
 </footer>
 
 <style>
@@ -53,5 +60,18 @@ const social = [
     /* Lifts the tap target above 24px without changing how the row reads. */
     padding-block: 0.25rem;
     text-decoration: none;
+  }
+
+  .cloud-sea {
+    flex-basis: 100%;
+    min-width: 0;
+    margin-top: 1.75rem;
+  }
+
+  ascii-art {
+    display: block;
+    width: 100%;
+    aspect-ratio: 2 / 1;
+    background: var(--oxide);
   }
 </style>

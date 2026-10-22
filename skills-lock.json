@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "ascii-rest": {
+      "source": "bas3line/ascii",
+      "sourceType": "github",
+      "skillPath": "skills/ascii-rest/SKILL.md",
+      "computedHash": "9cc4b907ffe21e3a786b2a99d46562ed80f057ab982ac676b6cbf1fa7fb847c3"
+    }
+  }
+}
