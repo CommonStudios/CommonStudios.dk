@@ -20,11 +20,14 @@ const layouts = [
 
 <div class="ascii-logo" role="img" aria-label={label}>
   {layouts.map(({ name, lines }) => (
-    <pre
+    <svg
       class={`ascii-${name}`}
       aria-hidden="true"
-      style={`--cols: ${Math.max(...lines.map((line) => line.length))}`}
-      data-ascii-art>{lines.join('\n')}</pre>
+      viewBox={`-1 0 ${Math.max(...lines.map((line) => line.length)) * 6.1 + 2} ${lines.length * 12 + 3}`}
+      data-ascii-art
+    >
+      {lines.map((line, row) => <text x="0" y={row * 12 + 10}>{line}</text>)}
+    </svg>
   ))}
 </div>
 
@@ -52,9 +55,9 @@ const layouts = [
 
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  for (const pre of reduceMotion ? [] : document.querySelectorAll<HTMLPreElement>('[data-ascii-art]')) {
-    const art = (pre.textContent ?? '').split('\n');
-    const resting = pre.innerHTML;
+  for (const svg of reduceMotion ? [] : document.querySelectorAll<SVGSVGElement>('[data-ascii-art]')) {
+    const art = [...svg.querySelectorAll('text')].map((line) => line.textContent ?? '');
+    const resting = svg.innerHTML;
     const span = Math.max(...art.map((line) => line.length)) + HEAD + TRAIL + art.length * SLANT;
     let visible = false;
     let cycleStart = performance.now() + FIRST_MS - PASS_MS - REST_MS;
@@ -65,7 +68,7 @@ const layouts = [
 
     const draw = (progress: number, frame: number) => {
       const head = -HEAD + ease(progress) * span;
-      pre.innerHTML = art
+      svg.innerHTML = art
         .map((line, y) => {
           let out = '';
           let run = '';
@@ -73,7 +76,7 @@ const layouts = [
           // Group neighbouring cells of the same colour step into one span.
           const flush = () => {
             if (run) {
-              out += runStep ? `<span class="scan-${runStep}">${escape(run)}</span>` : escape(run);
+              out += runStep ? `<tspan class="scan-${runStep}">${escape(run)}</tspan>` : escape(run);
               run = '';
             }
           };
@@ -99,7 +102,7 @@ const layouts = [
             run += shown;
           });
           flush();
-          return out;
+          return `<text x="0" y="${y * 12 + 10}">${out}</text>`;
         })
         .join('\n');
     };
@@ -118,18 +121,18 @@ const layouts = [
         draw(t / PASS_MS, Math.floor(now / NOISE_MS));
       } else if (!atRest) {
         atRest = true;
-        pre.innerHTML = resting;
+        svg.innerHTML = resting;
       }
     };
 
     // Only animate the layout that is displayed, and only while it is in view.
     new IntersectionObserver(([entry]) => {
       const wasVisible = visible;
-      visible = entry.isIntersecting && pre.offsetParent !== null;
+      visible = entry.isIntersecting && getComputedStyle(svg).display !== 'none';
       if (visible && !wasVisible) {
         requestAnimationFrame(tick);
       }
-    }).observe(pre);
+    }).observe(svg);
 
     document.addEventListener('visibilitychange', () => {
       if (!document.hidden && visible) {
@@ -145,10 +148,13 @@ const layouts = [
     color: var(--paper);
   }
 
-  pre {
-    margin: 0;
-    /* Monospace glyphs are ~0.6em wide: size the text so every column fits. */
-    font-size: calc(100cqi / (var(--cols) * 0.6));
+  svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    /* Scale the drawing, avoiding WebView minimum font sizes and text autosizing. */
+    font-size: 10px;
+    fill: currentColor;
     font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
     line-height: 1.2;
     letter-spacing: 0;
@@ -158,12 +164,14 @@ const layouts = [
   }
 
   /* Scan colours: the head in full patina, the trail fading back to ink. */
-  pre :global(.scan-1) { color: var(--patina); }
-  pre :global(.scan-2) { color: color-mix(in oklab, var(--patina) 85%, var(--paper)); }
-  pre :global(.scan-3) { color: color-mix(in oklab, var(--patina) 68%, var(--paper)); }
-  pre :global(.scan-4) { color: color-mix(in oklab, var(--patina) 50%, var(--paper)); }
-  pre :global(.scan-5) { color: color-mix(in oklab, var(--patina) 32%, var(--paper)); }
-  pre :global(.scan-6) { color: color-mix(in oklab, var(--patina) 15%, var(--paper)); }
+  svg :global(text) { white-space: pre; }
+  svg :global(tspan) { fill: currentColor; }
+  svg :global(.scan-1) { color: var(--patina); }
+  svg :global(.scan-2) { color: color-mix(in oklab, var(--patina) 85%, var(--paper)); }
+  svg :global(.scan-3) { color: color-mix(in oklab, var(--patina) 68%, var(--paper)); }
+  svg :global(.scan-4) { color: color-mix(in oklab, var(--patina) 50%, var(--paper)); }
+  svg :global(.scan-5) { color: color-mix(in oklab, var(--patina) 32%, var(--paper)); }
+  svg :global(.scan-6) { color: color-mix(in oklab, var(--patina) 15%, var(--paper)); }
 
   .ascii-stacked {
     display: none;
